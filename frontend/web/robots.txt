@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /frontend/web
+Disallow: /backend/web

@@ -1,0 +1,7 @@
+class_name: FunctionalTester
+bootstrap: false
+modules:
+    enabled:
+        # add a framework module here
+        - Filesystem
+        - Yii2

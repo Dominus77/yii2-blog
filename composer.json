@@ -1,0 +1,56 @@
+{
+    "name": "dominus77/yii2-advanced-start",
+    "description": "Yii 2 Advanced start template on Yii2",
+    "keywords": ["Dominus77", "yii2", "framework", "advanced", "project template"],
+    "homepage": "http://dominus77.github.io/yii2-advanced-start",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "support": {
+        "source": "https://github.com/Dominus77/yii2-advanced-start"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.6.0",
+        "ext-json": "*",
+        "yiisoft/yii2": "~2.0.14",
+        "yiisoft/yii2-bootstrap": "~2.0.0",
+        "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
+        "yiisoft/yii2-imagine": "^2.0",
+        "yii2tech/ar-softdelete": "~1.0",
+        "almasaeed2010/adminlte": "^2.4",
+        "fortawesome/font-awesome": "^4.6",
+        "driftyco/ionicons": "^2.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "yiisoft/yii2-apidoc": "~2.1.0",
+        "bower-asset/html5shiv": "^3.7",
+        "bower-asset/respond": "^1.4",
+        "dominus77/yii2-maintenance": "^1.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "yiisoft/yii2-debug": "~2.0.0",
+        "yiisoft/yii2-gii": "~2.0.0",
+        "yiisoft/yii2-faker": "~2.0.0",
+
+        "codeception/codeception": "^4.0",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-yii2": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/verify": "~0.5.0 || ~1.1.0",
+        "symfony/browser-kit": ">=2.7 <=4.2.4",
+        "codeception/module-rest": "^1.2",
+        "codeception/module-phpbrowser": "^1.0"
+    },
+    "config": {
+        "process-timeout": 1800,
+        "fxp-asset": {
+            "enabled": false
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
+}

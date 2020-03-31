@@ -1,0 +1,8 @@
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: http://cakes.loc/index-test.php
+        - Yii2:
+            part: ORM
+            cleanup: false

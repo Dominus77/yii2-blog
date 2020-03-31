@@ -1,0 +1,11 @@
+# global codeception file to run tests from all apps
+include:
+    - common
+    - frontend
+    - backend
+    - api
+    - modules/rbac
+paths:
+    log: console/runtime/logs
+settings:
+    colors: true

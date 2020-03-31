@@ -1,0 +1,46 @@
+@import "fonts/SourceSansPro/source-sans-pro.css" screen;
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Source Sans Pro Regular", sans-serif;
+}
+
+.sidebar-menu li.active > a > .fa-angle-left > a > .pull-right-container > .fa-angle-left {
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.sidebar-menu .active > a > .pull-right-container > .fa-angle-left {
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.title-column {
+    text-align: center;
+}
+
+.action-column {
+    width: 80px;
+    text-align: center;
+}
+
+div.required label:after {
+    content: " *";
+    color: red;
+}
+
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
+    font-size: 14px;
+}
+
+.nav-tabs-custom {
+    margin-top: 10px;
+}
+
+/* Starting with v7.6.0, the font size for .swal2-popup is used, which affects the size of the window itself. */
+.swal2-popup {
+    font-size: 1.4rem !important;
+}
