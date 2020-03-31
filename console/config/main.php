@@ -7,6 +7,7 @@ use modules\rbac\Module as RbacModule;
 use modules\main\Bootstrap as MainBootstrap;
 use modules\users\Bootstrap as UserBootstrap;
 use modules\rbac\Bootstrap as RbacBootstrap;
+use modules\blog\Bootstrap as BlogBootstrap;
 use modules\users\models\User;
 use dominus77\maintenance\states\FileState;
 use dominus77\maintenance\interfaces\StateInterface;
@@ -29,7 +30,8 @@ return [
         MainBootstrap::class,
         UserBootstrap::class,
         RbacBootstrap::class,
-        BackendMaintenance::class
+        BackendMaintenance::class,
+        BlogBootstrap::class
     ],
     'container' => [
         'singletons' => [

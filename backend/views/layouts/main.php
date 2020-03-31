@@ -14,12 +14,12 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
-use yii\base\InvalidConfigException;
 use common\widgets\Alert;
 use modules\users\widgets\AvatarWidget;
 use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
 use modules\rbac\Module as RbacModule;
+use modules\blog\Module as BlogModule;
 
 /* @var $this View */
 /* @var $content string */
@@ -186,6 +186,11 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                             'url' => ['/rbac/assign/index']
                         ]
                     ]
+                ],
+                [
+                    'label' => '<i class="fa fa-book"></i> <span>' . BlogModule::t('module', 'Blog') . '</span>',
+                    'url' => ['/blog/default/index'],
+                    'visible' => $user->can(Permission::PERMISSION_MANAGER_POST)
                 ],
                 [
                     'label' => '<i class="fa fa-wrench"></i> <span>' . Yii::t('app', 'Mode site') . '</span>',

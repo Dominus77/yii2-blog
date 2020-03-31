@@ -9,6 +9,7 @@ use frontend\assets\AppAsset;
 use common\widgets\Alert;
 use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
+use modules\blog\Module as BlogModule;
 
 /* @var $this View */
 /* @var $content string */
@@ -39,6 +40,7 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => MainModule::t('module', 'Home'), 'url' => ['/main/default/index']],
+        ['label' => BlogModule::t('module', 'Blog'), 'url' => ['/blog/default/index']],
         ['label' => MainModule::t('module', 'About'), 'url' => ['/main/default/about']],
         ['label' => MainModule::t('module', 'Contact'), 'url' => ['/main/default/contact']]
     ];

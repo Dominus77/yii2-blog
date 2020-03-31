@@ -9,6 +9,7 @@ use modules\users\behavior\LastVisitBehavior;
 use modules\main\Bootstrap as MainBootstrap;
 use modules\users\Bootstrap as UserBootstrap;
 use modules\rbac\Bootstrap as RbacBootstrap;
+use modules\blog\Bootstrap as BlogBootstrap;
 use dominus77\maintenance\Maintenance;
 use dominus77\maintenance\filters\URIFilter;
 use dominus77\maintenance\filters\RoleFilter;
@@ -60,7 +61,8 @@ return [
         MainBootstrap::class,
         UserBootstrap::class,
         RbacBootstrap::class,
-        Maintenance::class
+        Maintenance::class,
+        BlogBootstrap::class
     ],
     'controllerNamespace' => 'frontend\controllers',
     'defaultRoute' => 'main/default/index',

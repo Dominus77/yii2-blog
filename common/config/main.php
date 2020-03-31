@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
 use modules\rbac\Module as RbacModule;
+use modules\blog\Module as BlogModule;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\states\FileState;
 
@@ -41,6 +42,9 @@ return [
         ],
         'rbac' => [
             'class' => RbacModule::class
+        ],
+        'blog' => [
+            'class' => BlogModule::class
         ]
     ],
     'components' => [
