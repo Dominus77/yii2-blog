@@ -188,9 +188,16 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     ]
                 ],
                 [
-                    'label' => '<i class="fa fa-book"></i> <span>' . BlogModule::t('module', 'Blog') . '</span>',
+                    'label' => '<i class="fa fa-book"></i> <span>' . BlogModule::t('module', 'Blog') . '</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>',
                     'url' => ['/blog/default/index'],
-                    'visible' => $user->can(Permission::PERMISSION_MANAGER_POST)
+                    'options' => ['class' => 'treeview'],
+                    'visible' => $user->can(Permission::PERMISSION_MANAGER_POST),
+                    'items' => [
+                        [
+                            'label' => '<span>' . BlogModule::t('module', 'Categories') . '</span>',
+                            'url' => ['/blog/category/index']
+                        ],
+                    ]
                 ],
                 [
                     'label' => '<i class="fa fa-wrench"></i> <span>' . Yii::t('app', 'Mode site') . '</span>',

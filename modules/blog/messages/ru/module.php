@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'Blog' => 'Блог'
+    'Blog' => 'Блог',
+    'Categories' => 'Категории'
 ];

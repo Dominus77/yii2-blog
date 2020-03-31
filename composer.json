@@ -24,7 +24,9 @@
         "yiisoft/yii2-apidoc": "~2.1.0",
         "bower-asset/html5shiv": "^3.7",
         "bower-asset/respond": "^1.4",
-        "dominus77/yii2-maintenance": "^1.0"
+        "dominus77/yii2-maintenance": "^1.0",
+        "creocoder/yii2-nested-sets": "^0.9.0",
+        "yii2tech/ar-position": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
