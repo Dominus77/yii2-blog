@@ -52,7 +52,7 @@ $css_theme = 'default';
 
 return [
     'id' => 'app-frontend',
-    'language' => 'en', // en, ru
+    'language' => 'ru', // en, ru
     'homeUrl' => '/',
     'basePath' => dirname(__DIR__),
     'bootstrap' => [

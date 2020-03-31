@@ -25,7 +25,7 @@ $params = ArrayHelper::merge(
 
 return [
     'id' => 'app-backend',
-    'language' => 'en', // en, ru
+    'language' => 'ru', // en, ru
     'homeUrl' => '/admin',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
