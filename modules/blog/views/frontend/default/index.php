@@ -7,6 +7,7 @@ use modules\blog\Module;
 /* @var $this View */
 
 $this->title = Module::t('module', 'Blog');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="blog-frontend-default-index">

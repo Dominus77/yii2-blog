@@ -1,17 +1,23 @@
 <?php
+/**
+ * This is the template for generating a backend controller class within a module.
+ */
 
-namespace modules\blog\controllers\backend;
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\module\Generator */
 
-use Yii;
+echo "<?php\n";
+?>
+
+namespace <?= $generator->getControllerNamespace() ?>;
+
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use yii\web\Response;
 use modules\rbac\models\Permission;
-use modules\main\Module;
 
 /**
  * Class DefaultController
- * @package modules\blog\controllers\backend
+ * @package <?= $generator->getControllerNamespace() . "\n"?>
  */
 class DefaultController extends Controller
 {
@@ -27,7 +33,7 @@ class DefaultController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => [Permission::PERMISSION_MANAGER_POST]
+                        'roles' => [Permission::PERMISSION_VIEW_ADMIN_PAGE]
                     ]
                 ]
             ]
@@ -35,7 +41,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Displays index page.
      * @return string
      */
     public function actionIndex()
