@@ -16,7 +16,7 @@ class BaseModel extends ActiveRecord
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISH = 1;
 
-    public $status;
+    //public $status;
 
     /**
      * Statuses

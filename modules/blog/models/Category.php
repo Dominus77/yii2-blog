@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\helpers\VarDumper;
 use yii2tech\ar\position\PositionBehavior;
 use creocoder\nestedsets\NestedSetsBehavior;
 use modules\blog\models\query\CategoryQuery;
@@ -30,9 +31,12 @@ use modules\blog\Module;
  *
  * @property Post[] $posts
  * @property Category $parent
+ * @property int $parentId
  */
 class Category extends BaseModel
 {
+    public $parentId;
+
     /**
      * {@inheritdoc}
      */
@@ -59,11 +63,27 @@ class Category extends BaseModel
                 'attribute' => 'title',
                 'slugAttribute' => 'slug'
             ],
-            'positionBehavior' => [
+            /*'positionBehavior' => [
                 'class' => PositionBehavior::class,
-                'positionAttribute' => 'position'
-            ],
+                'positionAttribute' => 'position',
+                'groupAttributes' => [
+                    'depth',
+                    'tree'
+                ],
+                //'groupAttributes' => $this->getSortGrout(),
+            ],*/
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortGrout()
+    {
+        if (empty($this->parentId)) {
+            return ['depth'];
+        }
+        return ['tree', 'depth'];
     }
 
     /**
@@ -92,8 +112,14 @@ class Category extends BaseModel
     {
         return [
             [['title'], 'required'],
-            [['position'], 'default', 'value' => self::STATUS_DRAFT],
-            [['tree', 'lft', 'rgt', 'depth', 'position', 'status'], 'integer'],
+
+            [['position'], 'integer'],
+            [['position'], 'default', 'value' => 0],
+
+            ['status', 'integer'],
+            ['status', 'default', 'value' => self::STATUS_DRAFT],
+            ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
+
             [['description'], 'string'],
             [['title', 'slug'], 'string', 'max' => 255]
         ];
@@ -168,7 +194,7 @@ class Category extends BaseModel
         }
 
         $rows = self::find()
-            ->select('id, title, slug, depth')
+            ->select('id, title, lft, depth, position')
             ->where(['NOT IN', 'id', $children])
             ->orderBy('tree, lft, position')
             ->all();

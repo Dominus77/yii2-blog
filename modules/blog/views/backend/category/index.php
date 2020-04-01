@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
+use modules\blog\models\Category;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
@@ -42,18 +43,30 @@ $this->params['breadcrumbs'][] = Module::t('module', 'Categories');
                 'columns' => [
                     ['class' => SerialColumn::class],
 
-                    'id',
+                    //'id',
                     'tree',
                     'lft',
                     'rgt',
                     'depth',
-                    //'position',
                     //'title',
+                    [
+                        'attribute' => 'title',
+                        'value' => static function (Category $model) {
+                            return $model->title;
+                        }
+                    ],
+                    'position',
                     //'slug',
                     //'description:ntext',
-                    //'created_at',
+                    'created_at:datetime',
                     //'updated_at',
-                    //'status',
+                    [
+                        'attribute' => 'status',
+                        'format' => 'raw',
+                        'value' => static function (Category $model) {
+                            return $model->getStatusLabelName();
+                        }
+                    ],
 
                     ['class' => ActionColumn::class],
                 ],

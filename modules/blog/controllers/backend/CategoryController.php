@@ -4,12 +4,14 @@ namespace modules\blog\controllers\backend;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use modules\rbac\models\Permission;
 use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
+use creocoder\nestedsets\NestedSetsBehavior;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -75,10 +77,26 @@ class CategoryController extends Controller
      */
     public function actionCreate()
     {
+        /** @var NestedSetsBehavior|Category $model */
         $model = new Category();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (!empty(Yii::$app->request->post('Category'))) {
+            $post = Yii::$app->request->post('Category');
+            $model->title = $post['title'];
+            $model->slug = $post['slug'];
+            $model->description = $post['description'];
+            $model->position = $post['position'];
+            $model->status = $post['status'];
+            $parent_id = $post['parentId'];
+            $model->parentId = $parent_id;
+            if ($model->validate()) {
+                if (empty($parent_id)) {
+                    $model->makeRoot();
+                } else {
+                    $parent = Category::findOne($parent_id);
+                    $model->appendTo($parent);
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -95,12 +113,38 @@ class CategoryController extends Controller
      */
     public function actionUpdate($id)
     {
+        /** @var NestedSetsBehavior|Category $model */
         $model = $this->findModel($id);
+        //$parent_id = $model->parentId;
+        //$model->parentId = $parent_id;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (!empty(Yii::$app->request->post('Category'))) {
+            $post = Yii::$app->request->post('Category');
+            $model->title = $post['title'];
+            $model->slug = $post['slug'];
+            $model->description = $post['description'];
+            $model->position = $post['position'];
+            $model->status = $post['status'];
+            $parent_id = $post['parentId'];
+            $model->parentId = $parent_id;
+            if ($model->save()) {
+                if (empty($parent_id)) {
+                    if (!$model->isRoot()) {
+                        $model->makeRoot();
+                    }
+                } else {
+                    if ($model->id !== $parent_id) {
+                        $parent = Category::findOne($parent_id);
+                        $model->appendTo($parent);
+                    }
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
-
+        /*if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }*/
+        $model->parentId = $model->tree;
         return $this->render('update', [
             'model' => $model,
         ]);
