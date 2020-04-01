@@ -1,6 +1,4 @@
 <?php
-echo "<?php\n";
-?>
 /**
  * English translation file
  */
