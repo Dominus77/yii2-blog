@@ -186,26 +186,55 @@ class Category extends BaseModel
         ];
     }
 
+    public function getPrevNodeId()
+    {
+        $prev = $this->prev;
+        return $prev ? $prev->id : null;
+    }
+
+    public function getNextNodeId()
+    {
+        $prev = $this->next;
+        return $prev ? $prev->id : null;
+    }
+
     /**
      * Return Children node
      * @param int $nodeId
+     * @param $id
      * @return array
      */
-    public static function getSelectList($nodeId)
+    /*public static function getSelectList($nodeId)
+    {
+        /** @var $node NestedSetsBehavior|Category */
+    /*if ($node = self::findOne(['id' => $nodeId])) {
+        $tree = self::find();
+        $tree->select('id, tree, title, lft');
+        if ($node->depth !== 0) {
+            $tree->andWhere(['tree' => $node->tree, 'depth' => $node->depth]);
+        } else {
+            $tree->andWhere(['depth' => $node->depth]);
+        }
+        $nodes = $tree->andWhere(['NOT IN', 'id', $node->id])
+            ->orderBy('tree, lft')
+            ->all();
+        return ArrayHelper::map($nodes, 'id', 'title');
+    }
+    return [];
+}*/
+
+    /**
+     * @param int $nodeId
+     * @param int $unsetId
+     * @return array
+     */
+    public static function getChildrenList($nodeId = 1, $unsetId = 0)
     {
         /** @var $node NestedSetsBehavior|Category */
         if ($node = self::findOne(['id' => $nodeId])) {
-            $tree = self::find();
-            $tree->select('id, tree, title, lft');
-            if ($node->depth !== 0) {
-                $tree->andWhere(['tree' => $node->tree, 'depth' => $node->depth]);
-            } else {
-                $tree->andWhere(['depth' => $node->depth]);
-            }
-            $nodes = $tree->andWhere(['NOT IN', 'id', $node->id])
-                ->orderBy('tree, lft')
-                ->all();
-            return ArrayHelper::map($nodes, 'id', 'title');
+            $childrenArray = ArrayHelper::map($node->children, 'id', 'title');
+            unset($childrenArray[$unsetId]);
+            return $childrenArray;
         }
         return [];
     }

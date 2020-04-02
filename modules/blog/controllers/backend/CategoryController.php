@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use modules\rbac\models\Permission;
 use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
+use yii\web\Response;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -102,33 +103,90 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
-            //VarDumper::dump($model->parentId, 10, 1);
-            //die;
-            if (empty($model->parentId)) {
-                if (!$model->isRoot()) {
-                    $model->makeRoot()->save();
-                } else {
-                    $model->save();
-                }
-            } else if ($model->id !== $model->parentId) {
-                $node = Category::findOne(['id' => $model->parentId]);
-                $model->appendTo($node)->save();
+        /*if (empty($model->parentId)) {
+            if (!$model->isRoot()) {
+                $model->makeRoot()->save();
             } else {
                 $model->save();
             }
+        } else if ($model->id !== $model->parentId) {
+            $node = Category::findOne(['id' => $model->parentId]);
+            $model->appendTo($node)->save();
+        } else {
+            $model->save();
+        }*/
+        if (($post = Yii::$app->request->post()) && $model->load($post) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        $model->parentId = $model->getParentId();
+        //$model->parentId = $model->getParentId();
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
+    /**
+     * Return children list
+     * @return array|Response
+     */
+    public function actionChildrenList()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($post = Yii::$app->request->post()) {
+                $selectList = Category::getChildrenList($post['parent'], $post['id']);
+                return [
+                    'result' => $this->renderPartial('ajax/selectList', ['selectList' => $selectList]),
+                ];
+            }
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * Move node
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionMove($id)
     {
         $model = $this->findModel($id);
+        if (($post = Yii::$app->request->post()) && $model->load($post)) {
+
+            if (empty($model->parentId)) { // Как корень
+                if (!$model->isRoot()) {
+                    $model->makeRoot()->save(false);
+                }
+            } else if ($model->id !== $model->parentId) { // Перемещаем в указанную ноду
+                $node = Category::findOne(['id' => $model->parentId]);
+                $model->appendTo($node)->save(false);
+            }
+
+            // Перемещаем в пределах узла
+            if (!empty($model->childrenList)) {
+                $moveModel = $this->findModel($model->id);
+                $node = $this->findModel($model->childrenList);
+                if ($model->typeMove === Category::TYPE_BEFORE) {
+                    $moveModel->insertBefore($node)->save(false);
+                }
+                if ($model->typeMove === Category::TYPE_AFTER) {
+                    $moveModel->insertAfter($node)->save(false);
+                }
+            }
+            return $this->redirect(['index']);
+        }
+
         $model->parentId = $model->getParentId();
+        if ($select = $model->getPrevNodeId()) {
+            $typeMove = Category::TYPE_AFTER;
+        } else if ($select = $model->getNextNodeId()) {
+            $typeMove = Category::TYPE_BEFORE;
+        } else {
+            $typeMove = null;
+        }
+
+        $model->childrenList = $select;
+        $model->typeMove = $typeMove;
         return $this->render('move', [
             'model' => $model,
         ]);
