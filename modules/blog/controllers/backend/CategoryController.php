@@ -103,22 +103,9 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        /*if (empty($model->parentId)) {
-            if (!$model->isRoot()) {
-                $model->makeRoot()->save();
-            } else {
-                $model->save();
-            }
-        } else if ($model->id !== $model->parentId) {
-            $node = Category::findOne(['id' => $model->parentId]);
-            $model->appendTo($node)->save();
-        } else {
-            $model->save();
-        }*/
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        //$model->parentId = $model->getParentId();
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -166,11 +153,16 @@ class CategoryController extends Controller
             if (!empty($model->childrenList)) {
                 $moveModel = $this->findModel($model->id);
                 $node = $this->findModel($model->childrenList);
-                if ($model->typeMove === Category::TYPE_BEFORE) {
-                    $moveModel->insertBefore($node)->save(false);
-                }
-                if ($model->typeMove === Category::TYPE_AFTER) {
-                    $moveModel->insertAfter($node)->save(false);
+
+                switch ($model->typeMove) {
+                    case Category::TYPE_BEFORE:
+                        $moveModel->insertBefore($node)->save(false);
+                        break;
+                    case Category::TYPE_AFTER:
+                        $moveModel->insertAfter($node)->save(false);
+                        break;
+                    default:
+                        $moveModel->insertAfter($node)->save(false);
                 }
             }
             return $this->redirect(['index']);

@@ -186,42 +186,25 @@ class Category extends BaseModel
         ];
     }
 
+    /**
+     * Return Prev node id
+     * @return int|null
+     */
     public function getPrevNodeId()
     {
         $prev = $this->prev;
         return $prev ? $prev->id : null;
     }
 
+    /**
+     * Return Next node id
+     * @return int|null
+     */
     public function getNextNodeId()
     {
-        $prev = $this->next;
-        return $prev ? $prev->id : null;
+        $next = $this->next;
+        return $next ? $next->id : null;
     }
-
-    /**
-     * Return Children node
-     * @param int $nodeId
-     * @param $id
-     * @return array
-     */
-    /*public static function getSelectList($nodeId)
-    {
-        /** @var $node NestedSetsBehavior|Category */
-    /*if ($node = self::findOne(['id' => $nodeId])) {
-        $tree = self::find();
-        $tree->select('id, tree, title, lft');
-        if ($node->depth !== 0) {
-            $tree->andWhere(['tree' => $node->tree, 'depth' => $node->depth]);
-        } else {
-            $tree->andWhere(['depth' => $node->depth]);
-        }
-        $nodes = $tree->andWhere(['NOT IN', 'id', $node->id])
-            ->orderBy('tree, lft')
-            ->all();
-        return ArrayHelper::map($nodes, 'id', 'title');
-    }
-    return [];
-}*/
 
     /**
      * @param int $nodeId
