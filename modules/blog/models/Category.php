@@ -143,7 +143,7 @@ class Category extends BaseModel
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
             'childrenList' => Module::t('module', 'Children List'),
-            'typeMove' => Module::t('module', 'Move Type')
+            'typeMove' => Module::t('module', 'Insert Type')
         ];
     }
 

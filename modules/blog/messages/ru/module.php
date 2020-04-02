@@ -30,7 +30,8 @@ return [
     'Parent' => 'Родитель',
     'No Parent (saved as root)' => 'Нет родителя (сохранить как корень)',
     'Children List' => 'Лист категорий',
-    'Move Type' => 'Тип перемещения',
+    'Insert Type' => 'Тип вставки',
     'Before' => 'Перед',
     'After' => 'После',
+    'Automatically filled' => 'Заполняется автоматически',
 ];

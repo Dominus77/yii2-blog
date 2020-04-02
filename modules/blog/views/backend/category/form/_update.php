@@ -16,9 +16,15 @@ use modules\blog\models\Category;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'slug')->textInput([
+        'maxlength' => true,
+        'placeholder' => Module::t('module', 'Automatically filled')
+    ]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'description')->textarea([
+        'rows' => 6,
+        'placeholder' => true
+    ]) ?>
 
     <?= $form->field($model, 'status')->dropDownList(Category::getStatusesArray()) ?>
 

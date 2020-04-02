@@ -2,16 +2,18 @@
 
 namespace modules\blog\controllers\backend;
 
+
 use Yii;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
-use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use Throwable;
 use modules\rbac\models\Permission;
 use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
-use yii\web\Response;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -73,7 +75,8 @@ class CategoryController extends Controller
     /**
      * Creates a new Category model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|Response
+     * @throws NotFoundHttpException
      */
     public function actionCreate()
     {
@@ -85,6 +88,8 @@ class CategoryController extends Controller
                 $node = Category::findOne(['id' => $model->parentId]);
                 $model->appendTo($node)->save();
             }
+            // Перемещаем в пределах узла
+            $model = $this->moveWithinNode($model);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -140,31 +145,16 @@ class CategoryController extends Controller
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post)) {
 
-            if (empty($model->parentId)) { // Как корень
+            if (empty($model->parentId)) { // Перемещаем как корень
                 if (!$model->isRoot()) {
                     $model->makeRoot()->save(false);
                 }
-            } else if ($model->id !== $model->parentId) { // Перемещаем в указанную ноду
-                $node = Category::findOne(['id' => $model->parentId]);
+            } else if ($model->id !== $model->parentId) { // Перемещаем в указанный узел
+                $node = $this->findModel($model->parentId);
                 $model->appendTo($node)->save(false);
             }
-
             // Перемещаем в пределах узла
-            if (!empty($model->childrenList)) {
-                $moveModel = $this->findModel($model->id);
-                $node = $this->findModel($model->childrenList);
-
-                switch ($model->typeMove) {
-                    case Category::TYPE_BEFORE:
-                        $moveModel->insertBefore($node)->save(false);
-                        break;
-                    case Category::TYPE_AFTER:
-                        $moveModel->insertAfter($node)->save(false);
-                        break;
-                    default:
-                        $moveModel->insertAfter($node)->save(false);
-                }
-            }
+            $this->moveWithinNode($model);
             return $this->redirect(['index']);
         }
 
@@ -188,16 +178,43 @@ class CategoryController extends Controller
      * Deletes an existing Category model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return \yii\web\Response
+     * @return Response
      * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->delete(); // delete node, children come up to the parent
+        //$model->deleteWithChildren(); // delete node and all descendants
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Move within a node
+     * @param Category $model
+     * @return Category
+     * @throws NotFoundHttpException
+     */
+    protected function moveWithinNode(Category $model)
+    {
+        if ($model !== null && !empty($model->childrenList)) {
+            $moveModel = $this->findModel($model->id);
+            $node = $this->findModel($model->childrenList);
+            switch ($model->typeMove) {
+                case Category::TYPE_BEFORE:
+                    $moveModel->insertBefore($node)->save(false);
+                    break;
+                case Category::TYPE_AFTER:
+                    $moveModel->insertAfter($node)->save(false);
+                    break;
+                default:
+                    $moveModel->insertAfter($node)->save(false);
+            }
+        }
+        return $model;
     }
 
     /**

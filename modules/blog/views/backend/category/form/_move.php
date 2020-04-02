@@ -10,22 +10,36 @@ use modules\blog\models\Category;
 /* @var $model modules\blog\models\Category */
 /* @var $form yii\widgets\ActiveForm */
 
+$childrenList = Category::getChildrenList($model->parentId, $model->id);
+$display = empty($childrenList) ? 'style="display:none;"' : '';
+
 $url = Url::to(['children-list']);
 $id = $model->id;
 $script = "
     $('#input-parent-id').on('change', function(){
         let parentId = $(this).val(),
+            childrenListContainer = $('#children-list-container'),
             childrenList = $('#input-children-list'),
-            typeMove = $('#input-type-move');
+            typeMove = $('#input-type-move');            
         
-        $.ajax({
-            url: '{$url}',
-            dataType: 'json',
-            type: 'post',
-            data: {id: {$id}, parent: parentId}
-        }).done(function (response) {           
-            childrenList.html(response.result);
-        });       
+        if(parentId === '') {
+            childrenList.html(parentId);
+            childrenListContainer.hide();
+        } else {
+            $.ajax({
+                url: '{$url}',
+                dataType: 'json',
+                type: 'post',
+                data: {id: {$id}, parent: parentId}
+            }).done(function (response) {
+                childrenList.html(response.result);
+                if(response.result === '') {
+                    childrenListContainer.hide();
+                } else {                    
+                    childrenListContainer.show();
+                }
+            });
+        }     
     });
 ";
 
@@ -41,12 +55,14 @@ $this->registerJs($script);
         'prompt' => Module::t('module', 'No Parent (saved as root)'),
     ])->label(Module::t('module', 'Parent')) ?>
 
-    <?= $form->field($model, 'childrenList')->listBox(Category::getChildrenList($model->parentId, $model->id), [
-        'id' => 'input-children-list',
-    ]) ?>
-    <?= $form->field($model, 'typeMove')->radioList(Category::getMoveTypesArray(), [
-        'id' => 'input-type-move',
-    ]) ?>
+    <div id="children-list-container" <?= $display ?>>
+        <?= $form->field($model, 'childrenList')->listBox($childrenList, [
+            'id' => 'input-children-list',
+        ]) ?>
+        <?= $form->field($model, 'typeMove')->radioList(Category::getMoveTypesArray(), [
+            'id' => 'input-type-move',
+        ]) ?>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton(Module::t('module', 'Move'), ['class' => 'btn btn-success']) ?>

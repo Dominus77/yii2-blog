@@ -30,7 +30,8 @@ return [
     'Parent' => 'Parent',
     'No Parent (saved as root)' => 'No Parent (saved as root)',
     'Children List' => 'Children List',
-    'Move Type' => 'Move Type',
+    'Insert Type' => 'Insert Type',
     'Before' => 'Before',
     'After' => 'After',
+    'Automatically filled' => 'Automatically filled',
 ];
