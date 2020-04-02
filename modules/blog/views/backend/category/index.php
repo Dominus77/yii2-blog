@@ -11,9 +11,7 @@ use modules\blog\Module;
 /* @var $searchModel modules\blog\models\search\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Module::t('module', 'Blog');
-$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['default/index']];
-$this->params['breadcrumbs'][] = Module::t('module', 'Categories');
+echo $this->render('_base', ['link' => false]);
 ?>
 <div class="blog-backend-category-index">
     <div class="box">
@@ -52,14 +50,13 @@ $this->params['breadcrumbs'][] = Module::t('module', 'Categories');
                     [
                         'attribute' => 'title',
                         'value' => static function (Category $model) {
-                            return $model->title;
+                            return str_repeat('-', $model->depth) . ' ' . $model->title;
                         }
                     ],
-                    'position',
                     //'slug',
                     //'description:ntext',
                     'created_at:datetime',
-                    //'updated_at',
+                    //'updated_at:datetime',
                     [
                         'attribute' => 'status',
                         'format' => 'raw',
@@ -67,8 +64,26 @@ $this->params['breadcrumbs'][] = Module::t('module', 'Categories');
                             return $model->getStatusLabelName();
                         }
                     ],
-
-                    ['class' => ActionColumn::class],
+                    'position',
+                    [
+                        'class' => ActionColumn::class,
+                        'contentOptions' => [
+                            'class' => 'action-column',
+                            'style' => 'width: 90px'
+                        ],
+                        'template' => '{view} {move} {update} {delete}',
+                        'buttons' => [
+                            'move' => static function ($url) {
+                                return Html::a('<span class="glyphicon glyphicon-random"></span>', $url, [
+                                    'title' => Module::t('module', 'Move'),
+                                    'data' => [
+                                        //'toggle' => 'tooltip',
+                                        'pjax' => 0,
+                                    ]
+                                ]);
+                            },
+                        ]
+                    ],
                 ],
             ]) ?>
         </div>

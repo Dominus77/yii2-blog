@@ -3,7 +3,7 @@
 namespace modules\blog\models\query;
 
 use yii\db\ActiveQuery;
-use creocoder\nestedsets\NestedSetsQueryBehavior;
+use paulzi\nestedsets\NestedSetsQueryTrait;
 
 /**
  * This is the ActiveQuery class for [[\modules\blog\models\Category]].
@@ -12,13 +12,5 @@ use creocoder\nestedsets\NestedSetsQueryBehavior;
  */
 class CategoryQuery extends ActiveQuery
 {
-    /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            NestedSetsQueryBehavior::class,
-        ];
-    }
+    use NestedSetsQueryTrait;
 }

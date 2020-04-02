@@ -53,7 +53,6 @@ class CategorySearch extends Category
                     'tree' => SORT_ASC,
                     'lft' => SORT_ASC,
                     //'depth' => SORT_ASC,
-                    'position' => SORT_ASC,
                     //'created_at' => SORT_ASC,
                 ],
             ]

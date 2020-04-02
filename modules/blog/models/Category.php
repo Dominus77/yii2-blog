@@ -7,11 +7,12 @@ use yii\db\ActiveRecord;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
-use yii\helpers\VarDumper;
-use yii2tech\ar\position\PositionBehavior;
-use creocoder\nestedsets\NestedSetsBehavior;
+use yii\helpers\ArrayHelper;
+use paulzi\nestedsets\NestedSetsBehavior;
+use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "{{%blog_category}}".
@@ -36,6 +37,13 @@ use modules\blog\Module;
 class Category extends BaseModel
 {
     public $parentId;
+    public $childrenList;
+    public $typeMove;
+
+    const TYPE_BEFORE = 'before';
+    const TYPE_AFTER = 'after';
+
+    use AutoTreeTrait;
 
     /**
      * {@inheritdoc}
@@ -63,27 +71,16 @@ class Category extends BaseModel
                 'attribute' => 'title',
                 'slugAttribute' => 'slug'
             ],
-            /*'positionBehavior' => [
-                'class' => PositionBehavior::class,
-                'positionAttribute' => 'position',
-                'groupAttributes' => [
-                    'depth',
-                    'tree'
-                ],
-                //'groupAttributes' => $this->getSortGrout(),
-            ],*/
         ];
     }
 
     /**
-     * @return array
+     * @param int|null $depth
+     * @return \yii\db\ActiveQuery
      */
-    public function getSortGrout()
+    public function getParents($depth = null)
     {
-        if (empty($this->parentId)) {
-            return ['depth'];
-        }
-        return ['tree', 'depth'];
+        return $this->autoTreeCall('getParents', ['al', 'ns'], [$depth]);
     }
 
     /**
@@ -113,15 +110,17 @@ class Category extends BaseModel
         return [
             [['title'], 'required'],
 
-            [['position'], 'integer'],
-            [['position'], 'default', 'value' => 0],
-
             ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_DRAFT],
             ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
 
+            ['position', 'integer'],
+            ['position', 'default', 'value' => 0],
+
             [['description'], 'string'],
-            [['title', 'slug'], 'string', 'max' => 255]
+            [['title', 'slug'], 'string', 'max' => 255],
+
+            [['parentId', 'childrenList', 'typeMove'], 'safe']
         ];
     }
 
@@ -142,7 +141,9 @@ class Category extends BaseModel
             'description' => Module::t('module', 'Description'),
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
-            'status' => Module::t('module', 'Status')
+            'status' => Module::t('module', 'Status'),
+            'childrenList' => Module::t('module', 'Children List'),
+            'typeMove' => Module::t('module', 'Move Type')
         ];
     }
 
@@ -168,35 +169,87 @@ class Category extends BaseModel
      * Get parent's node
      * @return array|ActiveRecord|null
      */
-    public function getParent()
+    /*public function getParent()
     {
-        /** @var $this NestedSetsBehavior */
         return $this->parents(1)->one();
+    }*/
+
+    /**
+     * Move types
+     * @return array
+     */
+    public static function getMoveTypesArray()
+    {
+        return [
+            self::TYPE_BEFORE => Module::t('module', 'Before'),
+            self::TYPE_AFTER => Module::t('module', 'After'),
+        ];
+    }
+
+    /**
+     * Return Children node
+     * @param int $nodeId
+     * @return array
+     */
+    public static function getSelectList($nodeId)
+    {
+        /** @var $node NestedSetsBehavior|Category */
+        if ($node = self::findOne(['id' => $nodeId])) {
+            $tree = self::find();
+            $tree->select('id, tree, title, lft');
+            if ($node->depth !== 0) {
+                $tree->andWhere(['tree' => $node->tree, 'depth' => $node->depth]);
+            } else {
+                $tree->andWhere(['depth' => $node->depth]);
+            }
+            $nodes = $tree->andWhere(['NOT IN', 'id', $node->id])
+                ->orderBy('tree, lft')
+                ->all();
+            return ArrayHelper::map($nodes, 'id', 'title');
+        }
+        return [];
+    }
+
+    /**
+     * Breadcrumbs
+     * @param int $nodeId
+     * @param array $breadcrumbs
+     * @return array
+     */
+    public static function getBreadcrumbs($nodeId = 0, $breadcrumbs = [])
+    {
+        /** @var Category $node */
+        $node = self::findOne(['id' => $nodeId]);
+        $parents = $node->getParents()->all();
+        $params = $breadcrumbs;
+        foreach ($parents as $parent) {
+            $params[] = ['label' => $parent->title, 'url' => ['view', 'id' => $parent->id]];
+        }
+        return $params;
     }
 
     /**
      * Get a full tree as a list, except the node and its children
-     * @param int $node_id node's ID
+     * @param int $nodeId node's ID
      * @return array array of node
      */
-    public static function getTree($node_id = 0)
+    public static function getTree($nodeId)
     {
         // don't include children and the node
         $children = [];
-
-        if (!empty($node_id)) {
+        if (!empty($nodeId)) {
             /** @var $tree NestedSetsBehavior */
-            $tree = self::findOne($node_id);
-            $children = array_merge(
-                $tree->children()->column(),
-                [$node_id]
+            $tree = self::findOne(['id' => $nodeId]);
+            $children = ArrayHelper::merge(
+                $tree->getDescendants()->column(),
+                [$nodeId]
             );
         }
 
         $rows = self::find()
-            ->select('id, title, lft, depth, position')
+            ->select('id, title, lft, depth')
             ->where(['NOT IN', 'id', $children])
-            ->orderBy('tree, lft, position')
+            ->orderBy('tree, lft')
             ->all();
 
         $return = [];

@@ -10,6 +10,8 @@ return [
     'Save' => 'Save',
     'Update' => 'Update',
     'Delete' => 'Delete',
+    'Move' => 'Move',
+    'View' => 'View',
     'Draft' => 'Draft',
     'Publish' => 'Publish',
     // Category
@@ -27,4 +29,8 @@ return [
     'Status' => 'Status',
     'Parent' => 'Parent',
     'No Parent (saved as root)' => 'No Parent (saved as root)',
+    'Children List' => 'Children List',
+    'Move Type' => 'Move Type',
+    'Before' => 'Before',
+    'After' => 'After',
 ];

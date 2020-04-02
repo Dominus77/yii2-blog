@@ -2,14 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use modules\blog\models\Category;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $model modules\blog\models\Category */
+/* @var $model Category */
 
-$this->title = Module::t('module', 'Blog');
-$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['default/index']];
-$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Categories'), 'url' => ['index']];
+echo $this->render('_base');
+$this->params['breadcrumbs'] = Category::getBreadcrumbs($model->id, $this->params['breadcrumbs']);
 $this->params['breadcrumbs'][] = $model->title;
 
 \yii\web\YiiAsset::register($this);

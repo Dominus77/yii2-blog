@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Schema;
 
 /**
  * Handles the creation of table `{{%blog}}`.
@@ -33,7 +34,7 @@ class m200331_103455_create_blog_table extends Migration
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
         ], $tableOptions);
 
-        $this->createIndex('IDX_blog_category_nested_sets', '{{%blog_category}}', ['tree', 'lft', 'rgt']);
+        $this->createIndex('IDX_blog_category_nested_sets', '{{%blog_category}}', ['tree', 'lft', 'rgt', 'position']);
 
         // Post
         $this->createTable('{{%blog_post}}', [
