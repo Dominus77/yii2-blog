@@ -186,9 +186,7 @@ class CategoryController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $model->delete(); // delete node, children come up to the parent
-        //$model->deleteWithChildren(); // delete node and all descendants
-
+        $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
         return $this->redirect(['index']);
     }
 
