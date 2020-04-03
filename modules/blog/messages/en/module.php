@@ -33,6 +33,6 @@ return [
     'Insert Type' => 'Insert Type',
     'Before' => 'Before',
     'After' => 'After',
-    'Automatically filled' => 'Automatically filled',
+    'If left blank, filled automatically based on the title' => 'If left blank, filled automatically based on the title',
     '- all -' => '- all -',
 ];

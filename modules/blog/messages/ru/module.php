@@ -28,11 +28,11 @@ return [
     'Updated' => 'Обновлено',
     'Status' => 'Статус',
     'Parent' => 'Родитель',
-    'No Parent (saved as root)' => 'Нет родителя (сохранить как корень)',
+    'No Parent (saved as root)' => 'Нет родителя (будет сохранен как корень)',
     'Children List' => 'Лист категорий',
     'Insert Type' => 'Тип вставки',
     'Before' => 'Перед',
     'After' => 'После',
-    'Automatically filled' => 'Заполняется автоматически',
+    'If left blank, filled automatically based on the title' => 'Если оставить пустым, заполняется автоматически на основе заголовка',
     '- all -' => '- все -',
 ];

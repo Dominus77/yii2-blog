@@ -4,47 +4,16 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use modules\blog\Module;
 use modules\blog\models\Category;
+use modules\blog\assets\CategoryAsset;
 
 /* @var $this yii\web\View */
 /* @var $model modules\blog\models\Category */
 /* @var $form yii\widgets\ActiveForm */
 
-$url = Url::to(['children-list']);
-$id = 0;
-$script = "
-    $('#input-parent-id').on('change', function(){
-        let parentId = $(this).val(),
-            positionContainer = $('#position-container'),
-            inputPosition = $('#input-position'),
-            childrenListContainer = $('#children-list-container'),
-            childrenList = $('#input-children-list'),
-            typeMove = $('#input-type-move');            
-        
-        if(parentId === '') {
-            childrenList.html(parentId);
-            childrenListContainer.hide();
-            positionContainer.show();
-        } else {
-            inputPosition.val(0);
-            positionContainer.hide();
-            $.ajax({
-                url: '{$url}',
-                dataType: 'json',
-                type: 'post',
-                data: {id: {$id}, parent: parentId}
-            }).done(function (response) {
-                childrenList.html(response.result);
-                if(response.result === '') {                    
-                    childrenListContainer.hide();
-                } else {                    
-                    childrenListContainer.show();
-                }                
-            });
-        }     
-    });
-";
-
-$this->registerJs($script);
+$categoryAsset = new CategoryAsset([
+    'url' => Url::to(['children-list'])
+]);
+$categoryAsset::register($this);
 ?>
 
 <div class="category-form-create">
@@ -53,13 +22,13 @@ $this->registerJs($script);
         'id' => 'form-create'
     ]); ?>
 
-    <?= $form->field($model, 'parentId')->dropDownList(Category::getTree($model->id), [
+    <?= $form->field($model, 'parentId')->dropDownList(Category::getTree(), [
         'id' => 'input-parent-id',
         'prompt' => Module::t('module', 'No Parent (saved as root)'),
     ])->label(Module::t('module', 'Parent')) ?>
 
     <div id="children-list-container" style="display:none;">
-        <?= $form->field($model, 'childrenList')->listBox(Category::getChildrenList($model->parentId, $model->id), [
+        <?= $form->field($model, 'childrenList')->listBox(Category::getChildrenList(), [
             'id' => 'input-children-list',
         ]) ?>
         <?= $form->field($model, 'typeMove')->radioList(Category::getMoveTypesArray(), [
@@ -82,8 +51,8 @@ $this->registerJs($script);
 
     <?= $form->field($model, 'slug')->textInput([
         'maxlength' => true,
-        'placeholder' => Module::t('module', 'Automatically filled')
-    ]) ?>
+        'placeholder' => true
+    ])->hint(Module::t('module', 'If left blank, filled automatically based on the title')) ?>
 
     <?= $form->field($model, 'description')->textarea([
         'rows' => 6,

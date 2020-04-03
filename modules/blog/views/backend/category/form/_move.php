@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use modules\blog\Module;
 use modules\blog\models\Category;
+use modules\blog\assets\CategoryAsset;
 
 /* @var $this yii\web\View */
 /* @var $model modules\blog\models\Category */
@@ -12,37 +13,11 @@ use modules\blog\models\Category;
 $childrenList = Category::getChildrenList($model->parentId, $model->id);
 $display = empty($childrenList) ? 'style="display:none;"' : '';
 
-$url = Url::to(['children-list']);
-$id = $model->id;
-$script = "
-    $('#input-parent-id').on('change', function(){
-        let parentId = $(this).val(),
-            childrenListContainer = $('#children-list-container'),
-            childrenList = $('#input-children-list'),
-            typeMove = $('#input-type-move');            
-        
-        if(parentId === '') {
-            childrenList.html(parentId);
-            childrenListContainer.hide();
-        } else {
-            $.ajax({
-                url: '{$url}',
-                dataType: 'json',
-                type: 'post',
-                data: {id: {$id}, parent: parentId}
-            }).done(function (response) {
-                childrenList.html(response.result);
-                if(response.result === '') {
-                    childrenListContainer.hide();
-                } else {                    
-                    childrenListContainer.show();
-                }
-            });
-        }     
-    });
-";
-
-$this->registerJs($script);
+$categoryAsset = new CategoryAsset([
+    'url' => Url::to(['children-list']),
+    'id' => $model->id
+]);
+$categoryAsset::register($this);
 ?>
 
 <div class="category-form-move">

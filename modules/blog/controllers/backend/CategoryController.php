@@ -93,7 +93,7 @@ class CategoryController extends Controller
             $model = $this->moveWithinNode($model);
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        $model->position = Category::POSITION_DEFAULT;
+        $model->position = $model->position ?: Category::POSITION_DEFAULT;
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -114,6 +114,7 @@ class CategoryController extends Controller
             Category::changeStatusChildren($model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
+        $model->position = $model->position ?: Category::POSITION_DEFAULT;
         return $this->render('update', [
             'model' => $model,
         ]);

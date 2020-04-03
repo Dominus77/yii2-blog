@@ -26,8 +26,8 @@ use modules\blog\models\Category;
 
     <?= $form->field($model, 'slug')->textInput([
         'maxlength' => true,
-        'placeholder' => Module::t('module', 'Automatically filled')
-    ]) ?>
+        'placeholder' => true
+    ])->hint(Module::t('module', 'If left blank, filled automatically based on the title')) ?>
 
     <?= $form->field($model, 'description')->textarea([
         'rows' => 6,

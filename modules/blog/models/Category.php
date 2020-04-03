@@ -33,6 +33,7 @@ use modules\blog\Module;
  * @property Post[] $posts
  * @property Category $parent
  * @property int $parentId
+ * @property Category[] $children
  */
 class Category extends BaseModel
 {
@@ -250,16 +251,17 @@ class Category extends BaseModel
     }
 
     /**
-     * @param int $nodeId
-     * @param int $unsetId
+     * @param integer|null $nodeId
+     * @param integer|null $unsetId
      * @return array
      */
-    public static function getChildrenList($nodeId = 1, $unsetId = 0)
+    public static function getChildrenList($nodeId = null, $unsetId = null)
     {
-        /** @var $node NestedSetsBehavior|Category */
-        if ($node = self::findOne(['id' => $nodeId])) {
+        if ($nodeId !== null && ($node = self::findOne(['id' => $nodeId]))) {
             $childrenArray = ArrayHelper::map($node->children, 'id', 'title');
-            unset($childrenArray[$unsetId]);
+            if ($unsetId !== null) {
+                unset($childrenArray[$unsetId]);
+            }
             return $childrenArray;
         }
         return [];
@@ -285,14 +287,14 @@ class Category extends BaseModel
 
     /**
      * Get a full tree as a list, except the node and its children
-     * @param int $nodeId node's ID
+     * @param integer|null $nodeId node's ID
      * @return array array of node
      */
-    public static function getTree($nodeId)
+    public static function getTree($nodeId = null)
     {
         // don't include children and the node
         $children = [];
-        if (!empty($nodeId)) {
+        if ($nodeId !== null) {
             /** @var $tree NestedSetsBehavior */
             $tree = self::findOne(['id' => $nodeId]);
             $children = ArrayHelper::merge(
