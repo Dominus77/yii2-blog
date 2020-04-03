@@ -143,8 +143,7 @@ class Post extends BaseModel
      */
     public function getAuthorName($userProfileName = true)
     {
-        /** @var User $author */
-        $author = $this->getAuthor();
+        $author = $this->author;
         $authorName = $author->username;
         if (($userProfileName === true) && $author->profile !== null) {
             $profile = $author->profile;
