@@ -34,4 +34,5 @@ return [
     'Before' => 'Перед',
     'After' => 'После',
     'Automatically filled' => 'Заполняется автоматически',
+    '- all -' => '- все -',
 ];

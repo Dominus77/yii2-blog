@@ -25,6 +25,11 @@ $this->params['breadcrumbs'][] = Module::t('module', 'Move');
                 'model' => $model,
             ]) ?>
         </div>
-        <div class="box-footer"></div>
+        <div class="box-footer">
+            <?= Html::submitButton('<span class="glyphicon glyphicon-random"></span> ' . Module::t('module', 'Move'), [
+                'class' => 'btn btn-success',
+                'form' => 'form-move'
+            ]) ?>
+        </div>
     </div>
 </div>

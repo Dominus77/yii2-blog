@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 use modules\blog\models\Category;
 use modules\blog\Module;
@@ -12,7 +13,7 @@ echo $this->render('_base');
 $this->params['breadcrumbs'] = Category::getBreadcrumbs($model->id, $this->params['breadcrumbs']);
 $this->params['breadcrumbs'][] = $model->title;
 
-\yii\web\YiiAsset::register($this);
+YiiAsset::register($this);
 ?>
 <div class="blog-backend-category-view">
     <div class="box">
@@ -30,17 +31,41 @@ $this->params['breadcrumbs'][] = $model->title;
                 'model' => $model,
                 'attributes' => [
                     'id',
-                    'tree',
-                    'lft',
-                    'rgt',
-                    'depth',
-                    'position',
+                    [
+                        'attribute' => 'tree',
+                        'value' => static function (Category $model) {
+                            return $model->getTreeName();
+                        }
+                    ],
                     'title',
                     'slug',
+                    [
+                        'attribute' => 'position',
+                        'value' => static function (Category $model) {
+                            return $model->isRoot() ? $model->position : '-';
+                        }
+                    ],
                     'description:ntext',
-                    'created_at:datetime',
-                    'updated_at:datetime',
-                    'status',
+                    [
+                        'attribute' => 'status',
+                        'format' => 'raw',
+                        'value' => static function (Category $model) {
+                            return $model->getStatusLabelName();
+                        }
+                    ],
+                    'depth',
+                    [
+                        'attribute' => 'created_at',
+                        'value' => static function (Category $model) {
+                            return Category::getFormatData($model->created_at);
+                        }
+                    ],
+                    [
+                        'attribute' => 'updated_at',
+                        'value' => static function (Category $model) {
+                            return Category::getFormatData($model->updated_at);
+                        }
+                    ]
                 ],
             ]) ?>
         </div>

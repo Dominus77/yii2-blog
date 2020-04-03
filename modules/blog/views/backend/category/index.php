@@ -40,31 +40,40 @@ echo $this->render('_base', ['link' => false]);
                 'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => SerialColumn::class],
-
-                    //'id',
-                    'tree',
-                    'lft',
-                    'rgt',
-                    'depth',
-                    //'title',
                     [
                         'attribute' => 'title',
                         'value' => static function (Category $model) {
                             return str_repeat('-', $model->depth) . ' ' . $model->title;
                         }
                     ],
-                    //'slug',
-                    //'description:ntext',
-                    'created_at:datetime',
-                    //'updated_at:datetime',
+                    'slug',
+                    [
+                        'attribute' => 'position',
+                        'value' => static function (Category $model) {
+                            return $model->isRoot() ? $model->position : '-';
+                        }
+                    ],
+                    [
+                        'attribute' => 'created_at',
+                        'value' => static function (Category $model) {
+                            return Category::getFormatData($model->created_at);
+                        }
+                    ],
                     [
                         'attribute' => 'status',
+                        'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [
+                            'class' => 'form-control',
+                            'prompt' => Module::t('module', '- all -'),
+                            'data' => [
+                                'pjax' => true,
+                            ],
+                        ]),
                         'format' => 'raw',
                         'value' => static function (Category $model) {
                             return $model->getStatusLabelName();
                         }
                     ],
-                    'position',
+                    'depth',
                     [
                         'class' => ActionColumn::class,
                         'contentOptions' => [

@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use modules\blog\Module;
@@ -48,7 +47,9 @@ $this->registerJs($script);
 
 <div class="category-form-move">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form-move'
+    ]); ?>
 
     <?= $form->field($model, 'parentId')->dropDownList(Category::getTree($model->id), [
         'id' => 'input-parent-id',
@@ -62,10 +63,6 @@ $this->registerJs($script);
         <?= $form->field($model, 'typeMove')->radioList(Category::getMoveTypesArray(), [
             'id' => 'input-type-move',
         ]) ?>
-    </div>
-
-    <div class="form-group">
-        <?= Html::submitButton(Module::t('module', 'Move'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

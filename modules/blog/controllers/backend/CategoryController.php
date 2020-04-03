@@ -4,6 +4,7 @@ namespace modules\blog\controllers\backend;
 
 
 use Yii;
+use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -92,7 +93,7 @@ class CategoryController extends Controller
             $model = $this->moveWithinNode($model);
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
+        $model->position = Category::POSITION_DEFAULT;
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -102,13 +103,15 @@ class CategoryController extends Controller
      * Updates an existing Category model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return string|Response
+     * @throws NotFoundHttpException
+     * @throws Exception
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->save()) {
+            Category::changeStatusChildren($model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('update', [

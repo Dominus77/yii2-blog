@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use modules\blog\Module;
 use modules\blog\models\Category;
@@ -12,7 +11,16 @@ use modules\blog\models\Category;
 
 <div class="category-form-update">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form-update'
+    ]); ?>
+
+    <?php if ($model->isRoot()) { ?>
+        <?= $form->field($model, 'position')->textInput([
+            'maxlength' => true,
+            'placeholder' => true
+        ]) ?>
+    <?php } ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -27,10 +35,6 @@ use modules\blog\models\Category;
     ]) ?>
 
     <?= $form->field($model, 'status')->dropDownList(Category::getStatusesArray()) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton(Module::t('module', 'Save'), ['class' => 'btn btn-success']) ?>
-    </div>
 
     <?php ActiveForm::end(); ?>
 

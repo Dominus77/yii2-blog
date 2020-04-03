@@ -2,6 +2,7 @@
 
 namespace modules\blog\models\query;
 
+use modules\blog\models\Category;
 use yii\db\ActiveQuery;
 use paulzi\nestedsets\NestedSetsQueryTrait;
 
@@ -13,4 +14,14 @@ use paulzi\nestedsets\NestedSetsQueryTrait;
 class CategoryQuery extends ActiveQuery
 {
     use NestedSetsQueryTrait;
+
+    /**
+     * @param bool $published
+     * @return CategoryQuery
+     */
+    public function published($published = true)
+    {
+        $status = $published === true ? Category::STATUS_PUBLISH : Category::STATUS_DRAFT;
+        return $this->andWhere(['status' => $status]);
+    }
 }

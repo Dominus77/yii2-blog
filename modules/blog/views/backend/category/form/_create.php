@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use modules\blog\Module;
@@ -15,6 +14,8 @@ $id = 0;
 $script = "
     $('#input-parent-id').on('change', function(){
         let parentId = $(this).val(),
+            positionContainer = $('#position-container'),
+            inputPosition = $('#input-position'),
             childrenListContainer = $('#children-list-container'),
             childrenList = $('#input-children-list'),
             typeMove = $('#input-type-move');            
@@ -22,7 +23,10 @@ $script = "
         if(parentId === '') {
             childrenList.html(parentId);
             childrenListContainer.hide();
+            positionContainer.show();
         } else {
+            inputPosition.val(0);
+            positionContainer.hide();
             $.ajax({
                 url: '{$url}',
                 dataType: 'json',
@@ -45,7 +49,9 @@ $this->registerJs($script);
 
 <div class="category-form-create">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'form-create'
+    ]); ?>
 
     <?= $form->field($model, 'parentId')->dropDownList(Category::getTree($model->id), [
         'id' => 'input-parent-id',
@@ -58,6 +64,14 @@ $this->registerJs($script);
         ]) ?>
         <?= $form->field($model, 'typeMove')->radioList(Category::getMoveTypesArray(), [
             'id' => 'input-type-move',
+        ]) ?>
+    </div>
+
+    <div id="position-container">
+        <?= $form->field($model, 'position')->textInput([
+            'id' => 'input-position',
+            'maxlength' => true,
+            'placeholder' => true
         ]) ?>
     </div>
 
@@ -78,10 +92,5 @@ $this->registerJs($script);
 
     <?= $form->field($model, 'status')->dropDownList(Category::getStatusesArray()) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton(Module::t('module', 'Save'), ['class' => 'btn btn-success']) ?>
-    </div>
-
     <?php ActiveForm::end(); ?>
-
 </div>

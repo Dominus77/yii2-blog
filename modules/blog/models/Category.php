@@ -3,16 +3,16 @@
 namespace modules\blog\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use paulzi\nestedsets\NestedSetsBehavior;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "{{%blog_category}}".
@@ -36,14 +36,15 @@ use yii\helpers\VarDumper;
  */
 class Category extends BaseModel
 {
+    use AutoTreeTrait;
+
     public $parentId;
     public $childrenList;
     public $typeMove;
 
     const TYPE_BEFORE = 'before';
     const TYPE_AFTER = 'after';
-
-    use AutoTreeTrait;
+    const POSITION_DEFAULT = 0;
 
     /**
      * {@inheritdoc}
@@ -115,7 +116,7 @@ class Category extends BaseModel
             ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
 
             ['position', 'integer'],
-            ['position', 'default', 'value' => 0],
+            ['position', 'default', 'value' => self::POSITION_DEFAULT],
 
             [['description'], 'string'],
             [['title', 'slug'], 'string', 'max' => 255],
@@ -166,13 +167,37 @@ class Category extends BaseModel
     }
 
     /**
-     * Get parent's node
-     * @return array|ActiveRecord|null
+     * @return bool
      */
-    /*public function getParent()
+    public function isPublished()
     {
-        return $this->parents(1)->one();
-    }*/
+        return $this->status === self::STATUS_PUBLISH;
+    }
+
+    /**
+     * Root name
+     * @return string
+     */
+    public function getTreeName()
+    {
+        $title = $this->title;
+        if ($root = $this->getRoot()->one()) {
+            $title = $root->title;
+        }
+        return $title;
+    }
+
+    /**
+     * Format Date
+     * @param integer $date
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public static function getFormatData($date)
+    {
+        $formatter = Yii::$app->formatter;
+        return $formatter->asDatetime($date, 'php:d-m-Y H:i:s');
+    }
 
     /**
      * Move types
@@ -204,6 +229,24 @@ class Category extends BaseModel
     {
         $next = $this->next;
         return $next ? $next->id : null;
+    }
+
+    /**
+     * Change status children node
+     * @param integer $nodeId
+     * @return bool
+     * @throws Exception
+     */
+    public static function changeStatusChildren($nodeId)
+    {
+        if ($node = self::findOne(['id' => $nodeId])) {
+            $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
+            $connection = Yii::$app->db;
+            $connection->createCommand()
+                ->update(self::tableName(), ['status' => $node->status], ['id' => $childrenId])
+                ->execute();
+        }
+        return true;
     }
 
     /**
