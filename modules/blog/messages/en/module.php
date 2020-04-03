@@ -5,6 +5,7 @@
 return [
     'Blog' => 'Blog',
     'Categories' => 'Categories',
+    'Category' => 'Category',
     'Create' => 'Create',
     'New Category' => 'New Category',
     'Save' => 'Save',
@@ -14,6 +15,9 @@ return [
     'View' => 'View',
     'Draft' => 'Draft',
     'Publish' => 'Publish',
+    'Are you sure you want to delete this item?' => 'Are you sure you want to delete this item?',
+    'Comment' => 'Comment',
+    'Comments' => 'Comments',
     // Category
     'ID' => 'ID',
     'Tree' => 'Tree',
@@ -35,4 +39,12 @@ return [
     'After' => 'After',
     'If left blank, filled automatically based on the title' => 'If left blank, filled automatically based on the title',
     '- all -' => '- all -',
+    // Post
+    'New Post' => 'New Post',
+    'Posts' => 'Posts',
+    'Post' => 'Post',
+    'Anons' => 'Anons',
+    'Content' => 'Content',
+    'Author' => 'Author',
+    'If left blank, filled automatically' => 'If left blank, filled automatically',
 ];

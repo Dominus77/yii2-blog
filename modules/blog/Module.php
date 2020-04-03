@@ -11,6 +11,12 @@ use yii\console\Application as ConsoleApplication;
  */
 class Module extends \yii\base\Module
 {
+    public $sizes = [10 => 10, 15 => 15, 20 => 20, 25 => 25, 50 => 50, 100 => 100, 200 => 200];
+
+    public $defaultPageSize = 25;
+
+    public static $name = 'blog';
+
     /**
      * @var string
      */

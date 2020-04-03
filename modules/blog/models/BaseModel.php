@@ -5,6 +5,7 @@ namespace modules\blog\models;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use modules\blog\traits\ModuleTrait;
 use modules\blog\Module;
 
 /**
@@ -13,6 +14,8 @@ use modules\blog\Module;
  */
 class BaseModel extends ActiveRecord
 {
+    use ModuleTrait;
+
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISH = 1;
 

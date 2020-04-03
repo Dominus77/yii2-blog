@@ -5,6 +5,7 @@
 return [
     'Blog' => 'Блог',
     'Categories' => 'Категории',
+    'Category' => 'Категория',
     'Create' => 'Создать',
     'New Category' => 'Новая категория',
     'Save' => 'Сохранить',
@@ -14,6 +15,9 @@ return [
     'View' => 'Просмотр',
     'Draft' => 'Черновик',
     'Publish' => 'Опубликовано',
+    'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
+    'Comment' => 'Комментарий',
+    'Comments' => 'Комментарии',
     // Category
     'ID' => 'ID',
     'Tree' => 'Дерево',
@@ -35,4 +39,12 @@ return [
     'After' => 'После',
     'If left blank, filled automatically based on the title' => 'Если оставить пустым, заполняется автоматически на основе заголовка',
     '- all -' => '- все -',
+    // Post
+    'New Post' => 'Новый пост',
+    'Posts' => 'Посты',
+    'Post' => 'Пост',
+    'Anons' => 'Анонс',
+    'Content' => 'Контент',
+    'Author' => 'Автор',
+    'If left blank, filled automatically' => 'Если оставить пустым, заполняется автоматически',
 ];

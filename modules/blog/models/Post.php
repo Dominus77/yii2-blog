@@ -6,7 +6,9 @@ use Yii;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii2tech\ar\position\PositionBehavior;
 use modules\users\models\User;
+use modules\blog\models\query\PostQuery;
 use modules\blog\Module;
 
 /**
@@ -22,13 +24,15 @@ use modules\blog\Module;
  * @property int $created_at Created
  * @property int $updated_at Updated
  * @property int $status Status
+ * @property int $position Position
  *
  * @property User $author
  * @property Category $category
- * @property TagPost[] $blogTagPosts
  */
 class Post extends BaseModel
 {
+    const POSITION_DEFAULT = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -51,6 +55,13 @@ class Post extends BaseModel
                 'attribute' => 'title',
                 'slugAttribute' => 'slug'
             ],
+            'positionBehavior' => [
+                'class' => PositionBehavior::class,
+                'positionAttribute' => 'position',
+                'groupAttributes' => [
+                    'category_id'
+                ],
+            ],
         ];
     }
 
@@ -65,7 +76,10 @@ class Post extends BaseModel
             [['category_id', 'author_id', 'status'], 'integer'],
             [['title', 'slug'], 'string', 'max' => 255],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']]
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
+
+            [['position', 'comment'], 'integer'],
+            ['position', 'default', 'value' => self::POSITION_DEFAULT]
         ];
     }
 
@@ -84,8 +98,18 @@ class Post extends BaseModel
             'author_id' => Module::t('module', 'Author'),
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
-            'status' => Module::t('module', 'Status')
+            'status' => Module::t('module', 'Status'),
+            'position' => Module::t('module', 'Position')
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return PostQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new PostQuery(static::class);
     }
 
     /**
@@ -110,5 +134,50 @@ class Post extends BaseModel
     public function getTagPosts()
     {
         return $this->hasMany(TagPost::class, ['post_id' => 'id']);
+    }
+
+    /**
+     * Author Profile Name
+     * @param bool $userProfileName
+     * @return string|integer
+     */
+    public function getAuthorName($userProfileName = true)
+    {
+        /** @var User $author */
+        $author = $this->getAuthor();
+        $authorName = $author->username;
+        if (($userProfileName === true) && $author->profile !== null) {
+            $profile = $author->profile;
+            $firstName = $profile->first_name ?: '';
+            $lastName = $profile->last_name ?: '';
+            $name = trim(trim($firstName) . ' ' . trim($lastName));
+            $authorName = !empty($name) ? $name : $authorName;
+        }
+        return $authorName ?: $this->author_id;
+    }
+
+    /**
+     * Get a full tree as a list, except the node and its children
+     * @param null $excludeNodeId
+     * @return array
+     */
+    public static function getCategoriesTree($excludeNodeId = null)
+    {
+        return Category::getTree($excludeNodeId);
+    }
+
+    /**
+     * @inheritDoc
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if ($insert && parent::beforeSave($insert)) {
+            $user = Yii::$app->user;
+            $this->author_id = $user->identity->id;
+            return true;
+        }
+        return false;
     }
 }

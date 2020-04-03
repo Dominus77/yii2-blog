@@ -28,9 +28,13 @@ class Bootstrap
         $urlManager = Yii::$app->urlManager;
         $urlManager->addRules(
             [
-                'blog/category' => 'blog/category/index',
+                'blog/categories' => 'blog/category/index',
                 'blog/category/<id:\d+>/<_a:[\w\-]+>' => 'blog/category/<_a>',
                 'blog/category/<_a:[\w\-]+>' => 'blog/category/<_a>',
+
+                'blog/posts' => 'blog/post/index',
+                'blog/post/<id:\d+>/<_a:[\w\-]+>' => 'blog/post/<_a>',
+                'blog/post/<_a:[\w\-]+>' => 'blog/post/<_a>',
 
                 'blog' => 'blog/default/index',
                 'blog/<id:\d+>/<_a:[\w\-]+>' => 'blog/default/<_a>',

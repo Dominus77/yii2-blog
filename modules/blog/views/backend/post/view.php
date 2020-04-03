@@ -3,19 +3,18 @@
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
-use modules\blog\models\Category;
+use modules\blog\models\Post;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $model Category */
+/* @var $model Post */
 
 echo $this->render('_base');
-$this->params['breadcrumbs'] = Category::getBreadcrumbs($model->id, $this->params['breadcrumbs']);
 $this->params['breadcrumbs'][] = $model->title;
 
 YiiAsset::register($this);
 ?>
-<div class="blog-backend-category-view">
+<div class="blog-backend-post-view">
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title"><?= Html::encode($model->title) ?></h3>
@@ -26,39 +25,20 @@ YiiAsset::register($this);
                 'model' => $model,
                 'attributes' => [
                     'id',
-                    [
-                        'attribute' => 'tree',
-                        'value' => static function (Category $model) {
-                            return $model->getTreeName();
-                        }
-                    ],
                     'title',
                     'slug',
-                    [
-                        'attribute' => 'position',
-                        'value' => static function (Category $model) {
-                            return $model->isRoot() ? $model->position : '-';
-                        }
-                    ],
-                    'description:ntext',
+                    'anons:ntext',
+                    'content:ntext',
+                    'category_id',
+                    'position',
+                    'author_id',
+                    'created_at:datetime',
+                    'updated_at:datetime',
                     [
                         'attribute' => 'status',
                         'format' => 'raw',
-                        'value' => static function (Category $model) {
+                        'value' => static function (Post $model) {
                             return $model->getStatusLabelName();
-                        }
-                    ],
-                    'depth',
-                    [
-                        'attribute' => 'created_at',
-                        'value' => static function (Category $model) {
-                            return Category::getFormatData($model->created_at);
-                        }
-                    ],
-                    [
-                        'attribute' => 'updated_at',
-                        'value' => static function (Category $model) {
-                            return Category::getFormatData($model->updated_at);
                         }
                     ]
                 ],
@@ -66,7 +46,6 @@ YiiAsset::register($this);
         </div>
         <div class="box-footer">
             <?= Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . Module::t('module', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<span class="glyphicon glyphicon-random"></span> ' . Module::t('module', 'Move'), ['move', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
             <?= Html::a('<span class="glyphicon glyphicon-trash"></span> ' . Module::t('module', 'Delete'), ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
                 'data' => [

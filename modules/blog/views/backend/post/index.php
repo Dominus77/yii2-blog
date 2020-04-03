@@ -5,27 +5,27 @@ use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
 use yii\widgets\LinkPager;
-use modules\blog\models\Category;
+use modules\blog\models\Post;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $searchModel modules\blog\models\search\CategorySearch */
+/* @var $searchModel modules\blog\models\search\PostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 echo $this->render('_base', ['link' => false]);
 ?>
-<div class="blog-backend-category-index">
+<div class="blog-backend-post-index">
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title"><?= Html::encode(Module::t('module', 'Categories')) ?></h3>
+            <h3 class="box-title"><?= Html::encode(Module::t('module', 'Posts')) ?></h3>
             <div class="box-tools pull-right"></div>
         </div>
         <div class="box-body">
             <div class="pull-left">
                 <?= common\widgets\PageSize::widget([
                     'label' => '',
-                    'defaultPageSize' => Category::getDefaultPageSize(),
-                    'sizes' => Category::getSizes(),
+                    'defaultPageSize' => Post::getDefaultPageSize(),
+                    'sizes' => Post::getSizes(),
                     'options' => [
                         'class' => 'form-control'
                     ]
@@ -44,7 +44,6 @@ echo $this->render('_base', ['link' => false]);
                     ]) ?>
                 </p>
             </div>
-
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -55,23 +54,25 @@ echo $this->render('_base', ['link' => false]);
                 ],
                 'columns' => [
                     ['class' => SerialColumn::class],
-                    [
-                        'attribute' => 'title',
-                        'value' => static function (Category $model) {
-                            return str_repeat('-', $model->depth) . ' ' . $model->title;
-                        }
-                    ],
+                    'title',
                     'slug',
                     [
-                        'attribute' => 'position',
-                        'value' => static function (Category $model) {
-                            return $model->isRoot() ? $model->position : '-';
+                        'attribute' => 'author_id',
+                        'value' => static function (Post $model) {
+                            return $model->getAuthorName();
                         }
                     ],
                     [
+                        'attribute' => 'category_id',
+                        'value' => static function (Post $model) {
+                            return $model->category->title;
+                        }
+                    ],
+                    'position',
+                    [
                         'attribute' => 'created_at',
-                        'value' => static function (Category $model) {
-                            return Category::getFormatData($model->created_at);
+                        'value' => static function (Post $model) {
+                            return Post::getFormatData($model->created_at);
                         }
                     ],
                     [
@@ -84,31 +85,18 @@ echo $this->render('_base', ['link' => false]);
                             ],
                         ]),
                         'format' => 'raw',
-                        'value' => static function (Category $model) {
+                        'value' => static function (Post $model) {
                             return $model->getStatusLabelName();
                         }
                     ],
-                    'depth',
                     [
                         'class' => ActionColumn::class,
                         'contentOptions' => [
                             'class' => 'action-column',
                             'style' => 'width: 90px'
                         ],
-                        'template' => '{view} {move} {update} {delete}',
-                        'buttons' => [
-                            'move' => static function ($url) {
-                                return Html::a('<span class="glyphicon glyphicon-random"></span>', $url, [
-                                    'title' => Module::t('module', 'Move'),
-                                    'data' => [
-                                        //'toggle' => 'tooltip',
-                                        'pjax' => 0,
-                                    ]
-                                ]);
-                            },
-                        ]
-                    ],
-                ],
+                    ]
+                ]
             ]) ?>
         </div>
         <div class="box-footer">

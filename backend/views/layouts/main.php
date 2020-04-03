@@ -194,8 +194,12 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_POST),
                     'items' => [
                         [
-                            'label' => '<span>' . BlogModule::t('module', 'Categories') . '</span>',
+                            'label' => BlogModule::t('module', 'Categories'),
                             'url' => ['/blog/category/index']
+                        ],
+                        [
+                            'label' => BlogModule::t('module', 'Posts'),
+                            'url' => ['/blog/post/index']
                         ],
                     ]
                 ],

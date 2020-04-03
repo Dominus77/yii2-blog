@@ -3,13 +3,12 @@
 namespace modules\blog\models;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
+use paulzi\nestedsets\NestedSetsBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
-use paulzi\nestedsets\NestedSetsBehavior;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
@@ -82,7 +81,7 @@ class Category extends BaseModel
      */
     public function getParents($depth = null)
     {
-        return $this->autoTreeCall('getParents', ['al', 'ns'], [$depth]);
+        return $this->autoTreeCall('getParents', ['ns'], [$depth]);
     }
 
     /**
@@ -189,18 +188,6 @@ class Category extends BaseModel
     }
 
     /**
-     * Format Date
-     * @param integer $date
-     * @return string
-     * @throws InvalidConfigException
-     */
-    public static function getFormatData($date)
-    {
-        $formatter = Yii::$app->formatter;
-        return $formatter->asDatetime($date, 'php:d-m-Y H:i:s');
-    }
-
-    /**
      * Move types
      * @return array
      */
@@ -287,22 +274,21 @@ class Category extends BaseModel
 
     /**
      * Get a full tree as a list, except the node and its children
-     * @param integer|null $nodeId node's ID
+     * @param integer|null $excludeNodeId node's ID
      * @return array array of node
      */
-    public static function getTree($nodeId = null)
+    public static function getTree($excludeNodeId = null)
     {
         // don't include children and the node
         $children = [];
-        if ($nodeId !== null) {
+        if ($excludeNodeId !== null) {
             /** @var $tree NestedSetsBehavior */
-            $tree = self::findOne(['id' => $nodeId]);
+            $tree = self::findOne(['id' => $excludeNodeId]);
             $children = ArrayHelper::merge(
                 $tree->getDescendants()->column(),
-                [$nodeId]
+                [$excludeNodeId]
             );
         }
-
         $rows = self::find()
             ->select('id, title, lft, depth')
             ->where(['NOT IN', 'id', $children])
@@ -314,7 +300,6 @@ class Category extends BaseModel
         foreach ($rows as $row) {
             $return[$row->id] = str_repeat('-', $row->depth) . ' ' . $row->title;
         }
-
         return $return;
     }
 }

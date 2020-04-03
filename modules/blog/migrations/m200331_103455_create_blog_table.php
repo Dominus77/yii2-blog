@@ -1,7 +1,6 @@
 <?php
 
 use yii\db\Migration;
-use yii\db\Schema;
 
 /**
  * Handles the creation of table `{{%blog}}`.
@@ -48,6 +47,7 @@ class m200331_103455_create_blog_table extends Migration
             'created_at' => $this->integer()->notNull()->comment('Created'),
             'updated_at' => $this->integer()->notNull()->comment('Updated'),
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
+            'position' => $this->integer()->notNull()->defaultValue(0)->comment('Position')
         ], $tableOptions);
 
         $this->createIndex('IDX_blog_post_author', '{{%blog_post}}', 'author_id');
