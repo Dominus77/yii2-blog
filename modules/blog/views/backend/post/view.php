@@ -37,8 +37,9 @@ YiiAsset::register($this);
                     ],
                     [
                         'attribute' => 'category_id',
+                        'format' => 'raw',
                         'value' => static function (Post $model) {
-                            return $model->getCategoryTitle();
+                            return $model->getCategoryTitlePath(false);
                         }
                     ],
                     'sort',

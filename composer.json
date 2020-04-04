@@ -27,7 +27,8 @@
         "dominus77/yii2-maintenance": "^1.0",
         "paulzi/yii2-auto-tree": "^1.1",
         "paulzi/yii2-nested-sets": "^1.1",
-        "yii2tech/ar-position": "^1.0"
+        "yii2tech/ar-position": "^1.0",
+        "2amigos/yii2-multi-select-widget": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

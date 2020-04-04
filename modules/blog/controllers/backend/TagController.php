@@ -12,7 +12,8 @@ use modules\blog\models\Tag;
 use modules\blog\models\search\TagSearch;
 
 /**
- * TagController implements the CRUD actions for Tag model.
+ * Class TagController
+ * @package modules\blog\controllers\backend
  */
 class TagController extends Controller
 {

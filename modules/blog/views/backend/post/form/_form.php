@@ -1,5 +1,6 @@
 <?php
 
+use dosamigos\multiselect\MultiSelect;
 use yii\widgets\ActiveForm;
 use modules\blog\models\Post;
 use modules\blog\Module;
@@ -40,14 +41,22 @@ use modules\blog\Module;
     ]) ?>
 
     <?= $form->field($model, 'content')->textarea([
-        'rows' => 6,
+        'rows' => 8,
         'placeholder' => true
     ]) ?>
 
-    <?= $form->field($model, 'tagsId')->listBox($model->getAllTagsArray(), [
+    <?= $form->field($model, 'tagsId')->widget(MultiSelect::class, [
+        'options' => ['multiple' => 'multiple'],
+        'data' => $model->getAllTagsArray(),
+        'clientOptions' => [
+            'nonSelectedText' => Module::t('module', 'not installed')
+        ]
+    ])->label(Module::t('module', 'Tags')) ?>
+
+    <?php /*= $form->field($model, 'tagsId')->listBox($model->getAllTagsArray(), [
             'multiple' => true
         ]
-    )->label(Module::t('module', 'Tags')) ?>
+    )->label(Module::t('module', 'Tags'))*/ ?>
 
     <?= $form->field($model, 'status')->dropDownList(Post::getStatusesArray()) ?>
 

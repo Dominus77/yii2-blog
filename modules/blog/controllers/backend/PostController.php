@@ -3,6 +3,7 @@
 namespace modules\blog\controllers\backend;
 
 use Yii;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -10,9 +11,12 @@ use yii\filters\VerbFilter;
 use modules\rbac\models\Permission;
 use modules\blog\models\Post;
 use modules\blog\models\search\PostSearch;
+use yii\web\Response;
+use Throwable;
 
 /**
- * PostController implements the CRUD actions for Post model.
+ * Class PostController
+ * @package modules\blog\controllers\backend
  */
 class PostController extends Controller
 {
@@ -110,8 +114,10 @@ class PostController extends Controller
      * Deletes an existing Post model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {

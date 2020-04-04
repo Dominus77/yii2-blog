@@ -53,4 +53,5 @@ return [
     'Tags' => 'Tags',
     'Tag' => 'Tag',
     'New Tag' => 'New Tag',
+    'not installed' => 'not installed',
 ];

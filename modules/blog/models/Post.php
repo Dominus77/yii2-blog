@@ -8,7 +8,10 @@ use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii2tech\ar\position\PositionBehavior;
+use modules\blog\models\query\TagQuery;
+use modules\users\models\UserProfile;
 use modules\users\models\User;
 use modules\blog\models\query\PostQuery;
 use modules\blog\Module;
@@ -44,6 +47,8 @@ class Post extends BaseModel
     protected $tagsId = [];
 
     public $currentTag;
+
+    public $authorName;
 
     /**
      * {@inheritdoc}
@@ -110,6 +115,7 @@ class Post extends BaseModel
             'content' => Module::t('module', 'Content'),
             'category_id' => Module::t('module', 'Category'),
             'author_id' => Module::t('module', 'Author'),
+            'authorName' => Module::t('module', 'Author'),
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
@@ -136,6 +142,11 @@ class Post extends BaseModel
         return $this->hasOne(User::class, ['id' => 'author_id']);
     }
 
+    public function getAuthorProfile()
+    {
+        return $this->hasOne(UserProfile::class, ['user_id' => 'id'])->via('author');
+    }
+
     /**
      * @return ActiveQuery
      */
@@ -153,12 +164,24 @@ class Post extends BaseModel
     }
 
     /**
-     * Published Tags to Post
+     * Tags to Post
      * @return ActiveQuery
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('tagPost');
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])
+            ->via('tagPost');
+    }
+
+    /**
+     * Published Tags to Post
+     * @return mixed
+     */
+    public function getTagsPublishedToPost()
+    {
+        /** @var $tags TagQuery */
+        $tags = $this->getTags();
+        return $tags->published()->all();
     }
 
     /**
@@ -188,7 +211,7 @@ class Post extends BaseModel
     public function getStringTagsToPost($string = true)
     {
         $items = [];
-        if (($tags = $this->tags) && $tags !== null) {
+        if (($tags = $this->getTagsPublishedToPost()) && $tags !== null) {
             foreach ($tags as $tag) {
                 $items[] = $tag->title;
             }
@@ -200,12 +223,26 @@ class Post extends BaseModel
 
     /**
      * Category Title
+     * @param bool $small
      * @return string
      */
-    public function getCategoryTitle()
+    public function getCategoryTitlePath($small = true)
     {
-        if ($this->category && $this->category !== null) {
-            return $this->category->title;
+        if ($this->category_id !== null && $this->category && $this->category !== null) {
+            $parentCategories = Category::getAllParents($this->category->id);
+            $str = '';
+            foreach ($parentCategories as $parent) {
+                $str .= $parent->title . '/';
+            }
+            if ($small === true) {
+                $result = Html::tag('span', $this->category->title, [
+                    'title' => $str . $this->category->title,
+                    'style' => 'cursor: help'
+                ]);
+            } else {
+                $result = $str . $this->category->title;
+            }
+            return $result;
         }
         return '-';
     }

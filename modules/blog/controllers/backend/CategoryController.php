@@ -17,7 +17,8 @@ use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
 
 /**
- * CategoryController implements the CRUD actions for Category model.
+ * Class CategoryController
+ * @package modules\blog\controllers\backend
  */
 class CategoryController extends Controller
 {

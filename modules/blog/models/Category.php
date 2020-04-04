@@ -6,6 +6,7 @@ use yii\data\ActiveDataProvider;
 use paulzi\nestedsets\NestedSetsBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
@@ -262,14 +263,23 @@ class Category extends BaseModel
      */
     public static function getBreadcrumbs($nodeId = 0, $breadcrumbs = [])
     {
+        $parents = self::getAllParents($nodeId);
+        foreach ($parents as $parent) {
+            $breadcrumbs[] = ['label' => $parent->title, 'url' => ['view', 'id' => $parent->id]];
+        }
+        return $breadcrumbs;
+    }
+
+    /**
+     * All Parents to node ID
+     * @param int $nodeId
+     * @return array|Category[]|Tag[]|ActiveRecord[]
+     */
+    public static function getAllParents($nodeId = 0)
+    {
         /** @var Category $node */
         $node = self::findOne(['id' => $nodeId]);
-        $parents = $node->getParents()->all();
-        $params = $breadcrumbs;
-        foreach ($parents as $parent) {
-            $params[] = ['label' => $parent->title, 'url' => ['view', 'id' => $parent->id]];
-        }
-        return $params;
+        return $node->getParents()->all();
     }
 
     /**

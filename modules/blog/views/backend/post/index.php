@@ -57,30 +57,38 @@ echo $this->render('_base', ['link' => false]);
                     'title',
                     'slug',
                     [
-                        'attribute' => 'author_id',
-                        'value' => static function (Post $model) {
-                            return $model->getAuthorName();
-                        }
-                    ],
-                    [
                         'attribute' => 'currentTag',
                         'value' => static function (Post $model) {
                             return $model->getStringTagsToPost();
                         }
                     ],
                     [
-                        'attribute' => 'category_id',
+                        'attribute' => 'authorName',
                         'value' => static function (Post $model) {
-                            return $model->getCategoryTitle();
+                            return $model->getAuthorName();
                         }
                     ],
-                    'sort',
                     [
                         'attribute' => 'created_at',
                         'value' => static function (Post $model) {
                             return Post::getFormatData($model->created_at);
                         }
                     ],
+                    [
+                        'attribute' => 'category_id',
+                        'filter' => Html::activeDropDownList($searchModel, 'category_id', Post::getCategoriesTree(), [
+                            'class' => 'form-control',
+                            'prompt' => Module::t('module', '- all -'),
+                            'data' => [
+                                'pjax' => true,
+                            ],
+                        ]),
+                        'format' => 'raw',
+                        'value' => static function (Post $model) {
+                            return $model->getCategoryTitlePath();
+                        }
+                    ],
+                    'sort',
                     [
                         'attribute' => 'status',
                         'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [

@@ -2,6 +2,8 @@
 
 namespace modules\blog\models\search;
 
+use modules\users\models\User;
+use modules\users\models\UserProfile;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use modules\blog\models\Post;
@@ -19,7 +21,7 @@ class PostSearch extends Post
     {
         return [
             [['id', 'category_id', 'author_id', 'created_at', 'updated_at', 'status', 'sort'], 'integer'],
-            [['title', 'slug', 'anons', 'content', 'currentTag'], 'safe'],
+            [['title', 'slug', 'anons', 'content', 'currentTag', 'authorName'], 'safe'],
         ];
     }
 
@@ -44,6 +46,8 @@ class PostSearch extends Post
 
         $query = Post::find();
         $query->joinWith(['tags']);
+        $query->joinWith(['author']);
+        $query->joinWith(['authorProfile']);
 
         // add conditions that should always apply here
 
@@ -58,6 +62,10 @@ class PostSearch extends Post
                     'title',
                     'slug',
                     'author_id',
+                    'authorName' => [
+                        'asc' => [UserProfile::tableName() . '.first_name' => SORT_ASC],
+                        'desc' => [UserProfile::tableName() . '.first_name' => SORT_DESC],
+                    ],
                     'currentTag' => [
                         'asc' => [Tag::tableName() . '.title' => SORT_ASC],
                         'desc' => [Tag::tableName() . '.title' => SORT_DESC],
@@ -95,7 +103,14 @@ class PostSearch extends Post
             ->andFilterWhere(['like', 'content', $this->content]);
 
         if (!empty($this->currentTag)) {
-            $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->currentTag)]);
+            $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->currentTag)])
+                ->andWhere([Tag::tableName() . '.status' => Tag::STATUS_PUBLISH]);
+        }
+
+        if (!empty($this->authorName)) {
+            $query->andFilterWhere(['like', User::tableName() . '.username', trim($this->authorName)]);
+            $query->orFilterWhere(['or like', UserProfile::tableName() . '.first_name', explode(' ', trim($this->authorName))]);
+            $query->orFilterWhere(['or like', UserProfile::tableName() . '.last_name', explode(' ', trim($this->authorName))]);
         }
 
         return $dataProvider;
