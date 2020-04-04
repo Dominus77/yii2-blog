@@ -255,12 +255,12 @@ class Post extends BaseModel
     public function getAuthorName($userProfileName = true)
     {
         $author = $this->author;
-        $authorName = $author->username;
+        $authorName = trim($author->username);
         if (($userProfileName === true) && $author->profile !== null) {
             $profile = $author->profile;
             $firstName = $profile->first_name ?: '';
             $lastName = $profile->last_name ?: '';
-            $name = trim(trim($firstName) . ' ' . trim($lastName));
+            $name = trim($firstName) . ' ' . trim($lastName);
             $authorName = !empty($name) ? $name : $authorName;
         }
         return $authorName ?: $this->author_id;
@@ -291,9 +291,9 @@ class Post extends BaseModel
      */
     public function afterSave($insert, $changedAttributes)
     {
-        TagPost::deleteAll(['post_id' => $this->id]);
-        $values = [];
         if (is_array($this->tagsId)) {
+            TagPost::deleteAll(['post_id' => $this->id]);
+            $values = [];
             foreach ($this->tagsId as $id) {
                 $values[] = [$this->id, $id];
             }
