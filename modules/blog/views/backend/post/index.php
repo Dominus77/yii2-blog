@@ -56,7 +56,13 @@ BlogAsset::register($this);
                     'class' => 'table table-bordered table-hover',
                 ],
                 'columns' => [
-                    ['class' => SerialColumn::class],
+                    [
+                        'class' => SerialColumn::class,
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 50px'
+                        ]
+                    ],
                     'title',
                     'slug',
                     [
@@ -73,9 +79,24 @@ BlogAsset::register($this);
                     ],
                     [
                         'attribute' => 'created_at',
-                        'value' => static function (Post $model) {
-                            return Post::getFormatData($model->created_at);
-                        }
+                        'filter' => kartik\date\DatePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'date_from',
+                            'attribute2' => 'date_to',
+                            'type' => kartik\date\DatePicker::TYPE_RANGE,
+                            'separator' => '-',
+                            'pluginOptions' => [
+                                'todayHighlight' => true,
+                                'weekStart' => 1,
+                                'autoclose' => true,
+                                'format' => 'yyyy-mm-dd'
+                            ],
+                        ]),
+                        'format' => ['date', 'YYYY-MM-dd HH:mm:ss'],
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 250px'
+                        ]
                     ],
                     [
                         'attribute' => 'category_id',
@@ -83,29 +104,39 @@ BlogAsset::register($this);
                             'class' => 'form-control',
                             'prompt' => Module::t('module', '- all -'),
                             'data' => [
-                                'pjax' => true,
-                            ],
+                                'pjax' => true
+                            ]
                         ]),
                         'format' => 'raw',
                         'value' => static function (Post $model) {
                             return $model->getCategoryTitlePath();
                         }
                     ],
-                    'sort',
+                    [
+                        'attribute' => 'sort',
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 80px'
+                        ]
+                    ],
                     [
                         'attribute' => 'status',
                         'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [
                             'class' => 'form-control',
                             'prompt' => Module::t('module', '- all -'),
                             'data' => [
-                                'pjax' => true,
-                            ],
+                                'pjax' => true
+                            ]
                         ]),
                         'format' => 'raw',
                         'value' => static function (Post $model) {
                             $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
-                        }
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 140px'
+                        ],
                     ],
                     [
                         'class' => ActionColumn::class,

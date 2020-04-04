@@ -95,7 +95,6 @@ class PostSearch extends Post
             'id' => $this->id,
             'category_id' => $this->category_id,
             'author_id' => $this->author_id,
-            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
             'sort' => $this->sort,
@@ -106,8 +105,8 @@ class PostSearch extends Post
             ->andFilterWhere(['like', 'anons', $this->anons])
             ->andFilterWhere(['like', 'content', $this->content]);
 
-        $query->andFilterWhere(['>=', 'created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
-            ->andFilterWhere(['<=', 'created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
+        $query->andFilterWhere(['>=', Post::tableName() . '.created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
+            ->andFilterWhere(['<=', Post::tableName() . '.created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
 
         if (!empty($this->currentTag)) {
             $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->currentTag)])

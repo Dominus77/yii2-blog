@@ -54,7 +54,13 @@ echo $this->render('_base', ['link' => false]);
                     'class' => 'table table-bordered table-hover',
                 ],
                 'columns' => [
-                    ['class' => SerialColumn::class],
+                    [
+                        'class' => SerialColumn::class,
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 50px'
+                        ]
+                    ],
                     [
                         'attribute' => 'title',
                         'value' => static function (Category $model) {
@@ -66,13 +72,32 @@ echo $this->render('_base', ['link' => false]);
                         'attribute' => 'position',
                         'value' => static function (Category $model) {
                             return $model->isRoot() ? $model->position : '-';
-                        }
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 80px'
+                        ],
                     ],
                     [
                         'attribute' => 'created_at',
-                        'value' => static function (Category $model) {
-                            return Category::getFormatData($model->created_at);
-                        }
+                        'filter' => kartik\date\DatePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'date_from',
+                            'attribute2' => 'date_to',
+                            'type' => kartik\date\DatePicker::TYPE_RANGE,
+                            'separator' => '-',
+                            'pluginOptions' => [
+                                'todayHighlight' => true,
+                                'weekStart' => 1,
+                                'autoclose' => true,
+                                'format' => 'yyyy-mm-dd',
+                            ],
+                        ]),
+                        'format' => ['date', 'YYYY-MM-dd HH:mm:ss'],
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 250px'
+                        ],
                     ],
                     [
                         'attribute' => 'status',
@@ -87,9 +112,19 @@ echo $this->render('_base', ['link' => false]);
                         'value' => static function (Category $model) {
                             $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
-                        }
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 140px'
+                        ],
                     ],
-                    'depth',
+                    [
+                        'attribute' => 'depth',
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 80px'
+                        ],
+                    ],
                     [
                         'class' => ActionColumn::class,
                         'contentOptions' => [

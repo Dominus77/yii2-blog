@@ -53,13 +53,34 @@ echo $this->render('_base', ['link' => false]);
                     'class' => 'table table-bordered table-hover',
                 ],
                 'columns' => [
-                    ['class' => SerialColumn::class],
+                    [
+                        'class' => SerialColumn::class,
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 50px'
+                        ]
+                    ],
                     'title',
                     [
                         'attribute' => 'created_at',
-                        'value' => static function (Tag $model) {
-                            return Tag::getFormatData($model->created_at);
-                        }
+                        'filter' => kartik\date\DatePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'date_from',
+                            'attribute2' => 'date_to',
+                            'type' => kartik\date\DatePicker::TYPE_RANGE,
+                            'separator' => '-',
+                            'pluginOptions' => [
+                                'todayHighlight' => true,
+                                'weekStart' => 1,
+                                'autoclose' => true,
+                                'format' => 'yyyy-mm-dd',
+                            ],
+                        ]),
+                        'format' => ['date', 'YYYY-MM-dd HH:mm:ss'],
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 250px'
+                        ]
                     ],
                     [
                         'attribute' => 'status',
@@ -68,13 +89,17 @@ echo $this->render('_base', ['link' => false]);
                             'prompt' => Module::t('module', '- all -'),
                             'data' => [
                                 'pjax' => true,
-                            ],
+                            ]
                         ]),
                         'format' => 'raw',
                         'value' => static function (Tag $model) {
                             $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
-                        }
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 140px'
+                        ],
                     ],
                     ['class' => ActionColumn::class],
                 ],

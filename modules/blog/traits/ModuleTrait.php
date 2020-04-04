@@ -42,7 +42,7 @@ trait ModuleTrait
     public static function getFormatData($date)
     {
         $formatter = Yii::$app->formatter;
-        return $formatter->asDatetime($date, 'php:d-m-Y H:i:s');
+        return $formatter->asDatetime($date, 'php:Y-m-d H:i:s');
     }
 
     /**

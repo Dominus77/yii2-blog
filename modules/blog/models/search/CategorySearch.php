@@ -11,6 +11,9 @@ use modules\blog\models\Category;
  */
 class CategorySearch extends Category
 {
+    public $date_from;
+    public $date_to;
+
     /**
      * {@inheritdoc}
      */
@@ -18,6 +21,7 @@ class CategorySearch extends Category
     {
         return [
             [['id', 'tree', 'lft', 'rgt', 'depth', 'position', 'created_at', 'updated_at', 'status'], 'integer'],
+            [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
             [['title', 'slug', 'description'], 'safe'],
         ];
     }
@@ -74,7 +78,6 @@ class CategorySearch extends Category
             'rgt' => $this->rgt,
             'depth' => $this->depth,
             'position' => $this->position,
-            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
         ]);
@@ -82,6 +85,9 @@ class CategorySearch extends Category
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'slug', $this->slug])
             ->andFilterWhere(['like', 'description', $this->description]);
+
+        $query->andFilterWhere(['>=', 'created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
+            ->andFilterWhere(['<=', 'created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
 
         return $dataProvider;
     }
