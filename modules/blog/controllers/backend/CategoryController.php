@@ -180,6 +180,23 @@ class CategoryController extends Controller
     }
 
     /**
+     * Change status
+     * @param integer $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionChangeStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Category::SCENARIO_SET_STATUS;
+        $model->setStatus();
+        if ($model->save(false)) {
+            Category::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
      * Deletes an existing Category model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

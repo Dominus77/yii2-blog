@@ -54,4 +54,6 @@ return [
     'Tag' => 'Tag',
     'New Tag' => 'New Tag',
     'not installed' => 'not installed',
+    'Click to change status to draft' => 'Click to change status to draft',
+    'Click to change status to publish' => 'Click to change status to publish',
 ];

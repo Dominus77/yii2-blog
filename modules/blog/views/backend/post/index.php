@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
 use yii\widgets\LinkPager;
+use modules\blog\assets\BlogAsset;
 use modules\blog\models\Post;
 use modules\blog\Module;
 
@@ -13,6 +14,8 @@ use modules\blog\Module;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 echo $this->render('_base', ['link' => false]);
+
+BlogAsset::register($this);
 ?>
 <div class="blog-backend-post-index">
     <div class="box">
@@ -100,7 +103,8 @@ echo $this->render('_base', ['link' => false]);
                         ]),
                         'format' => 'raw',
                         'value' => static function (Post $model) {
-                            return $model->getStatusLabelName();
+                            $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
+                            return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
                         }
                     ],
                     [

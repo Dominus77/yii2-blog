@@ -2,7 +2,9 @@
 
 namespace modules\blog\controllers\backend;
 
+use Throwable;
 use Yii;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -10,6 +12,7 @@ use yii\filters\VerbFilter;
 use modules\rbac\models\Permission;
 use modules\blog\models\Tag;
 use modules\blog\models\search\TagSearch;
+use yii\web\Response;
 
 /**
  * Class TagController
@@ -108,11 +111,28 @@ class TagController extends Controller
     }
 
     /**
+     * Change status
+     * @param integer $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionChangeStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Tag::SCENARIO_SET_STATUS;
+        $model->setStatus();
+        $model->save(false);
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
      * Deletes an existing Tag model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {

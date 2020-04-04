@@ -11,6 +11,17 @@ use modules\blog\Module;
 /**
  * Class BaseModel
  * @package modules\blog\models
+ * @property int $id [int(11)]  ID
+ * @property string $title [varchar(255)]  Title
+ * @property string $slug [varchar(255)]  Alias
+ * @property string $anons Anons
+ * @property string $content Content
+ * @property int $category_id [int(11)]  Category
+ * @property int $author_id [int(11)]  Author
+ * @property int $created_at [int(11)]  Created
+ * @property int $updated_at [int(11)]  Updated
+ * @property int $status [smallint(6)]  Status
+ * @property int $sort [int(11)]  Sort
  */
 class BaseModel extends ActiveRecord
 {
@@ -18,8 +29,15 @@ class BaseModel extends ActiveRecord
 
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISH = 1;
+    const SCENARIO_SET_STATUS = 'setStatus';
 
-    //public $status;
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return '{{%blog_post}}';
+    }
 
     /**
      * Statuses
@@ -60,6 +78,14 @@ class BaseModel extends ActiveRecord
     {
         $name = ArrayHelper::getValue(self::getLabelsArray(), $this->status);
         return Html::tag('span', $this->getStatusName(), ['class' => 'label label-' . $name]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsPublish()
+    {
+        return $this->status === static::STATUS_PUBLISH;
     }
 
     /**

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
+use modules\blog\assets\BlogAsset;
 use modules\blog\models\Post;
 use modules\blog\Module;
 
@@ -13,6 +14,7 @@ echo $this->render('_base');
 $this->params['breadcrumbs'][] = $model->title;
 
 YiiAsset::register($this);
+BlogAsset::register($this);
 ?>
 <div class="blog-backend-post-view">
     <div class="box">
@@ -65,7 +67,8 @@ YiiAsset::register($this);
                         'attribute' => 'status',
                         'format' => 'raw',
                         'value' => static function (Post $model) {
-                            return $model->getStatusLabelName();
+                            $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
+                            return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
                         }
                     ]
                 ],

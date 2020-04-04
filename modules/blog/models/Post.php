@@ -17,7 +17,8 @@ use modules\blog\models\query\PostQuery;
 use modules\blog\Module;
 
 /**
- * This is the model class for table "{{%blog_post}}".
+ * Class Post
+ * @package modules\blog\models
  *
  * @property int $id ID
  * @property string $title Title
@@ -45,18 +46,10 @@ class Post extends BaseModel
      * @var array
      */
     protected $tagsId = [];
-
+    /** @var string */
     public $currentTag;
-
+    /** @var string */
     public $authorName;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return '{{%blog_post}}';
-    }
 
     /**
      * {@inheritdoc}
@@ -234,13 +227,16 @@ class Post extends BaseModel
             foreach ($parentCategories as $parent) {
                 $str .= $parent->title . '/';
             }
+            $options = [
+                'class' => $this->category->isPublish ? 'publish' : 'draft'
+            ];
             if ($small === true) {
-                $result = Html::tag('span', $this->category->title, [
+                $result = Html::tag('span', $this->category->title, ArrayHelper::merge([
                     'title' => $str . $this->category->title,
                     'style' => 'cursor: help'
-                ]);
+                ], $options));
             } else {
-                $result = $str . $this->category->title;
+                $result = Html::tag('span', $str . $this->category->title, ArrayHelper::merge([], $options));
             }
             return $result;
         }
@@ -291,7 +287,7 @@ class Post extends BaseModel
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if (is_array($this->tagsId)) {
+        if ($this->scenario !== self::SCENARIO_SET_STATUS && is_array($this->tagsId)) {
             TagPost::deleteAll(['post_id' => $this->id]);
             $values = [];
             foreach ($this->tagsId as $id) {

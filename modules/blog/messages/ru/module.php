@@ -54,4 +54,6 @@ return [
     'Tag' => 'Тег',
     'New Tag' => 'Новый тег',
     'not installed' => 'не установлены',
+    'Click to change status to draft' => 'Клик что бы сменить статус на черновик',
+    'Click to change status to publish' => 'Клик что бы сменить статус на опубликовано',
 ];

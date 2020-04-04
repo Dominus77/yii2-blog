@@ -111,6 +111,21 @@ class PostController extends Controller
     }
 
     /**
+     * Change status
+     * @param integer $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionChangeStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Post::SCENARIO_SET_STATUS;
+        $model->setStatus();
+        $model->save(false);
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
      * Deletes an existing Post model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

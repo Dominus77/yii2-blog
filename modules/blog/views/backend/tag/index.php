@@ -72,7 +72,8 @@ echo $this->render('_base', ['link' => false]);
                         ]),
                         'format' => 'raw',
                         'value' => static function (Tag $model) {
-                            return $model->getStatusLabelName();
+                            $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
+                            return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
                         }
                     ],
                     ['class' => ActionColumn::class],

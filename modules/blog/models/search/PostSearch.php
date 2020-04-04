@@ -14,6 +14,9 @@ use modules\blog\models\Tag;
  */
 class PostSearch extends Post
 {
+    public $date_from;
+    public $date_to;
+
     /**
      * {@inheritdoc}
      */
@@ -21,6 +24,7 @@ class PostSearch extends Post
     {
         return [
             [['id', 'category_id', 'author_id', 'created_at', 'updated_at', 'status', 'sort'], 'integer'],
+            [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
             [['title', 'slug', 'anons', 'content', 'currentTag', 'authorName'], 'safe'],
         ];
     }
@@ -101,6 +105,9 @@ class PostSearch extends Post
             ->andFilterWhere(['like', 'slug', $this->slug])
             ->andFilterWhere(['like', 'anons', $this->anons])
             ->andFilterWhere(['like', 'content', $this->content]);
+
+        $query->andFilterWhere(['>=', 'created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
+            ->andFilterWhere(['<=', 'created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
 
         if (!empty($this->currentTag)) {
             $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->currentTag)])
