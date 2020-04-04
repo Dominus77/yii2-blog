@@ -3,18 +3,18 @@
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
-use modules\blog\models\Post;
+use modules\blog\models\Tag;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $model Post */
+/* @var $model modules\blog\models\Tag */
 
 echo $this->render('_base');
 $this->params['breadcrumbs'][] = $model->title;
 
 YiiAsset::register($this);
 ?>
-<div class="blog-backend-post-view">
+<div class="blog-backend-tag-view">
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title"><?= Html::encode($model->title) ?></h3>
@@ -26,44 +26,22 @@ YiiAsset::register($this);
                 'attributes' => [
                     'id',
                     'title',
-                    'slug',
-                    'anons:ntext',
-                    'content:ntext',
-                    [
-                        'attribute' => 'currentTag',
-                        'value' => static function (Post $model) {
-                            return $model->getStringTagsToPost();
-                        }
-                    ],
-                    [
-                        'attribute' => 'category_id',
-                        'value' => static function (Post $model) {
-                            return $model->getCategoryTitle();
-                        }
-                    ],
-                    'sort',
-                    [
-                        'attribute' => 'author_id',
-                        'value' => static function (Post $model) {
-                            return $model->getAuthorName();
-                        }
-                    ],
                     [
                         'attribute' => 'created_at',
-                        'value' => static function (Post $model) {
-                            return Post::getFormatData($model->created_at);
+                        'value' => static function (Tag $model) {
+                            return Tag::getFormatData($model->created_at);
                         }
                     ],
                     [
                         'attribute' => 'updated_at',
-                        'value' => static function (Post $model) {
-                            return Post::getFormatData($model->updated_at);
+                        'value' => static function (Tag $model) {
+                            return Tag::getFormatData($model->updated_at);
                         }
                     ],
                     [
                         'attribute' => 'status',
                         'format' => 'raw',
-                        'value' => static function (Post $model) {
+                        'value' => static function (Tag $model) {
                             return $model->getStatusLabelName();
                         }
                     ]

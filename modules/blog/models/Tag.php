@@ -2,9 +2,9 @@
 
 namespace modules\blog\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
+use modules\blog\models\query\TagQuery;
 use modules\blog\Module;
 
 /**
@@ -16,9 +16,10 @@ use modules\blog\Module;
  * @property int $updated_at Updated
  * @property int $status Status
  *
- * @property TagPost[] $blogTagPosts
+ * @property TagPost[] $tagPost
+ * @property Post[] $posts
  */
-class Tags extends BaseModel
+class Tag extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -47,7 +48,7 @@ class Tags extends BaseModel
     {
         return [
             [['title'], 'required'],
-            [['created_at', 'updated_at', 'status'], 'integer'],
+            [['status'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -67,10 +68,28 @@ class Tags extends BaseModel
     }
 
     /**
+     * {@inheritdoc}
+     * @return TagQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new TagQuery(static::class);
+    }
+
+    /**
      * @return ActiveQuery
      */
-    public function getTagPosts()
+    public function getTagPost()
     {
         return $this->hasMany(TagPost::class, ['tag_id' => 'id']);
+    }
+
+    /**
+     * Posts to tag
+     * @return ActiveQuery
+     */
+    public function getPosts()
+    {
+        return $this->hasMany(Post::class, ['id' => 'post_id'])->via('tagPost');
     }
 }

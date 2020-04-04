@@ -26,7 +26,7 @@ $categoryAsset::register($this);
         'id' => 'form-move'
     ]); ?>
 
-    <?= $form->field($model, 'parentId')->dropDownList(Category::getTree($model->id), [
+    <?= $form->field($model, 'parentId')->dropDownList(Category::getCategoriesTree($model->id), [
         'id' => 'input-parent-id',
         'prompt' => Module::t('module', 'No Parent (saved as root)'),
     ])->label(Module::t('module', 'Parent')) ?>

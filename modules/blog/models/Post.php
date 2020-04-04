@@ -6,6 +6,8 @@ use Yii;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 use yii2tech\ar\position\PositionBehavior;
 use modules\users\models\User;
 use modules\blog\models\query\PostQuery;
@@ -24,14 +26,24 @@ use modules\blog\Module;
  * @property int $created_at Created
  * @property int $updated_at Updated
  * @property int $status Status
- * @property int $position Position
+ * @property int $sort Position
  *
  * @property User $author
  * @property Category $category
+ * @property TagPost[] $tagPost
+ * @property Tag[] $tags
  */
 class Post extends BaseModel
 {
     const POSITION_DEFAULT = 0;
+
+    /**
+     * Список ID тэгов, закреплённых за постом.
+     * @var array
+     */
+    protected $tagsId = [];
+
+    public $currentTag;
 
     /**
      * {@inheritdoc}
@@ -57,7 +69,7 @@ class Post extends BaseModel
             ],
             'positionBehavior' => [
                 'class' => PositionBehavior::class,
-                'positionAttribute' => 'position',
+                'positionAttribute' => 'sort',
                 'groupAttributes' => [
                     'category_id'
                 ],
@@ -78,8 +90,10 @@ class Post extends BaseModel
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
 
-            [['position', 'comment'], 'integer'],
-            ['position', 'default', 'value' => self::POSITION_DEFAULT]
+            [['sort'], 'integer'],
+            ['sort', 'default', 'value' => self::POSITION_DEFAULT],
+
+            [['tagsId'], 'safe']
         ];
     }
 
@@ -99,7 +113,9 @@ class Post extends BaseModel
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
-            'position' => Module::t('module', 'Position')
+            'sort' => Module::t('module', 'Sort'),
+            'tags' => Module::t('module', 'Tags'),
+            'currentTag' => Module::t('module', 'Tags'),
         ];
     }
 
@@ -131,9 +147,67 @@ class Post extends BaseModel
     /**
      * @return ActiveQuery
      */
-    public function getTagPosts()
+    public function getTagPost()
     {
         return $this->hasMany(TagPost::class, ['post_id' => 'id']);
+    }
+
+    /**
+     * Published Tags to Post
+     * @return ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('tagPost');
+    }
+
+    /**
+     * Возвращает массив идентификаторов тэгов.
+     */
+    public function getTagsId()
+    {
+        return ArrayHelper::getColumn($this->tags, 'id');
+    }
+
+    /**
+     * All Tags Array
+     * @param bool|null $published
+     * @return array
+     */
+    public function getAllTagsArray($published = true)
+    {
+        $tags = ($published === null) ? Tag::find()->all() : Tag::find()->published($published)->all();
+        return ArrayHelper::map($tags, 'id', 'title');
+    }
+
+    /**
+     * Tags to string|array this post
+     * @param bool $string
+     * @return array|string
+     */
+    public function getStringTagsToPost($string = true)
+    {
+        $items = [];
+        if (($tags = $this->tags) && $tags !== null) {
+            foreach ($tags as $tag) {
+                $items[] = $tag->title;
+            }
+        }
+        $itemsString = implode(', ', $items);
+        $itemsString = !empty($itemsString) ? $itemsString : '-';
+        return $string === true ? $itemsString : $items;
+    }
+
+    /**
+     * Category Title
+     * @return string
+     */
+    public function getCategoryTitle()
+    {
+        if ($this->category && $this->category !== null) {
+            return $this->category->title;
+        }
+        return '-';
     }
 
     /**
@@ -156,27 +230,39 @@ class Post extends BaseModel
     }
 
     /**
-     * Get a full tree as a list, except the node and its children
-     * @param null $excludeNodeId
-     * @return array
-     */
-    public static function getCategoriesTree($excludeNodeId = null)
-    {
-        return Category::getTree($excludeNodeId);
-    }
-
-    /**
      * @inheritDoc
      * @param bool $insert
      * @return bool
      */
     public function beforeSave($insert)
     {
-        if ($insert && parent::beforeSave($insert)) {
-            $user = Yii::$app->user;
-            $this->author_id = $user->identity->id;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $user = Yii::$app->user;
+                $this->author_id = $user->identity->id;
+            }
             return true;
         }
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @throws Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        TagPost::deleteAll(['post_id' => $this->id]);
+        $values = [];
+        if (is_array($this->tagsId)) {
+            foreach ($this->tagsId as $id) {
+                $values[] = [$this->id, $id];
+            }
+            self::getDb()->createCommand()
+                ->batchInsert(TagPost::tableName(), ['post_id', 'tag_id'], $values)->execute();
+        }
+        parent::afterSave($insert, $changedAttributes);
     }
 }

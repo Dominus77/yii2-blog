@@ -43,8 +43,14 @@ return [
     'New Post' => 'New Post',
     'Posts' => 'Posts',
     'Post' => 'Post',
+    '- No Category -' => '- No Category -',
     'Anons' => 'Anons',
     'Content' => 'Content',
     'Author' => 'Author',
+    'Sort' => 'Sort',
     'If left blank, filled automatically' => 'If left blank, filled automatically',
+    // Tag
+    'Tags' => 'Tags',
+    'Tag' => 'Tag',
+    'New Tag' => 'New Tag',
 ];

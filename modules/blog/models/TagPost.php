@@ -2,7 +2,6 @@
 
 namespace modules\blog\models;
 
-use Yii;
 use yii\db\ActiveRecord;
 use yii\db\ActiveQuery;
 use modules\blog\Module;
@@ -14,7 +13,7 @@ use modules\blog\Module;
  * @property int $post_id ID Post
  *
  * @property Post $post
- * @property Tags $tag
+ * @property Tag $tag
  */
 class TagPost extends ActiveRecord
 {
@@ -35,7 +34,7 @@ class TagPost extends ActiveRecord
             [['tag_id', 'post_id'], 'required'],
             [['tag_id', 'post_id'], 'integer'],
             [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => Post::class, 'targetAttribute' => ['post_id' => 'id']],
-            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tags::class, 'targetAttribute' => ['tag_id' => 'id']]
+            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tag_id' => 'id']]
         ];
     }
 
@@ -63,6 +62,6 @@ class TagPost extends ActiveRecord
      */
     public function getTag()
     {
-        return $this->hasOne(Tags::class, ['id' => 'tag_id']);
+        return $this->hasOne(Tag::class, ['id' => 'tag_id']);
     }
 }

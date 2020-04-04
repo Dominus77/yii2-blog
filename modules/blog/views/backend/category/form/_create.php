@@ -22,7 +22,7 @@ $categoryAsset::register($this);
         'id' => 'form-create'
     ]); ?>
 
-    <?= $form->field($model, 'parentId')->dropDownList(Category::getTree(), [
+    <?= $form->field($model, 'parentId')->dropDownList(Category::getCategoriesTree(), [
         'id' => 'input-parent-id',
         'prompt' => Module::t('module', 'No Parent (saved as root)'),
     ])->label(Module::t('module', 'Parent')) ?>

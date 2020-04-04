@@ -36,6 +36,10 @@ class Bootstrap
                 'blog/post/<id:\d+>/<_a:[\w\-]+>' => 'blog/post/<_a>',
                 'blog/post/<_a:[\w\-]+>' => 'blog/post/<_a>',
 
+                'blog/tags' => 'blog/tag/index',
+                'blog/tag/<id:\d+>/<_a:[\w\-]+>' => 'blog/tag/<_a>',
+                'blog/tag/<_a:[\w\-]+>' => 'blog/tag/<_a>',
+
                 'blog' => 'blog/default/index',
                 'blog/<id:\d+>/<_a:[\w\-]+>' => 'blog/default/<_a>',
                 'blog/<_a:[\w\-]+>' => 'blog/default/<_a>',

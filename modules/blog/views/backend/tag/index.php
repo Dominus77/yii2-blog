@@ -2,30 +2,30 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
+use yii\grid\SerialColumn;
 use yii\widgets\LinkPager;
-use modules\blog\models\Post;
+use modules\blog\models\Tag;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $searchModel modules\blog\models\search\PostSearch */
+/* @var $searchModel modules\blog\models\search\TagSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 echo $this->render('_base', ['link' => false]);
 ?>
-<div class="blog-backend-post-index">
+<div class="blog-backend-tag-index">
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title"><?= Html::encode(Module::t('module', 'Posts')) ?></h3>
+            <h3 class="box-title"><?= Html::encode(Module::t('module', 'Tags')) ?></h3>
             <div class="box-tools pull-right"></div>
         </div>
         <div class="box-body">
             <div class="pull-left">
                 <?= common\widgets\PageSize::widget([
                     'label' => '',
-                    'defaultPageSize' => Post::getDefaultPageSize(),
-                    'sizes' => Post::getSizes(),
+                    'defaultPageSize' => Tag::getDefaultPageSize(),
+                    'sizes' => Tag::getSizes(),
                     'options' => [
                         'class' => 'form-control'
                     ]
@@ -55,30 +55,10 @@ echo $this->render('_base', ['link' => false]);
                 'columns' => [
                     ['class' => SerialColumn::class],
                     'title',
-                    'slug',
-                    [
-                        'attribute' => 'author_id',
-                        'value' => static function (Post $model) {
-                            return $model->getAuthorName();
-                        }
-                    ],
-                    [
-                        'attribute' => 'currentTag',
-                        'value' => static function (Post $model) {
-                            return $model->getStringTagsToPost();
-                        }
-                    ],
-                    [
-                        'attribute' => 'category_id',
-                        'value' => static function (Post $model) {
-                            return $model->getCategoryTitle();
-                        }
-                    ],
-                    'sort',
                     [
                         'attribute' => 'created_at',
-                        'value' => static function (Post $model) {
-                            return Post::getFormatData($model->created_at);
+                        'value' => static function (Tag $model) {
+                            return Tag::getFormatData($model->created_at);
                         }
                     ],
                     [
@@ -91,18 +71,12 @@ echo $this->render('_base', ['link' => false]);
                             ],
                         ]),
                         'format' => 'raw',
-                        'value' => static function (Post $model) {
+                        'value' => static function (Tag $model) {
                             return $model->getStatusLabelName();
                         }
                     ],
-                    [
-                        'class' => ActionColumn::class,
-                        'contentOptions' => [
-                            'class' => 'action-column',
-                            'style' => 'width: 90px'
-                        ],
-                    ]
-                ]
+                    ['class' => ActionColumn::class],
+                ],
             ]) ?>
         </div>
         <div class="box-footer">

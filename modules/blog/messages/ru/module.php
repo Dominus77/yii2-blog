@@ -43,8 +43,14 @@ return [
     'New Post' => 'Новый пост',
     'Posts' => 'Посты',
     'Post' => 'Пост',
+    '- No Category -' => '- Без категории -',
     'Anons' => 'Анонс',
     'Content' => 'Контент',
     'Author' => 'Автор',
+    'Sort' => 'Позиция',
     'If left blank, filled automatically' => 'Если оставить пустым, заполняется автоматически',
+    // Tag
+    'Tags' => 'Теги',
+    'Tag' => 'Тег',
+    'New Tag' => 'Новый тег',
 ];

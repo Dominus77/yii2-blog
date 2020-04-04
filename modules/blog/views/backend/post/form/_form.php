@@ -16,9 +16,10 @@ use modules\blog\Module;
 
     <?= $form->field($model, 'category_id')->dropDownList(Post::getCategoriesTree(), [
         'id' => 'input-category-id',
+        'prompt' => Module::t('module', '- No Category -'),
     ]) ?>
 
-    <?= $form->field($model, 'position')->textInput([
+    <?= $form->field($model, 'sort')->textInput([
         'maxlength' => true,
         'placeholder' => true
     ])->hint(Module::t('module', 'If left blank, filled automatically')) ?>
@@ -42,6 +43,11 @@ use modules\blog\Module;
         'rows' => 6,
         'placeholder' => true
     ]) ?>
+
+    <?= $form->field($model, 'tagsId')->listBox($model->getAllTagsArray(), [
+            'multiple' => true
+        ]
+    )->label(Module::t('module', 'Tags')) ?>
 
     <?= $form->field($model, 'status')->dropDownList(Post::getStatusesArray()) ?>
 

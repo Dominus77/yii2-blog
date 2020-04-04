@@ -2,12 +2,10 @@
 
 namespace modules\blog\models;
 
-use Yii;
-use yii\db\ActiveQuery;
+use yii\data\ActiveDataProvider;
 use paulzi\nestedsets\NestedSetsBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
-use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
@@ -149,11 +147,17 @@ class Category extends BaseModel
     }
 
     /**
-     * @return ActiveQuery
+     * Возвращает список постов принадлежащих категории.
+     * @return ActiveDataProvider
      */
     public function getPosts()
     {
-        return $this->hasMany(Post::class, ['category_id' => 'id']);
+        return new ActiveDataProvider([
+            'query' => $this->hasMany(Post::class, ['category_id' => 'id'])
+                ->where([
+                    'status' => Post::STATUS_PUBLISH
+                ])
+        ]);
     }
 
     /**
@@ -222,19 +226,15 @@ class Category extends BaseModel
     /**
      * Change status children node
      * @param integer $nodeId
-     * @return bool
-     * @throws Exception
+     * @return bool|int
      */
     public static function changeStatusChildren($nodeId)
     {
         if ($node = self::findOne(['id' => $nodeId])) {
             $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
-            $connection = Yii::$app->db;
-            $connection->createCommand()
-                ->update(self::tableName(), ['status' => $node->status], ['id' => $childrenId])
-                ->execute();
+            return self::updateAll(['status' => $node->status], ['id' => $childrenId]);
         }
-        return true;
+        return false;
     }
 
     /**
