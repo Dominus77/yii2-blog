@@ -3,9 +3,12 @@
 namespace modules\blog\controllers\frontend;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use modules\main\Module;
+use modules\blog\behaviors\CategoryTreeBehavior;
+use modules\blog\models\Category;
 
 /**
  * Class DefaultController
@@ -19,6 +22,37 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $category = new Category();
+        return $this->render('index', ['category' => $category]);
+    }
+
+    /**
+     * @param $category
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionCategory($category)
+    {
+        $model = $this->findModel($category);
+        return $this->render('category', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Finds the Category model based on its path value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param $path string
+     * @return array|ActiveRecord|null
+     * @throws NotFoundHttpException
+     */
+    protected function findModel($path)
+    {
+        /** @var Category|CategoryTreeBehavior $model */
+        $model = new Category();
+        if (($category = $model->findByPath($path)) && $category !== null) {
+            return $category;
+        }
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

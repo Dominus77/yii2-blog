@@ -1,15 +1,15 @@
 <?php
 
 use yii\helpers\Html;
+use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $model modules\blog\models\Category */
+/* @var $model Category|CategoryTreeBehavior */
 
 echo $this->render('_base');
-$this->params['breadcrumbs'] = Category::getBreadcrumbs($model->id, $this->params['breadcrumbs']);
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs'], true);
 $this->params['breadcrumbs'][] = Module::t('module', 'Move');
 ?>
 <div class="blog-backend-category-move">

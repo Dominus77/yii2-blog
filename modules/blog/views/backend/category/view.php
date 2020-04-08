@@ -3,15 +3,15 @@
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
+use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\Module;
 
 /* @var $this yii\web\View */
-/* @var $model Category */
+/* @var $model Category|CategoryTreeBehavior */
 
 echo $this->render('_base');
-$this->params['breadcrumbs'] = Category::getBreadcrumbs($model->id, $this->params['breadcrumbs']);
-$this->params['breadcrumbs'][] = $model->title;
+$this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs']);
 
 YiiAsset::register($this);
 ?>

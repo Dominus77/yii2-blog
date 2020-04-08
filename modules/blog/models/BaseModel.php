@@ -31,6 +31,8 @@ class BaseModel extends ActiveRecord
     const STATUS_PUBLISH = 1;
     const SCENARIO_SET_STATUS = 'setStatus';
 
+    protected $urlPrefix = '';
+
     /**
      * {@inheritdoc}
      */

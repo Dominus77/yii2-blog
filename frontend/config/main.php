@@ -17,6 +17,7 @@ use dominus77\maintenance\states\FileState;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\controllers\frontend\MaintenanceController;
 use modules\rbac\models\Permission;
+use modules\blog\url\BlogUrlManager;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -140,6 +141,7 @@ return [
             'errorAction' => 'frontend/error'
         ],
         'urlManager' => [
+            'class' => BlogUrlManager::class,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => true,

@@ -41,6 +41,7 @@ class Bootstrap
                 'blog/tag/<_a:[\w\-]+>' => 'blog/tag/<_a>',
 
                 'blog' => 'blog/default/index',
+                'blog/<category:[\w_\/-]+>' => 'blog/default/category',
                 'blog/<id:\d+>/<_a:[\w\-]+>' => 'blog/default/<_a>',
                 'blog/<_a:[\w\-]+>' => 'blog/default/<_a>',
             ]

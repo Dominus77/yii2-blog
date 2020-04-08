@@ -30,7 +30,7 @@ trait ModuleTrait
      */
     public static function getCategoriesTree($excludeNodeId = null)
     {
-        return Category::getTree($excludeNodeId);
+        return Category::getFullTree($excludeNodeId);
     }
 
     /**
