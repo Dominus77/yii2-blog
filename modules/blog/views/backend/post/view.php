@@ -32,9 +32,9 @@ BlogAsset::register($this);
                     'anons:ntext',
                     'content:ntext',
                     [
-                        'attribute' => 'currentTag',
+                        'attribute' => 'tagNames',
                         'value' => static function (Post $model) {
-                            return $model->getStringTagsToPost();
+                            return $model->getStringTagsToPost(true, false, '-');
                         }
                     ],
                     [

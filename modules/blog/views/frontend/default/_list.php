@@ -15,11 +15,6 @@ use modules\blog\Module;
         <div class="info">
             <span class="glyphicon glyphicon-calendar"></span> <?= Yii::$app->formatter->asDatetime($model->created_at) ?>
             <span class="glyphicon glyphicon-user"></span> <?= $model->getAuthorName() ?>
-            <?php if (($category = $model->category) && $category !== null) { ?>
-                <noindex>
-                    <span class="glyphicon glyphicon-folder-open"></span> <?= Html::a($category->title, [$category->url], ['rel' => 'nofollow']) ?>
-                </noindex>
-            <?php } ?>
         </div>
     </div>
     <div class="body">
@@ -29,7 +24,12 @@ use modules\blog\Module;
     </div>
     <div class="footer">
         <div class="info">
-            <?php if ($tags = $model->getLinkTagsToPost()) { ?>
+            <?php if (($category = $model->category) && $category !== null) { ?>
+                <noindex>
+                    <span class="glyphicon glyphicon-folder-open"></span> <?= Html::a($category->title, [$category->url], ['rel' => 'nofollow']) ?>
+                </noindex>
+            <?php } ?>
+            <?php if ($tags = $model->getStringTagsToPost(true, true)) { ?>
                 <noindex>
                     <span class="glyphicon glyphicon-tags"></span> <?= Module::t('module', 'Tags') ?>: <?= $tags ?>
                 </noindex>

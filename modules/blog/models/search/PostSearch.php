@@ -11,11 +11,16 @@ use modules\blog\models\Tag;
 
 /**
  * PostSearch represents the model behind the search form of `modules\blog\models\Post`.
+ *
+ * @property string $date_from
+ * @property string $date_to
+ * @property string $tagNames
  */
 class PostSearch extends Post
 {
     public $date_from;
     public $date_to;
+    public $tagNames;
 
     /**
      * {@inheritdoc}
@@ -25,7 +30,7 @@ class PostSearch extends Post
         return [
             [['id', 'category_id', 'author_id', 'created_at', 'updated_at', 'status', 'sort'], 'integer'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
-            [['title', 'slug', 'anons', 'content', 'currentTag', 'authorName'], 'safe'],
+            [['title', 'slug', 'anons', 'content', 'tagNames', 'authorName'], 'safe'],
         ];
     }
 
@@ -47,7 +52,6 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-
         $query = Post::find();
         $query->joinWith(['tags']);
         $query->joinWith(['author']);
@@ -70,7 +74,7 @@ class PostSearch extends Post
                         'asc' => [UserProfile::tableName() . '.first_name' => SORT_ASC],
                         'desc' => [UserProfile::tableName() . '.first_name' => SORT_DESC],
                     ],
-                    'currentTag' => [
+                    'tagNames' => [
                         'asc' => [Tag::tableName() . '.title' => SORT_ASC],
                         'desc' => [Tag::tableName() . '.title' => SORT_DESC],
                     ],
@@ -83,7 +87,6 @@ class PostSearch extends Post
         ]);
 
         $this->load($params);
-
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -108,8 +111,8 @@ class PostSearch extends Post
         $query->andFilterWhere(['>=', Post::tableName() . '.created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
             ->andFilterWhere(['<=', Post::tableName() . '.created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
 
-        if (!empty($this->currentTag)) {
-            $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->currentTag)])
+        if (!empty($this->tagNames)) {
+            $query->andFilterWhere(['or like', Tag::tableName() . '.title', self::formatStringToArray($this->tagNames)])
                 ->andWhere([Tag::tableName() . '.status' => Tag::STATUS_PUBLISH]);
         }
 
@@ -127,10 +130,14 @@ class PostSearch extends Post
      * @param string $delimiter
      * @return array
      */
+    /**
+     * @param string $str
+     * @param string $delimiter
+     * @return array|string|string[]
+     */
     public static function formatStringToArray($str = '', $delimiter = ',')
     {
-        $str = trim($str);
-        $str = str_replace(' ', '', $str);
+        $str = str_replace(' ', '', trim($str));
         return explode($delimiter, $str);
     }
 }

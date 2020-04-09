@@ -46,8 +46,6 @@ class Post extends BaseModel
     const POSITION_DEFAULT = 0;
 
     /** @var string */
-    public $currentTag;
-    /** @var string */
     public $authorName;
     /** @var string */
     private $_url;
@@ -95,8 +93,7 @@ class Post extends BaseModel
 
             [['sort'], 'integer'],
             ['sort', 'default', 'value' => self::POSITION_DEFAULT],
-
-            [['tagsId', 'tagNames'], 'safe']
+            [['tagNames'], 'safe']
         ];
     }
 
@@ -118,8 +115,7 @@ class Post extends BaseModel
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
             'sort' => Module::t('module', 'Sort'),
-            'tagNames' => Module::t('module', 'Tags'),
-            'currentTag' => Module::t('module', 'Tags'),
+            'tagNames' => Module::t('module', 'Tags')
         ];
     }
 
@@ -189,7 +185,8 @@ class Post extends BaseModel
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable(TagPost::tableName(), ['post_id' => 'id']);
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])
+            ->viaTable(TagPost::tableName(), ['post_id' => 'id']);
     }
 
     /**
@@ -217,20 +214,12 @@ class Post extends BaseModel
      * @return array|Tag[]|ActiveRecord[]
      * @throws InvalidConfigException
      */
-    public function getTagsPublishedToPost()
+    public function getTagsPublished()
     {
         /** @var $tags TagQuery */
         $tags = $this->getTags();
         return $tags->published()->all();
     }
-
-    /**
-     * Возвращает массив идентификаторов тэгов.
-     */
-    /*public function getTagsId()
-    {
-        return ArrayHelper::getColumn($this->tags, 'id');
-    }*/
 
     /**
      * All Tags Array
@@ -245,36 +234,25 @@ class Post extends BaseModel
 
     /**
      * Tags to string|array this post
-     * @param bool $string
+     * @param bool $string if false return to array('id'=> 'title') tags, else return string title
+     * @param bool $link if false return to string title, else return link
+     * @param string $emptyString if no string tags return $emptyString
      * @return array|string
      * @throws InvalidConfigException
      */
-    public function getStringTagsToPost($string = true)
+    public function getStringTagsToPost($string = true, $link = false, $emptyString = '')
     {
         $items = [];
-        if (($tags = $this->getTagsPublishedToPost()) && $tags !== null) {
+        if (($tags = $this->getTagsPublished()) && $tags !== null) {
             foreach ($tags as $tag) {
-                $items[] = $tag->title;
+                $items[$tag->id] = $link === false ?
+                    $tag->title :
+                    Html::a($tag->title, ['default/tag', 'tag' => $tag->title], ['rel' => 'nofollow']);
             }
         }
         $itemsString = implode(', ', $items);
-        $itemsString = !empty($itemsString) ? $itemsString : '-';
+        $itemsString = !empty($itemsString) ? $itemsString : $emptyString;
         return $string === true ? $itemsString : $items;
-    }
-
-    /**
-     * Tags link to string|array this post
-     * @return string
-     * @throws InvalidConfigException
-     */
-    public function getLinkTagsToPost()
-    {
-        $tags = $this->getTagsPublishedToPost();
-        $linkTags = '';
-        foreach ($tags as $tag) {
-            $linkTags .= Html::a($tag->title, ['default/tag', 'tag' => $tag->title], ['rel' => 'nofollow']) . ', ';
-        }
-        return rtrim($linkTags, ' ,');
     }
 
     /**
@@ -291,7 +269,7 @@ class Post extends BaseModel
                 $str .= $parent->title . '/';
             }
             $options = [
-                'class' => $this->category->isPublish ? 'publish' : 'draft'
+                'class' => $this->category->isPublished() ? 'publish' : 'draft'
             ];
             if ($small === true) {
                 $result = Html::tag('span', $this->category->title, ArrayHelper::merge([

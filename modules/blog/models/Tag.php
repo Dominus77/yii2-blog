@@ -144,17 +144,25 @@ class Tag extends BaseModel
     /**
      * Возвращает теги вместе с их весом
      * @param int $limit число возвращаемых тегов
+     * @param bool $published если true то только для тегов имеющих статус "опубликовано"
      * @return array вес с индексом равным имени тега
      * @throws Exception
      */
-    public function findTagWeights($limit = 20)
+    public function findTagWeights($limit = 20, $published = true)
     {
         $tags = [];
-        $models = self::find()->limit($limit)->all();
+        $compare = '';
+        $query = self::find();
+        if ($published === true) {
+            $query->published();
+            $compare = ' WHERE status=' . self::STATUS_PUBLISH;
+        }
+        $models = $query->limit($limit)->all();
         $sizeRange = self::MAX_FONT_SIZE - self::MIN_FONT_SIZE;
 
-        $minCount = log(Yii::$app->db->createCommand('SELECT MIN(frequency) FROM ' . self::tableName())->queryScalar() + 1);
-        $maxCount = log(Yii::$app->db->createCommand('SELECT MAX(frequency) FROM ' . self::tableName())->queryScalar() + 1);
+        $minCount = log(Yii::$app->db->createCommand('SELECT MIN(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
+        $maxCount = log(Yii::$app->db->createCommand('SELECT MAX(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
+
         $countRange = $maxCount - $minCount;
 
         foreach ($models as $model) {
