@@ -58,7 +58,7 @@ return [
     'Use commas to separate tags' => 'Use commas to separate tags',
     'Click to change status to draft' => 'Click to change status to draft',
     'Click to change status to publish' => 'Click to change status to publish',
-    'Entries tagged "{:tag}"' => 'Entries tagged "{:tag}"',
+    'Entries tagged &laquo;{:tag}&raquo;' => 'Entries tagged &laquo;{:tag}&raquo;',
     // Menu
     'Menu' => 'Menu',
 ];

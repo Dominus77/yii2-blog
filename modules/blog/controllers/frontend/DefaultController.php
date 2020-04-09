@@ -2,7 +2,6 @@
 
 namespace modules\blog\controllers\frontend;
 
-use modules\blog\models\Tag;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\web\Controller;
@@ -11,6 +10,7 @@ use yii\web\Response;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\models\Post;
+use modules\blog\models\Tag;
 
 /**
  * Class DefaultController
@@ -24,13 +24,9 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $category = new Category();
-        $model = new Post();
-        $tags = new Tag();
+        $dataProvider = (new Post())->posts;
         return $this->render('index', [
-            'category' => $category,
-            'dataProvider' => $model->posts,
-            'tags' => $tags
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -42,10 +38,8 @@ class DefaultController extends Controller
     public function actionCategory($category)
     {
         $model = $this->findCategoryModel($category);
-        $tags = new Tag();
         return $this->render('category', [
             'model' => $model,
-            'tags' => $tags
         ]);
     }
 
@@ -57,10 +51,8 @@ class DefaultController extends Controller
     public function actionPost($post)
     {
         $post = $this->findPostModel($post);
-        $tags = new Tag();
         return $this->render('post', [
-            'model' => $post,
-            'tags' => $tags
+            'model' => $post
         ]);
     }
 
@@ -71,13 +63,9 @@ class DefaultController extends Controller
      */
     public function actionTag($tag)
     {
-        $category = new Category();
         $dataProvider = $this->findPostsModelsByTag($tag);
-        $tags = new Tag();
         return $this->render('index', [
-            'category' => $category,
             'dataProvider' => $dataProvider,
-            'tags' => $tags
         ]);
     }
 

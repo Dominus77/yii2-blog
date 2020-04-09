@@ -58,7 +58,7 @@ return [
     'Use commas to separate tags' => 'Используйте запятые для разделения меток',
     'Click to change status to draft' => 'Клик что бы сменить статус на черновик',
     'Click to change status to publish' => 'Клик что бы сменить статус на опубликовано',
-    'Entries tagged "{:tag}"' => 'Записи с меткой "{:tag}"',
+    'Entries tagged &laquo;{:tag}&raquo;' => 'Записи с меткой &laquo;{:tag}&raquo;',
     // Menu
     'Menu' => 'Меню',
 ];

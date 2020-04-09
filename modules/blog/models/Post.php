@@ -40,6 +40,7 @@ use modules\blog\Module;
  * @property Category $category
  * @property TagPost[] $tagPost
  * @property Tag[] $tags
+ * @property ActiveDataProvider $posts
  */
 class Post extends BaseModel
 {

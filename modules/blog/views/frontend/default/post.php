@@ -2,15 +2,13 @@
 
 use yii\web\View;
 use yii\helpers\Html;
-use yii\widgets\Menu;
 use modules\blog\models\Post;
-use modules\blog\models\Tag;
+use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
 use modules\blog\Module;
 
 /** @var $this View */
 /** @var $model Post */
-/** @var $tags Tag */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['index']];
@@ -22,33 +20,10 @@ $this->params['breadcrumbs'][] = $model->title;
 <div class="blog-frontend-default-post">
     <div class="row">
         <div class="col-md-3">
-            <?php if ($category !== null) { ?>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?= Module::t('module', 'Menu') ?>
-                    </div>
-                    <div class="panel-body">
-                        <?= Menu::widget([
-                            'options' => ['class' => 'menu'],
-                            'encodeLabels' => false,
-                            'activateParents' => true,
-                            'items' => array_filter($category->getMenuItems())
-                        ]) ?>
-                    </div>
-                </div>
-            <?php } ?>
-
+            <?= CategoryMenu::widget() ?>
             <noindex>
-                <div class="tag-cloud panel panel-default">
-                    <div class="panel-heading">
-                        <?= Module::t('module', 'Tags') ?>
-                    </div>
-                    <div class="panel-body">
-                        <?= TagCloud::widget(['limit' => 50]) ?>
-                    </div>
-                </div>
+                <?= TagCloud::widget(['limit' => 50]) ?>
             </noindex>
-
         </div>
         <div class="col-md-9">
 
