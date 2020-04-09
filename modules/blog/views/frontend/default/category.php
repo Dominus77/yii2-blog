@@ -1,34 +1,60 @@
 <?php
 
 use yii\web\View;
-use yii\helpers\Html;
+use yii\widgets\Menu;
+use yii\widgets\ListView;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
+use modules\blog\models\Tag;
+use modules\blog\widgets\tag\TagCloud;
 use modules\blog\Module;
-use yii\helpers\VarDumper;
-use yii\widgets\Menu;
 
-/* @var $this View */
+/** @var $this View */
 /** @var $model Category|CategoryTreeBehavior */
+/** @var $tags Tag */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['index']];
 $this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs']);
-//VarDumper::dump($model->asJsTree(), 10, 1);
 ?>
 
 <div class="blog-frontend-default-category">
-    <h1><?= Html::decode($this->title) ?></h1>
+    <div class="row">
+        <div class="col-md-3">
+            <?php if (($items = $model->getMenuItems()) && !empty($items)) { ?>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <?= Module::t('module', 'Menu') ?>
+                    </div>
+                    <div class="panel-body">
+                        <?= Menu::widget([
+                            'options' => ['class' => 'menu'],
+                            'encodeLabels' => false,
+                            'activateParents' => true,
+                            'items' => array_filter($items)
+                        ]) ?>
+                    </div>
+                </div>
+            <?php } ?>
 
-    <?= Menu::widget([
-        'items' => $model->getMenuItems()
-    ]) ?>
+            <noindex>
+                <div class="tag-cloud panel panel-default">
+                    <div class="panel-heading">
+                        <?= Module::t('module', 'Tags') ?>
+                    </div>
+                    <div class="panel-body">
+                        <?= TagCloud::widget(['limit' => 50]) ?>
+                    </div>
+                </div>
+            </noindex>
 
-    <?php
-    VarDumper::dump($model->getUrl(), 10, 1);
-    VarDumper::dump($model->title, 10, 1);
-    VarDumper::dump($model->description, 10, 1);
-    //VarDumper::dump($model->getBreadcrumbs(), 10, 1);
-    ?>
-
+        </div>
+        <div class="col-md-9">
+            <?= ListView::widget([
+                'dataProvider' => $model->posts,
+                'layout' => "{items}\n{pager}",
+                'itemView' => '_list'
+            ]) ?>
+        </div>
+    </div>
 </div>

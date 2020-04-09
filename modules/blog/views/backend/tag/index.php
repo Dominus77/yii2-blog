@@ -61,6 +61,7 @@ echo $this->render('_base', ['link' => false]);
                         ]
                     ],
                     'title',
+                    'frequency',
                     [
                         'attribute' => 'created_at',
                         'filter' => kartik\date\DatePicker::widget([

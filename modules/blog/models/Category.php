@@ -12,10 +12,8 @@ use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
-use yii\helpers\Html;
 use yii\helpers\Url;
 use modules\blog\behaviors\CategoryTreeBehavior;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "{{%blog_category}}".
@@ -40,6 +38,7 @@ use yii\helpers\VarDumper;
  *
  * @property string $path
  * @property string $url
+ * @property bool $linkActive
  */
 class Category extends BaseModel
 {
@@ -189,8 +188,25 @@ class Category extends BaseModel
             'query' => $this->hasMany(Post::class, ['category_id' => 'id'])
                 ->where([
                     'status' => Post::STATUS_PUBLISH
-                ])
+                ]),
+            'pagination' => [
+                'pageSize' => self::PAGE_SIZE,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                    'sort' => SORT_ASC,
+                ]
+            ],
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->linkActive;
     }
 
     /**
@@ -332,80 +348,5 @@ class Category extends BaseModel
             $return[$row->id] = str_repeat('-', $row->depth) . ' ' . $row->title;
         }
         return $return;
-    }
-
-
-    public $depthStart = 0;
-    public $_tree = true;
-
-    /**
-     * @return Category[]|array|bool
-     */
-    protected function getData()
-    {
-        $cache = Yii::$app->cache;
-        $this->_key = [__CLASS__, __METHOD__, $this->_tree, $this->depthStart];
-
-        $depthStart = $this->depthStart;
-        $_tree = $this->_tree;
-        return $cache->getOrSet($this->_key, static function () use ($depthStart, $_tree) {
-            $query = static::find()
-                ->where(['status' => self::STATUS_PUBLISH])
-                ->andWhere('depth >=' . $depthStart);
-            if ($_tree === true) {
-                $query->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC]);
-            } else {
-                $query->orderBy(['lft' => SORT_ASC]);
-            }
-            return $query->all();
-        }, static::CACHE_DURATION);
-    }
-
-    public function getRenderTree()
-    {
-        $array = [];
-        if ($query = $this->getData()) {
-            $depth = $this->depthStart;
-            $i = 0;
-            $array[] = Html::beginTag('ul') . PHP_EOL;
-            foreach ($query as $n => $category) {
-                if ($category->depth === $depth) {
-                    $array[] = $i ? Html::endTag('li') . PHP_EOL : '';
-
-                } else if ($category->depth > $depth) {
-                    $array[] = Html::beginTag('ul') . PHP_EOL;
-                } else {
-                    $array[] = Html::endTag('li') . PHP_EOL;
-                    for ($i = $depth - $category->depth; $i; $i--) {
-                        $array[] = Html::endTag('ul') . PHP_EOL;
-                        $array[] = Html::endTag('li') . PHP_EOL;
-                    }
-                }
-                $array[] = Html::beginTag('li') . PHP_EOL;
-                $array[] = $this->getItem($category) . PHP_EOL;
-                $depth = $category->depth;
-                $i++;
-            }
-            $correct = $this->depthStart > 1 ? 1 : 0;
-            for ($i = $depth - $correct; $i; $i--) {
-                $array[] = Html::endTag('li') . PHP_EOL;
-                $array[] = Html::endTag('ul') . PHP_EOL;
-            }
-            $array[] = $this->depthStart === 0 ? Html::endTag('li') . PHP_EOL : '';
-            $array[] = $this->depthStart === 0 ? Html::endTag('ul') . PHP_EOL : '';
-        }
-        return $array;
-    }
-
-    /**
-     * @param $data
-     * @return string
-     */
-    public function getItem($data)
-    {
-        if (Yii::$app->request->get('category') === $data->path) {
-            return '<strong>' . $data->title . '</strong>';
-        }
-        return Html::a($data->title, [$data->url]);
     }
 }

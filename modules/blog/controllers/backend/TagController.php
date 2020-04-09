@@ -142,6 +142,21 @@ class TagController extends Controller
     }
 
     /**
+     * @param $query
+     * @return array
+     */
+    public function actionList($query)
+    {
+        $models = Tag::findAllByName($query);
+        $items = [];
+        foreach ($models as $model) {
+            $items[] = ['name' => $model->title];
+        }
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $items;
+    }
+
+    /**
      * Finds the Tag model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id

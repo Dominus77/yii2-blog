@@ -30,6 +30,7 @@ class BaseModel extends ActiveRecord
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISH = 1;
     const SCENARIO_SET_STATUS = 'setStatus';
+    const PAGE_SIZE = 20;
 
     protected $urlPrefix = '';
 

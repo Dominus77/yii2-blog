@@ -2,11 +2,11 @@
 
 namespace modules\blog\behaviors;
 
-use paulzi\autotree\AutoTreeTrait;
 use Yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
-use yii\helpers\VarDumper;
+use yii\helpers\ArrayHelper;
+use paulzi\autotree\AutoTreeTrait;
 
 /**
  * Class CategoryTreeBehavior
@@ -23,14 +23,16 @@ class CategoryTreeBehavior extends Behavior
     public $urlAttribute = 'url';
     public $linkActiveAttribute = 'active';
     public $requestPathAttribute = 'path';
-    public $defaultCriteria = [];
     public $treeAttribute = 'tree';
     public $lftAttribute = 'lft';
     public $rgtAttribute = 'rgt';
     public $depthAttribute = 'depth';
     public $parentRelation = 'parents';
+    public $iconAttribute;
+    public $linkTemplate = '<a href="{url}">{label}</a>';
+    public $linkTemplateActive = '<a rel="nofollow" href="{url}" class="active">{label}</a>';
     public $statusAttribute = 'status';
-    public $status = 1;
+    public $status;
 
     /**
      * Finds model by path
@@ -132,9 +134,14 @@ class CategoryTreeBehavior extends Behavior
             if ($getDataCallback) {
                 $item = $getDataCallback($node);
             } else {
+                $active = $node->{$this->linkActiveAttribute};
                 $item = $node->toArray($exportedAttributes);
-                $item['label'] = $item['title'];
+                $item['label'] = $item[$this->titleAttribute];
                 $item['url'] = [$node->{$this->urlAttribute}];
+                $item['icon'] = $this->iconAttribute !== null ? $node->{$this->iconAttribute} : '';
+                $item['options'] = ['class' => 'item_' . $node->getPrimaryKey()];
+                $item['active'] = $active;
+                $item['template'] = $active ? $this->linkTemplateActive : $this->linkTemplate;
             }
             $item[$itemsKey] = [];
             $l = count($stack);
@@ -158,6 +165,7 @@ class CategoryTreeBehavior extends Behavior
     }
 
     /**
+     * Get request data
      * @param int $depthStart
      * @param bool $tree
      * @return array|AutoTreeTrait|ActiveRecord[]
@@ -166,8 +174,10 @@ class CategoryTreeBehavior extends Behavior
     {
         /** @var  ActiveRecord $owner */
         $owner = $this->owner;
-        $query = $owner::find()->where([$this->statusAttribute => $this->status])
-            ->andWhere($this->depthAttribute . ' >=' . $depthStart);
+        $query = $owner::find()->where($this->depthAttribute . ' >=' . $depthStart);
+        if ($this->status !== null && $this->statusAttribute) {
+            $query->andWhere([$this->statusAttribute => $this->status]);
+        }
         if ($tree === true) {
             $query->orderBy([$this->treeAttribute => SORT_ASC, $this->lftAttribute => SORT_ASC]);
         } else {
@@ -201,5 +211,15 @@ class CategoryTreeBehavior extends Behavior
             ];
         }
         return $rVal;
+    }
+
+    /**
+     * Check is active link
+     * @return bool
+     */
+    public function getLinkActive()
+    {
+        $request = Yii::$app->request;
+        return ArrayHelper::isIn($this->owner->{$this->requestPathAttribute}, $request->get());
     }
 }

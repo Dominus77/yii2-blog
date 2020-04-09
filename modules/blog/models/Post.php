@@ -3,13 +3,17 @@
 namespace modules\blog\models;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\Exception;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii2tech\ar\position\PositionBehavior;
+use dosamigos\taggable\Taggable;
 use modules\blog\models\query\TagQuery;
 use modules\users\models\UserProfile;
 use modules\users\models\User;
@@ -41,15 +45,12 @@ class Post extends BaseModel
 {
     const POSITION_DEFAULT = 0;
 
-    /**
-     * Список ID тэгов, закреплённых за постом.
-     * @var array
-     */
-    protected $tagsId = [];
     /** @var string */
     public $currentTag;
     /** @var string */
     public $authorName;
+    /** @var string */
+    private $_url;
 
     /**
      * {@inheritdoc}
@@ -72,6 +73,10 @@ class Post extends BaseModel
                     'category_id'
                 ],
             ],
+            'taggableBehavior' => [
+                'class' => Taggable::class,
+                'name' => 'title'
+            ]
         ];
     }
 
@@ -91,7 +96,7 @@ class Post extends BaseModel
             [['sort'], 'integer'],
             ['sort', 'default', 'value' => self::POSITION_DEFAULT],
 
-            [['tagsId'], 'safe']
+            [['tagsId', 'tagNames'], 'safe']
         ];
     }
 
@@ -113,9 +118,30 @@ class Post extends BaseModel
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
             'sort' => Module::t('module', 'Sort'),
-            'tags' => Module::t('module', 'Tags'),
+            'tagNames' => Module::t('module', 'Tags'),
             'currentTag' => Module::t('module', 'Tags'),
         ];
+    }
+
+    /**
+     * Генрирует URL.
+     * Используйте $model->url вместо Yii::$app->urlManager->createUrl(...);
+     * @return string
+     */
+    public function getUrl()
+    {
+        if ($this->_url === null) {
+            if (Yii::$app->id === 'app-backend') {
+                $this->_url = Url::to(['view', 'id' => $this->id]);
+            } else {
+                if (($category = $this->category) && $category !== null) {
+                    $this->_url = Url::to(['default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
+                } else {
+                    $this->_url = Url::to(['default/post', 'post' => $this->slug, 'prefix' => '.html']);
+                }
+            }
+        }
+        return $this->_url;
     }
 
     /**
@@ -159,16 +185,37 @@ class Post extends BaseModel
     /**
      * Tags to Post
      * @return ActiveQuery
+     * @throws InvalidConfigException
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])
-            ->via('tagPost');
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable(TagPost::tableName(), ['post_id' => 'id']);
+    }
+
+    /**
+     * Get all published posts
+     * @return ActiveDataProvider
+     */
+    public function getPosts()
+    {
+        return new ActiveDataProvider([
+            'query' => static::find()->published(),
+            'pagination' => [
+                'pageSize' => self::PAGE_SIZE,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                    'sort' => SORT_ASC,
+                ]
+            ]
+        ]);
     }
 
     /**
      * Published Tags to Post
-     * @return mixed
+     * @return array|Tag[]|ActiveRecord[]
+     * @throws InvalidConfigException
      */
     public function getTagsPublishedToPost()
     {
@@ -180,10 +227,10 @@ class Post extends BaseModel
     /**
      * Возвращает массив идентификаторов тэгов.
      */
-    public function getTagsId()
+    /*public function getTagsId()
     {
         return ArrayHelper::getColumn($this->tags, 'id');
-    }
+    }*/
 
     /**
      * All Tags Array
@@ -200,6 +247,7 @@ class Post extends BaseModel
      * Tags to string|array this post
      * @param bool $string
      * @return array|string
+     * @throws InvalidConfigException
      */
     public function getStringTagsToPost($string = true)
     {
@@ -212,6 +260,21 @@ class Post extends BaseModel
         $itemsString = implode(', ', $items);
         $itemsString = !empty($itemsString) ? $itemsString : '-';
         return $string === true ? $itemsString : $items;
+    }
+
+    /**
+     * Tags link to string|array this post
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function getLinkTagsToPost()
+    {
+        $tags = $this->getTagsPublishedToPost();
+        $linkTags = '';
+        foreach ($tags as $tag) {
+            $linkTags .= Html::a($tag->title, ['default/tag', 'tag' => $tag->title], ['rel' => 'nofollow']) . ', ';
+        }
+        return rtrim($linkTags, ' ,');
     }
 
     /**
@@ -277,25 +340,5 @@ class Post extends BaseModel
             return true;
         }
         return false;
-    }
-
-    /**
-     * @inheritdoc
-     * @param bool $insert
-     * @param array $changedAttributes
-     * @throws Exception
-     */
-    public function afterSave($insert, $changedAttributes)
-    {
-        if ($this->scenario !== self::SCENARIO_SET_STATUS && is_array($this->tagsId)) {
-            TagPost::deleteAll(['post_id' => $this->id]);
-            $values = [];
-            foreach ($this->tagsId as $id) {
-                $values[] = [$this->id, $id];
-            }
-            self::getDb()->createCommand()
-                ->batchInsert(TagPost::tableName(), ['post_id', 'tag_id'], $values)->execute();
-        }
-        parent::afterSave($insert, $changedAttributes);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use dosamigos\multiselect\MultiSelect;
+use dosamigos\selectize\SelectizeTextInput;
 use yii\widgets\ActiveForm;
 use modules\blog\models\Post;
 use modules\blog\Module;
@@ -45,18 +45,17 @@ use modules\blog\Module;
         'placeholder' => true
     ]) ?>
 
-    <?= $form->field($model, 'tagsId')->widget(MultiSelect::class, [
-        'options' => ['multiple' => 'multiple'],
-        'data' => $model->getAllTagsArray(),
+    <?= $form->field($model, 'tagNames')->widget(SelectizeTextInput::class, [
+        'loadUrl' => ['tag/list'],
+        'options' => ['class' => 'form-control'],
         'clientOptions' => [
-            'nonSelectedText' => Module::t('module', 'not installed')
-        ]
-    ])->label(Module::t('module', 'Tags')) ?>
-
-    <?php /*= $form->field($model, 'tagsId')->listBox($model->getAllTagsArray(), [
-            'multiple' => true
-        ]
-    )->label(Module::t('module', 'Tags'))*/ ?>
+            'plugins' => ['remove_button'],
+            'valueField' => 'name',
+            'labelField' => 'name',
+            'searchField' => ['name'],
+            'create' => true,
+        ],
+    ])->hint(Module::t('module', 'Use commas to separate tags')) ?>
 
     <?= $form->field($model, 'status')->dropDownList(Post::getStatusesArray()) ?>
 

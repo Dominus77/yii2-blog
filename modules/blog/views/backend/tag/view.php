@@ -26,6 +26,7 @@ YiiAsset::register($this);
                 'attributes' => [
                     'id',
                     'title',
+                    'frequency',
                     [
                         'attribute' => 'created_at',
                         'value' => static function (Tag $model) {

@@ -65,6 +65,7 @@ class m200331_103455_create_blog_table extends Migration
         $this->createTable('{{%blog_tags}}', [
             'id' => $this->primaryKey()->comment('ID'),
             'title' => $this->string()->notNull()->comment('Title'),
+            'frequency' => $this->integer()->defaultValue(0)->comment('Frequency'),
             'created_at' => $this->integer()->notNull()->comment('Created'),
             'updated_at' => $this->integer()->notNull()->comment('Updated'),
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),

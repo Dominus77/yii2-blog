@@ -39,7 +39,7 @@ a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
     display: inline-block;
-    font-family: 'Glyphicons Halflings';
+    /*font-family: 'Glyphicons Halflings';*/
     font-style: normal;
     font-weight: normal;
     line-height: 1;
@@ -136,4 +136,52 @@ div.required label:after {
     height: 32px;
     float: left;
     padding-right: 10px;
+}
+
+/*--------------Blog--------------*/
+/*Breadcrumb*/
+ul.breadcrumb li a {
+    text-decoration: none;
+}
+
+.header {
+    padding-bottom: 20px;
+}
+
+.tag-cloud a,
+.header a,
+.footer a {
+    text-decoration: none;
+}
+
+.info {
+    font-size: 10pt;
+    color: #333;
+}
+
+.content-container .footer {
+    padding-top: 10px;
+}
+
+/*Menu*/
+ul.menu {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+ul.menu ul {
+    margin-left: 0;
+    padding-left: 20px;
+}
+
+ul.menu, ul.menu li {
+    list-style: none;
+}
+
+ul.menu li a {
+    text-decoration: none;
+}
+
+a.active {
+    font-weight: bold;
 }

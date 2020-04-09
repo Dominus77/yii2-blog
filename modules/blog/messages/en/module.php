@@ -52,8 +52,13 @@ return [
     // Tag
     'Tags' => 'Tags',
     'Tag' => 'Tag',
+    'Frequency' => 'Frequency',
     'New Tag' => 'New Tag',
     'not installed' => 'not installed',
+    'Use commas to separate tags' => 'Use commas to separate tags',
     'Click to change status to draft' => 'Click to change status to draft',
     'Click to change status to publish' => 'Click to change status to publish',
+    'Entries tagged "{:tag}"' => 'Entries tagged "{:tag}"',
+    // Menu
+    'Menu' => 'Menu',
 ];

@@ -37,11 +37,16 @@ class Bootstrap
                 'blog/post/<_a:[\w\-]+>' => 'blog/post/<_a>',
 
                 'blog/tags' => 'blog/tag/index',
-                'blog/tag/<id:\d+>/<_a:[\w\-]+>' => 'blog/tag/<_a>',
-                'blog/tag/<_a:[\w\-]+>' => 'blog/tag/<_a>',
+                'blog/tags/<id:\d+>/<_a:[\w\-]+>' => 'blog/tag/<_a>',
+                'blog/tags/<_a:[\w\-]+>' => 'blog/tag/<_a>',
+
+
 
                 'blog' => 'blog/default/index',
+                'blog/tag/<tag:[\w\-]+>' => 'blog/default/tag',
                 'blog/<category:[\w_\/-]+>' => 'blog/default/category',
+                'blog/<category:[\w_\/-]+>/<post:[\w_\/-]+><prefix:.html+>' => 'blog/default/post',
+                'blog/<post:[\w_\/-]+><prefix:.html+>' => 'blog/default/post',
                 'blog/<id:\d+>/<_a:[\w\-]+>' => 'blog/default/<_a>',
                 'blog/<_a:[\w\-]+>' => 'blog/default/<_a>',
             ]
