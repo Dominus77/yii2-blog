@@ -242,7 +242,12 @@ class CategoryTreeBehavior extends Behavior
         $owner = $this->owner;
         /** @var NestedSetsQueryTrait $query */
         $query = $owner::find();
-        $roots = $query->roots()->all();
+        //$roots = $query->roots()->all();
+        $dependency = new TagDependency(['tags' => ['blog', 'category', 'jsTree']]);
+        $roots = $owner::getDb()->cache(static function () use ($query) {
+            return $query->roots()->all();
+        }, self::CACHE_DURATION, $dependency);
+
         $attributes = ['titleAttribute' => $this->titleAttribute, 'depthAttribute' => $this->depthAttribute];
         foreach ($roots as $root) {
             $rVal[] = [
