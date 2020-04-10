@@ -32,7 +32,7 @@ class DelCacheBehavior extends Behavior {
             return;
         }
         //Удаление массива кэшированных элементов (виджеты, модели...)
-        Foreach ($this->cache_id as $id){
+        foreach ($this->cache_id as $id){
             Yii::$app->cache->delete($id);
         }
     }

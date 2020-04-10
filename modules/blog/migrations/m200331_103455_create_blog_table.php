@@ -33,7 +33,7 @@ class m200331_103455_create_blog_table extends Migration
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
         ], $tableOptions);
 
-        $this->createIndex('IDX_blog_category_nested_sets', '{{%blog_category}}', ['tree', 'lft', 'rgt', 'position']);
+        $this->createIndex('IDX_blog_category_nested_sets', '{{%blog_category}}', ['tree', 'lft', 'rgt', 'position', 'created_at', 'updated_at']);
 
         // Post
         $this->createTable('{{%blog_post}}', [
@@ -50,13 +50,11 @@ class m200331_103455_create_blog_table extends Migration
             'sort' => $this->integer()->notNull()->defaultValue(0)->comment('Sort')
         ], $tableOptions);
 
-        $this->createIndex('IDX_blog_post_sort', '{{%blog_post}}', 'sort');
-        $this->createIndex('IDX_blog_post_author', '{{%blog_post}}', 'author_id');
+        $this->createIndex('IDX_blog_post', '{{%blog_post}}', ['category_id', 'author_id', 'sort', 'created_at', 'updated_at']);
+
         $this->addForeignKey(
             'FK_blog_post_author', '{{%blog_post}}', 'author_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE'
         );
-
-        $this->createIndex('IDX_blog_post_category', '{{%blog_post}}', 'category_id');
         $this->addForeignKey(
             'FK_blog_post_category', '{{%blog_post}}', 'category_id', '{{%blog_category}}', 'id', 'CASCADE', 'CASCADE'
         );
@@ -71,17 +69,18 @@ class m200331_103455_create_blog_table extends Migration
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
         ], $tableOptions);
 
+        $this->createIndex('IDX_blog_tags', '{{%blog_tags}}', ['frequency', 'created_at', 'updated_at']);
+
         $this->createTable('{{%blog_tag_post}}', [
             'tag_id' => $this->integer()->notNull()->comment('ID Tag'),
             'post_id' => $this->integer()->notNull()->comment('ID Post')
         ], $tableOptions);
 
-        $this->createIndex('IDX_blog_tag', '{{%blog_tag_post}}', 'tag_id');
+        $this->createIndex('IDX_blog_tag_post', '{{%blog_tag_post}}', ['tag_id', 'post_id']);
+
         $this->addForeignKey(
             'FK_blog_tag_post', '{{%blog_tag_post}}', 'tag_id', '{{%blog_tags}}', 'id', 'CASCADE', 'CASCADE'
         );
-
-        $this->createIndex('IDX_blog_post', '{{%blog_tag_post}}', 'post_id');
         $this->addForeignKey(
             'FK_blog_post_tag', '{{%blog_tag_post}}', 'post_id', '{{%blog_post}}', 'id', 'CASCADE', 'CASCADE'
         );
@@ -94,19 +93,21 @@ class m200331_103455_create_blog_table extends Migration
     {
         // Tag
         $this->dropForeignKey('FK_blog_post_tag', '{{%blog_tag_post}}');
-        $this->dropIndex('IDX_blog_post', '{{%blog_tag_post}}');
         $this->dropForeignKey('FK_blog_tag_post', '{{%blog_tag_post}}');
-        $this->dropIndex('IDX_blog_tag', '{{%blog_tag_post}}');
+        $this->dropIndex('IDX_blog_tag_post', '{{%blog_tag_post}}');
         $this->dropTable('{{%blog_tag_post}}');
+
+        // blog-tags
+        $this->dropIndex('IDX_blog_tags', '{{%blog_tags}}');
         $this->dropTable('{{%blog_tags}}');
 
-        // Category and Post
+        // post
         $this->dropForeignKey('FK_blog_post_category', '{{%blog_post}}');
-        $this->dropIndex('IDX_blog_post_category', '{{%blog_post}}');
         $this->dropForeignKey('FK_blog_post_author', '{{%blog_post}}');
-        $this->dropIndex('IDX_blog_post_author', '{{%blog_post}}');
-        $this->dropIndex('IDX_blog_post_sort', '{{%blog_post}}');
+        $this->dropIndex('IDX_blog_post', '{{%blog_post}}');
         $this->dropTable('{{%blog_post}}');
+
+        // category
         $this->dropIndex('IDX_blog_category_nested_sets', '{{%blog_category}}');
         $this->dropTable('{{%blog_category}}');
     }

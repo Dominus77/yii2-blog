@@ -4,9 +4,12 @@ namespace modules\blog\behaviors;
 
 use Yii;
 use yii\base\Behavior;
+use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
+use paulzi\nestedsets\NestedSetsQueryTrait;
+use Throwable;
 
 /**
  * Class CategoryTreeBehavior
@@ -34,10 +37,13 @@ class CategoryTreeBehavior extends Behavior
     public $statusAttribute = 'status';
     public $status;
 
+    const CACHE_DURATION = 0;//3600; // 1 час
+
     /**
      * Finds model by path
      * @param string $path
-     * @return array|ActiveRecord|null
+     * @return array|mixed|ActiveRecord|null
+     * @throws Throwable
      */
     public function findByPath($path = '')
     {
@@ -45,14 +51,27 @@ class CategoryTreeBehavior extends Behavior
         $model = null;
         /** @var  ActiveRecord $owner */
         $owner = $this->owner;
+        $dependency = new TagDependency(['tags' => ['blog', 'category', 'path']]);
+
         if (count($domains) === 1) {
-            $model = $owner::find()->where([$this->slugAttribute => $domains[0], $this->depthAttribute => 0])->one();
+            $query = $owner::find()->where([$this->slugAttribute => $domains[0], $this->depthAttribute => 0]);
+            $model = $owner::getDb()->cache(static function () use ($query) {
+                return $query->one();
+            }, self::CACHE_DURATION, $dependency);
         } else {
-            $parent = $owner::find()->where([$this->slugAttribute => $domains[0]])->one();
+            $query = $owner::find()->where([$this->slugAttribute => $domains[0]]);
+            $parent = $owner::getDb()->cache(static function () use ($query) {
+                return $query->one();
+            }, self::CACHE_DURATION, $dependency);
             if ($parent) {
                 $domains = array_slice($domains, 1);
                 foreach ($domains as $alias) {
-                    $model = $parent::find()->where([$this->slugAttribute => $alias, $this->treeAttribute => $parent->{$this->treeAttribute}])->one();
+                    /** @var ActiveRecord $parent */
+                    $query = $parent::find()->where([$this->slugAttribute => $alias, $this->treeAttribute => $parent->{$this->treeAttribute}]);
+                    $model = $parent::getDb()->cache(static function () use ($query) {
+                        return $query->one();
+                    }, self::CACHE_DURATION, $dependency);
+
                     if (!$model) {
                         return null;
                     }
@@ -67,15 +86,22 @@ class CategoryTreeBehavior extends Behavior
      * Constructs full path for current model
      * @param string $separator
      * @return string
+     * @throws Throwable
      */
     public function getPath($separator = '/')
     {
+        /** @var ActiveRecord $owner */
+        $owner = $this->owner;
+        $dependency = new TagDependency(['tags' => ['blog', 'category', 'path']]);
+        $parents = $owner::getDb()->cache(function () {
+            return $this->owner->{$this->parentRelation};
+        }, self::CACHE_DURATION, $dependency);
+
         $uri = [];
-        $parents = $this->owner->{$this->parentRelation};
         foreach ($parents as $item) {
             $uri[] = $item->{$this->slugAttribute};
         }
-        $uri[] = $this->owner->{$this->slugAttribute};
+        $uri[] = $owner->{$this->slugAttribute};
         return implode($uri, $separator);
     }
 
@@ -84,6 +110,7 @@ class CategoryTreeBehavior extends Behavior
      * @param array $parentBreadcrumbs parent breadcrumbs
      * @param bool $lastLink if you can have link in last element
      * @return array
+     * @throws Throwable
      */
     public function getBreadcrumbs($parentBreadcrumbs = [], $lastLink = false)
     {
@@ -92,14 +119,21 @@ class CategoryTreeBehavior extends Behavior
                 $breadcrumbs[] = $item;
             }
         }
-        $parents = $this->owner->{$this->parentRelation};
+
+        /** @var ActiveRecord $owner */
+        $owner = $this->owner;
+        $dependency = new TagDependency(['tags' => ['blog', 'category', 'breadcrumbs']]);
+        $parents = $owner::getDb()->cache(function () {
+            return $this->owner->{$this->parentRelation};
+        }, self::CACHE_DURATION, $dependency);
+
         foreach ($parents as $item) {
             $breadcrumbs[] = ['label' => $item->{$this->titleAttribute}, 'url' => $item->{$this->urlAttribute}];
         }
         if ($lastLink) {
-            $breadcrumbs[] = ['label' => $this->owner->{$this->titleAttribute}, 'url' => $this->owner->{$this->urlAttribute}];
+            $breadcrumbs[] = ['label' => $owner->{$this->titleAttribute}, 'url' => $owner->{$this->urlAttribute}];
         } else {
-            $breadcrumbs[] = $this->owner->{$this->titleAttribute};
+            $breadcrumbs[] = $owner->{$this->titleAttribute};
         }
         return $breadcrumbs;
     }
@@ -107,6 +141,7 @@ class CategoryTreeBehavior extends Behavior
     /**
      * Returns items for yii\widgets\Menu widget
      * @return array
+     * @throws Throwable
      */
     public function getMenuItems()
     {
@@ -120,6 +155,7 @@ class CategoryTreeBehavior extends Behavior
      * @param string $itemsKey
      * @param string $getDataCallback
      * @return array
+     * @throws Throwable
      */
     protected function toNestedArray($depth = null, $itemsKey = 'items', $getDataCallback = '')
     {
@@ -130,6 +166,7 @@ class CategoryTreeBehavior extends Behavior
 
         $trees = [];
         $stack = [];
+
         foreach ($nodes as $node) {
             if ($getDataCallback) {
                 $item = $getDataCallback($node);
@@ -143,8 +180,10 @@ class CategoryTreeBehavior extends Behavior
                 $item['active'] = $active;
                 $item['template'] = $active ? $this->linkTemplateActive : $this->linkTemplate;
             }
+
             $item[$itemsKey] = [];
             $l = count($stack);
+
             while ($l > 0 && $stack[$l - 1][$this->depthAttribute] >= $item[$this->depthAttribute]) {
                 array_pop($stack);
                 $l--;
@@ -168,7 +207,8 @@ class CategoryTreeBehavior extends Behavior
      * Get request data
      * @param int $depthStart
      * @param bool $tree
-     * @return array|AutoTreeTrait|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     protected function getNodes($depthStart = 0, $tree = true)
     {
@@ -183,19 +223,26 @@ class CategoryTreeBehavior extends Behavior
         } else {
             $query->orderBy([$this->lftAttribute => SORT_ASC]);
         }
-        return $query->all();
+
+        $dependency = new TagDependency(['tags' => ['blog', 'category', 'nodes']]);
+        return $owner::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
      * Export NestedSets tree into JsTree nested format data
      * @return array
+     * @throws Throwable
      */
     public function asJsTree()
     {
         $rVal = [];
-        /** @var  ActiveRecord|AutoTreeTrait $owner */
+        /** @var  ActiveRecord $owner */
         $owner = $this->owner;
-        $roots = $owner::find()->roots()->all();
+        /** @var NestedSetsQueryTrait $query */
+        $query = $owner::find();
+        $roots = $query->roots()->all();
         $attributes = ['titleAttribute' => $this->titleAttribute, 'depthAttribute' => $this->depthAttribute];
         foreach ($roots as $root) {
             $rVal[] = [

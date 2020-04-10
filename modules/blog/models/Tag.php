@@ -157,13 +157,14 @@ class Tag extends BaseModel
             $query->published();
             $compare = ' WHERE status=' . self::STATUS_PUBLISH;
         }
+        /** @var Tag $model */
         $models = $query->limit($limit)->all();
         $sizeRange = self::MAX_FONT_SIZE - self::MIN_FONT_SIZE;
 
         $minCount = log(Yii::$app->db->createCommand('SELECT MIN(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
         $maxCount = log(Yii::$app->db->createCommand('SELECT MAX(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
 
-        $countRange = $maxCount - $minCount;
+        $countRange = ($maxCount - $minCount) ?: 1;
 
         foreach ($models as $model) {
             $tags[$model->title] = round(self::MIN_FONT_SIZE + (log($model->frequency + 1) - $minCount) * ($sizeRange / $countRange));

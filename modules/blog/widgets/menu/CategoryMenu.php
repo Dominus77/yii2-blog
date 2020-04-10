@@ -67,8 +67,11 @@ class CategoryMenu extends Widget
      */
     protected function getMenuItems()
     {
-        /** @var Category|CategoryTreeBehavior $model */
-        $model = new Category();
-        return $model->getMenuItems();
+        if ($this->status === true) {
+            /** @var Category|CategoryTreeBehavior $model */
+            $model = new Category();
+            return $model->getMenuItems();
+        }
+        return [];
     }
 }

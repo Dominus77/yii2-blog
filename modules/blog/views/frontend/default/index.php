@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="blog-frontend-default-index">
     <div class="row">
         <div class="col-md-3">
-            <?= CategoryMenu::widget() ?>
+            <?= CategoryMenu::widget(['status' => true]) ?>
             <noindex>
                 <?= TagCloud::widget(['limit' => 50]) ?>
             </noindex>

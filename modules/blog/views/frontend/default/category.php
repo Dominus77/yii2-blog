@@ -19,9 +19,9 @@ $this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs
 <div class="blog-frontend-default-category">
     <div class="row">
         <div class="col-md-3">
-            <?= CategoryMenu::widget() ?>
+            <?= CategoryMenu::widget(['status' => true]) ?>
             <noindex>
-                <?= TagCloud::widget(['limit' => 50]) ?>
+                <?= TagCloud::widget(['status' => false, 'limit' => 50]) ?>
             </noindex>
         </div>
         <div class="col-md-9">
