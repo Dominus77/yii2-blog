@@ -2,13 +2,14 @@
 
 namespace modules\blog\models;
 
+use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\caching\TagDependency;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -18,6 +19,7 @@ use modules\blog\models\query\TagQuery;
 use modules\users\models\UserProfile;
 use modules\users\models\User;
 use modules\blog\models\query\PostQuery;
+use modules\blog\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
 
 /**
@@ -37,7 +39,10 @@ use modules\blog\Module;
  * @property int $sort Position
  *
  * @property User $author
+ * @property User $postAuthor
+ * @property UserProfile $postAuthorProfile
  * @property Category $category
+ * @property Category $postCategory
  * @property TagPost[] $tagPost
  * @property Tag[] $tags
  * @property ActiveDataProvider $posts
@@ -50,6 +55,12 @@ class Post extends BaseModel
     public $authorName;
     /** @var string */
     private $_url;
+
+    const CACHE_DURATION = 0;
+    const CACHE_TAG_POST = 'post';
+    const CACHE_TAG_POST_AUTHOR = 'post-author';
+    const CACHE_TAG_POST_AUTHOR_PROFILE = 'post-author-profile';
+    const CACHE_TAG_POST_CATEGORY = 'post-category';
 
     /**
      * {@inheritdoc}
@@ -75,6 +86,15 @@ class Post extends BaseModel
             'taggableBehavior' => [
                 'class' => Taggable::class,
                 'name' => 'title'
+            ],
+            'delCacheModelBehavior' => [
+                'class' => DelCacheModelBehavior::class,
+                'tags' => [
+                    Tag::CACHE_TAG_TAGS,
+                    Tag::CACHE_TAG_TAG_CLOUD,
+                    Category::CACHE_TAG_CATEGORY,
+                    self::CACHE_TAG_POST,
+                ]
             ]
         ];
     }
@@ -130,12 +150,10 @@ class Post extends BaseModel
         if ($this->_url === null) {
             if (Yii::$app->id === 'app-backend') {
                 $this->_url = Url::to(['view', 'id' => $this->id]);
+            } else if (($category = $this->postCategory) && $category !== null) {
+                $this->_url = Url::to(['default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
             } else {
-                if (($category = $this->category) && $category !== null) {
-                    $this->_url = Url::to(['default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
-                } else {
-                    $this->_url = Url::to(['default/post', 'post' => $this->slug, 'prefix' => '.html']);
-                }
+                $this->_url = Url::to(['default/post', 'post' => $this->slug, 'prefix' => '.html']);
             }
         }
         return $this->_url;
@@ -158,9 +176,27 @@ class Post extends BaseModel
         return $this->hasOne(User::class, ['id' => 'author_id']);
     }
 
+    public function getPostAuthor()
+    {
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_POST, self::CACHE_TAG_POST_AUTHOR]]);
+        $query = $this->getAuthor();
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, self::CACHE_DURATION, $dependency);
+    }
+
     public function getAuthorProfile()
     {
         return $this->hasOne(UserProfile::class, ['user_id' => 'id'])->via('author');
+    }
+
+    public function getPostAuthorProfile()
+    {
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_POST, self::CACHE_TAG_POST_AUTHOR_PROFILE]]);
+        $query = $this->getAuthorProfile();
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -169,6 +205,15 @@ class Post extends BaseModel
     public function getCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category_id']);
+    }
+
+    public function getPostCategory()
+    {
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_POST, self::CACHE_TAG_POST_CATEGORY]]);
+        $query = $this->getCategory();
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -196,8 +241,9 @@ class Post extends BaseModel
      */
     public function getPosts()
     {
+        $query = self::find()->published();
         return new ActiveDataProvider([
-            'query' => static::find()->published(),
+            'query' => $query,
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE,
             ],
@@ -212,25 +258,19 @@ class Post extends BaseModel
 
     /**
      * Published Tags to Post
-     * @return array|Tag[]|ActiveRecord[]
+     * @return mixed
      * @throws InvalidConfigException
+     * @throws Throwable
      */
     public function getTagsPublished()
     {
         /** @var $tags TagQuery */
         $tags = $this->getTags();
-        return $tags->published()->all();
-    }
-
-    /**
-     * All Tags Array
-     * @param bool|null $published
-     * @return array
-     */
-    public function getAllTagsArray($published = true)
-    {
-        $tags = ($published === null) ? Tag::find()->all() : Tag::find()->published($published)->all();
-        return ArrayHelper::map($tags, 'id', 'title');
+        $query = $tags->published();
+        $dependency = new TagDependency(['tags' => [Tag::CACHE_TAG_TAGS]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, Tag::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -240,6 +280,7 @@ class Post extends BaseModel
      * @param string $emptyString if no string tags return $emptyString
      * @return array|string
      * @throws InvalidConfigException
+     * @throws Throwable
      */
     public function getStringTagsToPost($string = true, $link = false, $emptyString = '')
     {
@@ -260,6 +301,7 @@ class Post extends BaseModel
      * Category Title
      * @param bool $small
      * @return string
+     * @throws Throwable
      */
     public function getCategoryTitlePath($small = true)
     {
@@ -292,14 +334,16 @@ class Post extends BaseModel
      */
     public function getAuthorName($userProfileName = true)
     {
-        $author = $this->author;
+        $author = $this->postAuthor;
         $authorName = trim($author->username);
-        if (($userProfileName === true) && $author->profile !== null) {
-            $profile = $author->profile;
-            $firstName = $profile->first_name ?: '';
-            $lastName = $profile->last_name ?: '';
-            $name = trim($firstName) . ' ' . trim($lastName);
-            $authorName = !empty($name) ? $name : $authorName;
+        if (($userProfileName === true)) {
+            $profile = $this->postAuthorProfile;
+            if ($profile !== null) {
+                $firstName = $profile->first_name ?: '';
+                $lastName = $profile->last_name ?: '';
+                $name = trim($firstName) . ' ' . trim($lastName);
+                $authorName = !empty($name) ? $name : $authorName;
+            }
         }
         return $authorName ?: $this->author_id;
     }

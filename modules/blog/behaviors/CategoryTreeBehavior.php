@@ -17,6 +17,7 @@ use Throwable;
  *
  * @property ActiveRecord[] $owner
  * @property string $path
+ * @property string $linkActive
  */
 class CategoryTreeBehavior extends Behavior
 {
@@ -38,6 +39,12 @@ class CategoryTreeBehavior extends Behavior
     public $status;
 
     const CACHE_DURATION = 0;//3600; // 1 час
+    const CACHE_TAG_BLOG = 'blog';
+    const CACHE_TAG_CATEGORY = 'category';
+    const CACHE_TAG_PATH = 'path';
+    const CACHE_TAG_BREADCRUMBS = 'breadcrumbs';
+    const CACHE_TAG_NODES = 'nodes';
+    const CACHE_TAG_JS_TREE = 'js-tree';
 
     /**
      * Finds model by path
@@ -51,7 +58,7 @@ class CategoryTreeBehavior extends Behavior
         $model = null;
         /** @var  ActiveRecord $owner */
         $owner = $this->owner;
-        $dependency = new TagDependency(['tags' => ['blog', 'category', 'path']]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_BLOG, self::CACHE_TAG_CATEGORY, self::CACHE_TAG_PATH]]);
 
         if (count($domains) === 1) {
             $query = $owner::find()->where([$this->slugAttribute => $domains[0], $this->depthAttribute => 0]);
@@ -92,7 +99,7 @@ class CategoryTreeBehavior extends Behavior
     {
         /** @var ActiveRecord $owner */
         $owner = $this->owner;
-        $dependency = new TagDependency(['tags' => ['blog', 'category', 'path']]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_BLOG, self::CACHE_TAG_CATEGORY, self::CACHE_TAG_PATH]]);
         $parents = $owner::getDb()->cache(function () {
             return $this->owner->{$this->parentRelation};
         }, self::CACHE_DURATION, $dependency);
@@ -122,7 +129,7 @@ class CategoryTreeBehavior extends Behavior
 
         /** @var ActiveRecord $owner */
         $owner = $this->owner;
-        $dependency = new TagDependency(['tags' => ['blog', 'category', 'breadcrumbs']]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_BLOG, self::CACHE_TAG_CATEGORY, self::CACHE_TAG_BREADCRUMBS]]);
         $parents = $owner::getDb()->cache(function () {
             return $this->owner->{$this->parentRelation};
         }, self::CACHE_DURATION, $dependency);
@@ -224,7 +231,7 @@ class CategoryTreeBehavior extends Behavior
             $query->orderBy([$this->lftAttribute => SORT_ASC]);
         }
 
-        $dependency = new TagDependency(['tags' => ['blog', 'category', 'nodes']]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_BLOG, self::CACHE_TAG_CATEGORY, self::CACHE_TAG_NODES]]);
         return $owner::getDb()->cache(static function () use ($query) {
             return $query->all();
         }, self::CACHE_DURATION, $dependency);
@@ -242,8 +249,7 @@ class CategoryTreeBehavior extends Behavior
         $owner = $this->owner;
         /** @var NestedSetsQueryTrait $query */
         $query = $owner::find();
-        //$roots = $query->roots()->all();
-        $dependency = new TagDependency(['tags' => ['blog', 'category', 'jsTree']]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_BLOG, self::CACHE_TAG_CATEGORY, self::CACHE_TAG_JS_TREE]]);
         $roots = $owner::getDb()->cache(static function () use ($query) {
             return $query->roots()->all();
         }, self::CACHE_DURATION, $dependency);
@@ -263,6 +269,14 @@ class CategoryTreeBehavior extends Behavior
             ];
         }
         return $rVal;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->linkActive;
     }
 
     /**

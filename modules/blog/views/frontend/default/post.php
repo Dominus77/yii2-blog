@@ -12,8 +12,8 @@ use modules\blog\Module;
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['index']];
-if (($category = $model->category) && $category !== null) {
-    $this->params['breadcrumbs'] = $model->category->getBreadcrumbs($this->params['breadcrumbs'], true);
+if (($category = $model->postCategory) && $category !== null) {
+    $this->params['breadcrumbs'] = $category->getBreadcrumbs($this->params['breadcrumbs'], true);
 }
 $this->params['breadcrumbs'][] = $model->title;
 ?>

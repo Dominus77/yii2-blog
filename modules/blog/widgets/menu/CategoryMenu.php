@@ -64,6 +64,7 @@ class CategoryMenu extends Widget
 
     /**
      * @return array
+     * @throws \Throwable
      */
     protected function getMenuItems()
     {

@@ -2,11 +2,13 @@
 
 namespace modules\blog\controllers\frontend;
 
-use yii\data\ActiveDataProvider;
+use Yii;
+use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use Throwable;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\models\Post;
@@ -34,21 +36,25 @@ class DefaultController extends Controller
      * @param $category
      * @return string
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     public function actionCategory($category)
     {
         $model = $this->findCategoryModel($category);
         return $this->render('category', [
             'model' => $model,
+            'dataProvider' => $model->getPostsDataProvider()
         ]);
     }
 
     /**
      * @param $post
+     * @param $category
      * @return string
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
-    public function actionPost($post)
+    public function actionPost($post, $category)
     {
         $post = $this->findPostModel($post);
         return $this->render('post', [
@@ -60,6 +66,7 @@ class DefaultController extends Controller
      * @param $tag
      * @return string
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     public function actionTag($tag)
     {
@@ -73,8 +80,9 @@ class DefaultController extends Controller
      * Finds the Category model based on its path value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param $path string
-     * @return array|ActiveRecord|null
+     * @return array|mixed|ActiveRecord|null|Category
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     protected function findCategoryModel($path)
     {
@@ -87,17 +95,22 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $slug string
-     * @return Post
+     * @param $slug
+     * @return mixed|Post
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     protected function findPostModel($slug)
     {
-        /** @var Post $model */
-        $model = Post::find()
+        $query = Post::find()
             ->where(['slug' => $slug])
-            ->andWhere(['status' => Post::STATUS_PUBLISH])
-            ->one();
+            ->andWhere(['status' => Post::STATUS_PUBLISH]);
+
+        $dependency = new TagDependency(['tags' => [Post::CACHE_TAG_POST]]);
+        $model = Post::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, Post::CACHE_DURATION, $dependency);
+
         if ($model !== null) {
             return $model;
         }
@@ -106,25 +119,22 @@ class DefaultController extends Controller
 
     /**
      * @param $tag
-     * @return ActiveDataProvider
+     * @return mixed
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     protected function findPostsModelsByTag($tag)
     {
+        $cache = Yii::$app->cache;
+        $key = [__METHOD__, __CLASS__, $tag];
+        $dependency = new TagDependency(['tags' => [Tag::CACHE_TAG_TAGS]]);
         /** @var Tag $model */
-        if (($model = Tag::findOne(['title' => $tag])) && $model !== null) {
-            return new ActiveDataProvider([
-                'query' => $model->getPosts(),
-                'pagination' => [
-                    'pageSize' => Post::PAGE_SIZE,
-                ],
-                'sort' => [
-                    'defaultOrder' => [
-                        'created_at' => SORT_DESC,
-                        'sort' => SORT_ASC,
-                    ]
-                ]
-            ]);
+        $model = $cache->getOrSet($key, static function () use ($tag) {
+            return Tag::findOne(['title' => $tag]);
+        }, Tag::CACHE_DURATION, $dependency);
+
+        if ($model !== null) {
+            return $model->getPostsDataProvider();
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }

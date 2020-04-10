@@ -3,17 +3,20 @@
 namespace modules\blog\models;
 
 use Yii;
+use yii\caching\TagDependency;
+use yii\db\ActiveQuery;
+use yii\helpers\Url;
 use yii\data\ActiveDataProvider;
-use paulzi\nestedsets\NestedSetsBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use Throwable;
+use paulzi\nestedsets\NestedSetsBehavior;
 use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
-use yii\helpers\Url;
 use modules\blog\behaviors\CategoryTreeBehavior;
+use modules\blog\behaviors\DelCacheModelBehavior;
 
 /**
  * This is the model class for table "{{%blog_category}}".
@@ -53,7 +56,9 @@ class Category extends BaseModel
     const TYPE_BEFORE = 'before';
     const TYPE_AFTER = 'after';
     const POSITION_DEFAULT = 0;
-    const CACHE_DURATION = 3600; // 1 час
+
+    const CACHE_DURATION = 0; // 1 час
+    const CACHE_TAG_CATEGORY = 'category';
 
     /**
      * {@inheritdoc}
@@ -84,13 +89,20 @@ class Category extends BaseModel
             'categoryTreeBehavior' => [
                 'class' => CategoryTreeBehavior::class,
                 'status' => Yii::$app->id === 'app-frontend' ? self::STATUS_PUBLISH : '',
+            ],
+            'delCacheModelBehavior' => [
+                'class' => DelCacheModelBehavior::class,
+                'tags' => [
+                    self::CACHE_TAG_CATEGORY,
+                    Post::CACHE_TAG_POST_CATEGORY
+                ]
             ]
         ];
     }
 
     /**
      * @param int|null $depth
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getParents($depth = null)
     {
@@ -179,16 +191,30 @@ class Category extends BaseModel
     }
 
     /**
-     * Возвращает список постов принадлежащих категории.
-     * @return ActiveDataProvider
+     * @return ActiveQuery
      */
     public function getPosts()
     {
+        return $this->hasMany(Post::class, ['category_id' => 'id']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCategoryPostsQuery()
+    {
+        return $this->getPosts()->published();
+    }
+
+    /**
+     * Возвращает список постов принадлежащих категории.
+     * @return ActiveDataProvider
+     */
+    public function getPostsDataProvider()
+    {
+        $query = $this->getCategoryPostsQuery();
         return new ActiveDataProvider([
-            'query' => $this->hasMany(Post::class, ['category_id' => 'id'])
-                ->where([
-                    'status' => Post::STATUS_PUBLISH
-                ]),
+            'query' => $query,
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE,
             ],
@@ -199,14 +225,6 @@ class Category extends BaseModel
                 ]
             ],
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function getActive()
-    {
-        return $this->linkActive;
     }
 
     /**
@@ -306,23 +324,24 @@ class Category extends BaseModel
     /**
      * All Parents to node ID
      * @param int $nodeId
-     * @return array|Category[]|Tag[]|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     public static function getAllParents($nodeId = 0)
     {
-        $cache = Yii::$app->cache;
-        $key = [__CLASS__, __METHOD__, $nodeId];
-        return $cache->getOrSet($key, static function () use ($nodeId) {
-            /** @var Category $node */
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_CATEGORY]]);
+        return self::getDb()->cache(static function () use ($nodeId) {
+            /** @var AutoTreeTrait $node */
             $node = self::findOne(['id' => $nodeId]);
             return $node->getParents()->all();
-        }, static::CACHE_DURATION);
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
      * Get a full tree as a list, except the node and its children
      * @param integer|null $excludeNodeId node's ID
      * @return array array of node
+     * @throws Throwable
      */
     public static function getFullTree($excludeNodeId = null)
     {
@@ -336,11 +355,16 @@ class Category extends BaseModel
                 [$excludeNodeId]
             );
         }
-        $rows = self::find()
+
+        $query = self::find()
             ->select('id, title, lft, depth')
             ->where(['NOT IN', 'id', $children])
-            ->orderBy('tree, lft')
-            ->all();
+            ->orderBy('tree, lft');
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_CATEGORY]]);
+        $rows = self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
 
         $return = [];
         /** @var Category $row */

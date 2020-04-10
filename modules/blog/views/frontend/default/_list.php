@@ -24,7 +24,7 @@ use modules\blog\Module;
     </div>
     <div class="footer">
         <div class="info">
-            <?php if (($category = $model->category) && $category !== null) { ?>
+            <?php if (($category = $model->postCategory) && $category !== null) { ?>
                 <noindex>
                     <span class="glyphicon glyphicon-folder-open"></span> <?= Html::a($category->title, [$category->url], ['rel' => 'nofollow']) ?>
                 </noindex>

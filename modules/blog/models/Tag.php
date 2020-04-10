@@ -2,11 +2,12 @@
 
 namespace modules\blog\models;
 
-use Yii;
-use yii\db\Exception;
-use yii\helpers\Html;
+use Throwable;
+use yii\caching\TagDependency;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
+use modules\blog\behaviors\DelCacheModelBehavior;
 use modules\blog\models\query\TagQuery;
 use modules\blog\Module;
 
@@ -34,6 +35,11 @@ class Tag extends BaseModel
      */
     const MAX_FONT_SIZE = 18;
 
+    const CACHE_DURATION = 0;
+    const CACHE_TAG_TAG_CLOUD = 'tag-cloud';
+    const CACHE_TAG_TAGS = 'tags';
+    const CACHE_TAG_TAG_POSTS = 'tag-posts';
+
     /**
      * @param string $className
      * @return Tag
@@ -59,6 +65,10 @@ class Tag extends BaseModel
         return [
             'timestampBehavior' => [
                 'class' => TimestampBehavior::class
+            ],
+            'delCacheModelBehavior' => [
+                'class' => DelCacheModelBehavior::class,
+                'tags' => [self::CACHE_TAG_TAGS, self::CACHE_TAG_TAG_CLOUD]
             ]
         ];
     }
@@ -122,23 +132,58 @@ class Tag extends BaseModel
         return $this->hasMany(Post::class, ['id' => 'post_id'])->via('tagPost');
     }
 
-    public function getTagsLinkString()
+    /**
+     * Posts to tags
+     * @param bool $published
+     * @return mixed
+     * @throws Throwable
+     */
+    public function getTagPosts($published = false)
     {
-        $model = self::find()->published()->all();
-        $tags = '';
-        foreach ($model as $item) {
-            $size = $item->getCountToPosts() + 12;
-            $tags .= Html::a(Html::tag('span', trim($item->title), ['style' => 'font-size:' . $size . 'px;']), ['default/tag', 'tag' => $item->title]) . ', ';
-        }
-        return rtrim($tags, ' ,');
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_TAGS, self::CACHE_TAG_TAG_POSTS]]);
+        return self::getDb()->cache(function () use ($published) {
+            $query = $this->getPosts();
+            if ($published === true) {
+                $query->published();
+            }
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
-     * @return int
+     * Posts data provider
+     * @return mixed
+     * @throws Throwable
      */
-    public function getCountToPosts()
+    public function getPostsDataProvider()
     {
-        return $this->getPosts()->count();
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_TAGS, self::CACHE_TAG_TAG_POSTS]]);
+        $query = $this->getPosts()->published();
+        return self::getDb()->cache(static function () use ($query) {
+            return new ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => Post::PAGE_SIZE,
+                ],
+                'sort' => [
+                    'defaultOrder' => [
+                        'created_at' => SORT_DESC,
+                        'sort' => SORT_ASC,
+                    ]
+                ]
+            ]);
+        }, self::CACHE_DURATION, $dependency);
+    }
+
+    /**
+     * All posts to tag
+     * @param bool $published is true, return posts to status publish
+     * @return int
+     * @throws Throwable
+     */
+    public function getCountToPosts($published = false)
+    {
+        return count($this->getTagPosts($published));
     }
 
     /**
@@ -146,23 +191,32 @@ class Tag extends BaseModel
      * @param int $limit число возвращаемых тегов
      * @param bool $published если true то только для тегов имеющих статус "опубликовано"
      * @return array вес с индексом равным имени тега
-     * @throws Exception
+     * @throws Throwable
      */
     public function findTagWeights($limit = 20, $published = true)
     {
         $tags = [];
-        $compare = '';
         $query = self::find();
         if ($published === true) {
             $query->published();
-            $compare = ' WHERE status=' . self::STATUS_PUBLISH;
         }
+        $query1 = clone($query);
         /** @var Tag $model */
-        $models = $query->limit($limit)->all();
+        $query->limit($limit);
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_TAG_CLOUD]]);
+        $models = self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
+
         $sizeRange = self::MAX_FONT_SIZE - self::MIN_FONT_SIZE;
 
-        $minCount = log(Yii::$app->db->createCommand('SELECT MIN(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
-        $maxCount = log(Yii::$app->db->createCommand('SELECT MAX(frequency) FROM ' . self::tableName() . $compare)->queryScalar() + 1);
+        $minCount = self::getDb()->cache(static function () use ($query1) {
+            return log($query1->min('frequency') + 1);
+        }, self::CACHE_DURATION, $dependency);
+        $maxCount = self::getDb()->cache(static function () use ($query1) {
+            return log($query1->max('frequency') + 1);
+        }, self::CACHE_DURATION, $dependency);
 
         $countRange = ($maxCount - $minCount) ?: 1;
 

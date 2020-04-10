@@ -4,7 +4,6 @@ namespace modules\blog\controllers\backend;
 
 
 use Yii;
-use yii\caching\TagDependency;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -16,6 +15,8 @@ use Throwable;
 use modules\rbac\models\Permission;
 use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
+use modules\blog\behaviors\CategoryTreeBehavior;
+use modules\blog\behaviors\DelCacheControllerBehavior;
 
 /**
  * Class CategoryController
@@ -44,6 +45,11 @@ class CategoryController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'delCacheControllerBehavior' => [
+                'class' => DelCacheControllerBehavior::class,
+                'actions' => ['create', 'update', 'move', 'change-status', 'delete'],
+                'tags' => [CategoryTreeBehavior::CACHE_TAG_CATEGORY]
+            ]
         ];
     }
 
@@ -94,8 +100,6 @@ class CategoryController extends Controller
             }
             // Перемещаем в пределах узла
             $model = $this->moveWithinNode($model);
-            // Сбрасываем кэш по тегу
-            $this->clearCache(['category']);
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $model->position = $model->position ?: Category::POSITION_DEFAULT;
@@ -117,8 +121,6 @@ class CategoryController extends Controller
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->save()) {
             Category::changeStatusChildren($model->id);
-            // Сбрасываем кэш по тегу
-            $this->clearCache(['category']);
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $model->position = $model->position ?: Category::POSITION_DEFAULT;
@@ -166,8 +168,6 @@ class CategoryController extends Controller
             }
             // Перемещаем в пределах узла
             $this->moveWithinNode($model);
-            // Сбрасываем кэш по тегу
-            $this->clearCache(['category']);
             return $this->redirect(['index']);
         }
 
@@ -200,8 +200,6 @@ class CategoryController extends Controller
         $model->setStatus();
         if ($model->save(false)) {
             Category::changeStatusChildren($model->id);
-            // Сбрасываем кэш по тегу
-            $this->clearCache(['category']);
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
@@ -219,8 +217,6 @@ class CategoryController extends Controller
     {
         $model = $this->findModel($id);
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
-        // Сбрасываем кэш по тегу
-        $this->clearCache(['category']);
         return $this->redirect(['index']);
     }
 
@@ -263,17 +259,5 @@ class CategoryController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    /**
-     * Сбрасываем кэш по тегу
-     * @param array $tags
-     * @return bool
-     */
-    protected function clearCache($tags = [])
-    {
-        $cache = Yii::$app->cache;
-        TagDependency::invalidate($cache, $tags);
-        return true;
     }
 }

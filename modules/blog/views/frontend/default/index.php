@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-3">
             <?= CategoryMenu::widget(['status' => true]) ?>
             <noindex>
-                <?= TagCloud::widget(['limit' => 50]) ?>
+                <?= TagCloud::widget(['status' => true, 'limit' => 50]) ?>
             </noindex>
         </div>
         <div class="col-md-9">
