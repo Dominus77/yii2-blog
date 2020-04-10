@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
 use paulzi\nestedsets\NestedSetsQueryTrait;
 use Throwable;
+use yii\helpers\VarDumper;
 
 /**
  * Class CategoryTreeBehavior
@@ -36,6 +37,7 @@ class CategoryTreeBehavior extends Behavior
     public $linkTemplate = '<a href="{url}">{label}</a>';
     public $linkTemplateActive = '<a rel="nofollow" href="{url}" class="active">{label}</a>';
     public $statusAttribute = 'status';
+    public $positionAttribute = 'position';
     public $status;
 
     const CACHE_DURATION = 0;//3600; // 1 час
@@ -207,6 +209,7 @@ class CategoryTreeBehavior extends Behavior
                 $stack[] = &$stack[$l - 1][$itemsKey][$i];
             }
         }
+        ArrayHelper::multisort($trees, $this->positionAttribute, SORT_ASC);
         return $trees;
     }
 

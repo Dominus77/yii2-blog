@@ -5,6 +5,8 @@ namespace modules\blog\models\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use modules\blog\models\Category;
+use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 
 /**
  * CategorySearch represents the model behind the search form of `modules\blog\models\Category`.
@@ -54,9 +56,10 @@ class CategorySearch extends Category
                 'defaultOrder' => [
                     /*'tree' => SORT_ASC,
                     'lft' => SORT_ASC,*/
+                    //'position' => SORT_ASC,
                     'tree' => SORT_ASC,
                     'lft' => SORT_ASC,
-                    //'depth' => SORT_ASC,
+                    //'position' => SORT_ASC,
                     //'created_at' => SORT_ASC,
                 ],
             ]
@@ -88,6 +91,7 @@ class CategorySearch extends Category
 
         $query->andFilterWhere(['>=', 'created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
             ->andFilterWhere(['<=', 'created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
+
 
         return $dataProvider;
     }

@@ -5,8 +5,10 @@ namespace modules\blog\controllers\frontend;
 use Yii;
 use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\Response;
 use Throwable;
 use modules\blog\behaviors\CategoryTreeBehavior;
@@ -33,7 +35,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $category
+     * @param mixed $category
      * @return string
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -48,22 +50,22 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $post
-     * @param $category
+     * @param mixed $post
+     * @param null $category
      * @return string
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    public function actionPost($post, $category)
+    public function actionPost($post, $category = null)
     {
-        $post = $this->findPostModel($post);
+        $post = $this->findPostModel($post, $category);
         return $this->render('post', [
             'model' => $post
         ]);
     }
 
     /**
-     * @param $tag
+     * @param mixed $tag
      * @return string
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -79,7 +81,7 @@ class DefaultController extends Controller
     /**
      * Finds the Category model based on its path value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param $path string
+     * @param string $path
      * @return array|mixed|ActiveRecord|null|Category
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -95,16 +97,26 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $slug
-     * @return mixed|Post
+     * @param string $slug
+     * @param mixed|null $category
+     * @return mixed
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    protected function findPostModel($slug)
+    protected function findPostModel($slug, $category = null)
     {
+        if ($category !== null) {
+            /** @var Category|CategoryTreeBehavior $categoryModel */
+            $categoryModel = new Category();
+            /** @var Category $model */
+            if (($model = $categoryModel->findByPath($category)) && $model !== null) {
+                $category = $model->id;
+            }
+        }
+
         $query = Post::find()
             ->where(['slug' => $slug])
-            ->andWhere(['status' => Post::STATUS_PUBLISH]);
+            ->andWhere(['category_id' => $category, 'status' => Post::STATUS_PUBLISH]);
 
         $dependency = new TagDependency(['tags' => [Post::CACHE_TAG_POST]]);
         $model = Post::getDb()->cache(static function () use ($query) {
@@ -118,7 +130,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $tag
+     * @param string $tag
      * @return mixed
      * @throws NotFoundHttpException
      * @throws Throwable
