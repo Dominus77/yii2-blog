@@ -109,4 +109,19 @@ class BaseModel extends ActiveRecord
         }
         return $this->status;
     }
+
+    /**
+     * Total column GridView
+     * @param $provider
+     * @param $fieldName
+     * @return int
+     */
+    public static function pageTotal($provider, $fieldName)
+    {
+        $total = 0;
+        foreach ($provider as $item) {
+            $total += $item[$fieldName];
+        }
+        return $total;
+    }
 }

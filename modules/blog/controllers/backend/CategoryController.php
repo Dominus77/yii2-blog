@@ -95,7 +95,9 @@ class CategoryController extends Controller
             if (empty($model->parentId)) {
                 $model->makeRoot()->save();
             } else {
+                /** @var Category $node */
                 $node = Category::findOne(['id' => $model->parentId]);
+                $model->position = $node->position;
                 $model->appendTo($node)->save();
             }
             // Перемещаем в пределах узла
@@ -121,6 +123,7 @@ class CategoryController extends Controller
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->save()) {
             Category::changeStatusChildren($model->id);
+            Category::changePositionChildren($model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $model->position = $model->position ?: Category::POSITION_DEFAULT;

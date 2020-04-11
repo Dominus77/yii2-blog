@@ -54,6 +54,11 @@ echo $this->render('_base', ['link' => false]);
                 'tableOptions' => [
                     'class' => 'table table-bordered table-hover',
                 ],
+                'showFooter' => true,
+                'footerRowOptions' => [
+                    'class' => 'default',
+                    'style' => 'font-weight:bold; text-decoration: underline;'
+                ],
                 'columns' => [
                     [
                         'class' => SerialColumn::class,
@@ -120,11 +125,12 @@ echo $this->render('_base', ['link' => false]);
                         ],
                     ],
                     [
-                        'attribute' => 'depth',
+                        'attribute' => 'countPosts',
                         'contentOptions' => [
                             'class' => 'data-column',
                             'style' => 'width: 80px'
                         ],
+                        'footer' => Category::pageTotal($dataProvider->models, 'countPosts'),
                     ],
                     [
                         'class' => ActionColumn::class,

@@ -54,13 +54,9 @@ class CategorySearch extends Category
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    /*'tree' => SORT_ASC,
-                    'lft' => SORT_ASC,*/
-                    //'position' => SORT_ASC,
+                    'position' => SORT_ASC,
                     'tree' => SORT_ASC,
                     'lft' => SORT_ASC,
-                    //'position' => SORT_ASC,
-                    //'created_at' => SORT_ASC,
                 ],
             ]
         ]);
@@ -91,7 +87,6 @@ class CategorySearch extends Category
 
         $query->andFilterWhere(['>=', 'created_at', $this->date_from ? strtotime($this->date_from . ' 00:00:00') : null])
             ->andFilterWhere(['<=', 'created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
-
 
         return $dataProvider;
     }

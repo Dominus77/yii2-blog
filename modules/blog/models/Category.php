@@ -84,7 +84,8 @@ class Category extends BaseModel
             'sluggableBehavior' => [
                 'class' => SluggableBehavior::class,
                 'attribute' => 'title',
-                'slugAttribute' => 'slug'
+                'slugAttribute' => 'slug',
+                'ensureUnique' => true
             ],
             'categoryTreeBehavior' => [
                 'class' => CategoryTreeBehavior::class,
@@ -169,7 +170,8 @@ class Category extends BaseModel
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
             'childrenList' => Module::t('module', 'Children List'),
-            'typeMove' => Module::t('module', 'Insert Type')
+            'typeMove' => Module::t('module', 'Insert Type'),
+            'countPosts' => Module::t('module', 'Posts')
         ];
     }
 
@@ -225,6 +227,19 @@ class Category extends BaseModel
                 ]
             ],
         ]);
+    }
+
+    /**
+     * Count Posts this Category
+     * @return mixed
+     * @throws Throwable
+     */
+    public function getCountPosts()
+    {
+        $dependency = new TagDependency(['tags' => [Post::CACHE_TAG_POST]]);
+        return self::getDb()->cache(function () {
+            return count($this->getPosts()->all());
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -300,6 +315,15 @@ class Category extends BaseModel
         if ($node = self::findOne(['id' => $nodeId])) {
             $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
             return self::updateAll(['status' => $node->status], ['id' => $childrenId]);
+        }
+        return false;
+    }
+
+    public static function changePositionChildren($nodeId)
+    {
+        if ($node = self::findOne(['id' => $nodeId])) {
+            $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
+            return self::updateAll(['position' => $node->position], ['id' => $childrenId]);
         }
         return false;
     }
