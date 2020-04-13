@@ -29,8 +29,14 @@ BlogAsset::register($this);
                     'id',
                     'title',
                     'slug',
-                    'anons:ntext',
-                    'content:ntext',
+                    [
+                        'attribute' => 'anons',
+                        'format' => 'raw'
+                    ],
+                    [
+                        'attribute' => 'content',
+                        'format' => 'raw'
+                    ],
                     [
                         'attribute' => 'tagNames',
                         'value' => static function (Post $model) {

@@ -32,3 +32,6 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
+
+# node_modules packages dir
+/packages

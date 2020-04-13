@@ -99,6 +99,25 @@ BlogAsset::register($this);
                         ]
                     ],
                     [
+                        'attribute' => 'status',
+                        'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [
+                            'class' => 'form-control',
+                            'prompt' => Module::t('module', '- all -'),
+                            'data' => [
+                                'pjax' => true
+                            ]
+                        ]),
+                        'format' => 'raw',
+                        'value' => static function (Post $model) {
+                            $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
+                            return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 140px'
+                        ],
+                    ],
+                    [
                         'attribute' => 'category_id',
                         'filter' => Html::activeDropDownList($searchModel, 'category_id', Post::getCategoriesTree(), [
                             'class' => 'form-control',
@@ -118,25 +137,6 @@ BlogAsset::register($this);
                             'class' => 'data-column',
                             'style' => 'width: 80px'
                         ]
-                    ],
-                    [
-                        'attribute' => 'status',
-                        'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [
-                            'class' => 'form-control',
-                            'prompt' => Module::t('module', '- all -'),
-                            'data' => [
-                                'pjax' => true
-                            ]
-                        ]),
-                        'format' => 'raw',
-                        'value' => static function (Post $model) {
-                            $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
-                            return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
-                        },
-                        'contentOptions' => [
-                            'class' => 'data-column',
-                            'style' => 'width: 140px'
-                        ],
                     ],
                     [
                         'class' => ActionColumn::class,

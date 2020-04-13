@@ -43,6 +43,7 @@ class Bootstrap
 
 
                 'blog' => 'blog/default/index',
+                'blog/elfinder/<_a:[\w\-]+>' => 'blog/elfinder/<_a>',
                 'blog/tag/<tag:[\w\-]+>' => 'blog/default/tag',
                 'blog/<category:[\w_\/-]+>' => 'blog/default/category',
                 'blog/<category:[\w_\/-]+>/<post:[\w_\/-]+><prefix:.html+>' => 'blog/default/post',
