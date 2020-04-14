@@ -3,7 +3,7 @@
 use yii\widgets\ActiveForm;
 use modules\blog\models\Post;
 use modules\blog\Module;
-use dominus77\tinymce\TinyMce;
+use modules\blog\editor\TinyMce;
 use modules\blog\assets\HtmlFormattingAsset;
 use dosamigos\selectize\SelectizeTextInput;
 
