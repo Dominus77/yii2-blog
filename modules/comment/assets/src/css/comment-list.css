@@ -1,0 +1,40 @@
+.comments ul {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-list ul li {
+    list-style: none;
+    padding-left: 60px;
+}
+
+.title-comments {
+    font-size: 1.4rem;
+    font-weight: bold;
+    line-height: 1.5rem;
+    color: rgba(0, 0, 0, .87);
+    margin-bottom: 1rem;
+    padding-bottom: .25rem;
+    border-bottom: 1px solid rgba(34, 36, 38, .15);
+}
+
+.media-left img {
+    width: 50px;
+}
+
+.media-body .author {
+    display: block;
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+}
+
+.media-body .metadata {
+    display: block;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.reply-form-container form {
+    padding-top: 20px;
+}

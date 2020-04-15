@@ -18,5 +18,8 @@ return [
     'Wait' => 'Wait',
     'Approved' => 'Approved',
     'Blocked' => 'Blocked',
-    'Submit' => 'Submit',
+    'Submit comment' => 'Submit comment',
+    'Reply' => 'Reply',
+    'Comment this' => 'Comment this',
+    'Comments ({:count})' => 'Comments ({:count})'
 ];

@@ -306,15 +306,14 @@ class Comment extends ActiveRecord
      * Get request data
      * @param int $depthStart
      * @param bool $tree
-     * @return array|Category[]|ActiveRecord[]
+     * @return array|Comment[]|ActiveRecord[]
      */
-    protected function getNodes($depthStart = 0, $tree = true)
+    public function getNodes($depthStart = 0, $tree = true)
     {
         $query = self::find()->where('depth' . ' >=' . $depthStart);
         $query->andWhere(['entity' => $this->entity, 'entity_id' => $this->entity_id]);
-        if ($this->status !== null && $this->status) {
-            $query->andWhere(['status' => $this->status]);
-        }
+        $query->andWhere(['status' => self::STATUS_APPROVED]);
+
         if ($tree === true) {
             $query->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC]);
         } else {

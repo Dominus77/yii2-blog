@@ -8,11 +8,13 @@ use modules\comment\Module;
 
 /** @var $this yii\web\View */
 /** @var $model Comment */
+
 ?>
 
 <div class="comment-widget-form">
     <?php $form = ActiveForm::begin([
         'id' => 'comment-form',
+        'enableClientValidation' => true,
         'action' => Url::to(['/comment/default/add'])
     ]); ?>
 
@@ -35,14 +37,10 @@ use modules\comment\Module;
     <?= $form->field($model, 'entity')->hiddenInput()->label(false) ?>
     <?= $form->field($model, 'entity_id')->hiddenInput()->label(false) ?>
     <?= $form->field($model, 'rootId')->hiddenInput()->label(false) ?>
-    <?php //= $form->field($model, 'parentId')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'parentId')->textInput([
-        'class' => 'form-control',
-        'placeholder' => true
-    ]) ?>
+    <?= $form->field($model, 'parentId')->hiddenInput()->label(false) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-send"></span> ' . Module::t('module', 'Submit'), [
+        <?= Html::submitButton('<span class="glyphicon glyphicon-send"></span> ' . Module::t('module', 'Submit comment'), [
             'class' => 'btn btn-primary',
             'name' => 'contact-button'
         ]) ?>

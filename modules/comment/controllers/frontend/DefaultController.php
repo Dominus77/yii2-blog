@@ -33,7 +33,6 @@ class DefaultController extends Controller
 
     /**
      * @return Response
-     * @throws NotFoundHttpException
      */
     public function actionAdd()
     {
@@ -58,9 +57,8 @@ class DefaultController extends Controller
             } else {
                 Yii::$app->session->setFlash('error', $msgError);
             }
-            return $this->redirect(Yii::$app->request->referrer);
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

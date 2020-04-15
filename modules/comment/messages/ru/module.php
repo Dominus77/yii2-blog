@@ -18,5 +18,8 @@ return [
     'Wait' => 'Ожитает',
     'Approved' => 'Одобрено',
     'Blocked' => 'Заблокировано',
-    'Submit' => 'Отправить',
+    'Submit comment' => 'Отправить комментарий',
+    'Reply' => 'Ответить',
+    'Comment this' => 'Комментировать',
+    'Comments ({:count})' => 'Комментариев ({:count})'
 ];
