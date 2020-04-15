@@ -5,12 +5,16 @@ namespace modules\comment\controllers\backend;
 use Yii;
 use modules\comment\models\Comment;
 use modules\comment\models\search\CommentSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use modules\rbac\models\Permission;
 
 /**
- * DefaultController implements the CRUD actions for Comment model.
+ * Class DefaultController
+ * @package modules\comment\controllers\backend
  */
 class DefaultController extends Controller
 {
@@ -20,8 +24,17 @@ class DefaultController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => [Permission::PERMISSION_MANAGER_COMMENTS]
+                    ]
+                ]
+            ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -96,16 +109,33 @@ class DefaultController extends Controller
     }
 
     /**
-     * Deletes an existing Comment model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * Change status
      * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionChangeStatus($id)
+    {
+        $model = $this->findModel($id);
+        $model->setStatus();
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param integer $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
         return $this->redirect(['index']);
     }
 

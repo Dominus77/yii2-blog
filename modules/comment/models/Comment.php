@@ -2,9 +2,6 @@
 
 namespace modules\comment\models;
 
-use modules\blog\models\Category;
-use Yii;
-use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\db\ActiveQuery;
@@ -12,9 +9,9 @@ use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use paulzi\nestedsets\NestedSetsBehavior;
 use paulzi\autotree\AutoTreeTrait;
+use modules\comment\traits\ModuleTrait;
 use modules\comment\models\query\CommentQuery;
 use modules\comment\Module;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "{{%comment}}".
@@ -38,7 +35,7 @@ use yii\helpers\VarDumper;
  */
 class Comment extends ActiveRecord
 {
-    use AutoTreeTrait;
+    use AutoTreeTrait, ModuleTrait;
 
     const STATUS_WAIT = 0;
     const STATUS_APPROVED = 1;
@@ -221,6 +218,20 @@ class Comment extends ActiveRecord
                 $this->status = self::STATUS_WAIT;
         }
         return $this->status;
+    }
+
+    /**
+     * Change status children node
+     * @param integer $nodeId
+     * @return bool|int
+     */
+    public static function changeStatusChildren($nodeId)
+    {
+        if ($node = self::findOne(['id' => $nodeId])) {
+            $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
+            return self::updateAll(['status' => $node->status], ['id' => $childrenId]);
+        }
+        return false;
     }
 
     /**

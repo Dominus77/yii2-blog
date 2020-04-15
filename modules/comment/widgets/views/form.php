@@ -20,8 +20,8 @@ use modules\comment\Module;
 
     <?= $form->field($model, 'author')->textInput([
         'class' => 'form-control',
-        'placeholder' => true
-    ]) ?>
+        'placeholder' => Module::t('module', 'Name')
+    ])->label(Module::t('module', 'Name')) ?>
 
     <?= $form->field($model, 'email')->textInput([
         'class' => 'form-control',
