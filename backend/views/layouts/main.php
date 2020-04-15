@@ -1,5 +1,11 @@
 <?php
 
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\View;
+use yii\widgets\Menu;
+use yii\widgets\Breadcrumbs;
+use common\widgets\Alert;
 use backend\assets\AppAsset;
 use backend\assets\plugins\iCheckAsset;
 use backend\widgets\control\ControlSidebar;
@@ -9,17 +15,12 @@ use backend\widgets\navbar\TasksWidget;
 use backend\widgets\search\SearchSidebar;
 use modules\rbac\models\Permission;
 use modules\users\models\User;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\web\View;
-use yii\widgets\Menu;
-use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
 use modules\users\widgets\AvatarWidget;
 use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
 use modules\rbac\Module as RbacModule;
 use modules\blog\Module as BlogModule;
+use modules\comment\Module as CommentModule;
 
 /* @var $this View */
 /* @var $content string */
@@ -205,39 +206,21 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                             'label' => BlogModule::t('module', 'Tags'),
                             'url' => ['/blog/tag/index']
                         ],
+                        [
+                            'label' => BlogModule::t('module', 'Comments'),
+                            'url' => ['/comment/entity/index', 'entity' => modules\blog\models\Post::class]
+                        ],
                     ]
+                ],
+                [
+                    'label' => '<i class="fa fa-comments"></i> <span>' . CommentModule::t('module', 'Comments') . '</span>',
+                    'url' => ['/comment/default/index'],
+                    'visible' => $user->can(Permission::PERMISSION_MANAGER_COMMENTS)
                 ],
                 [
                     'label' => '<i class="fa fa-wrench"></i> <span>' . Yii::t('app', 'Mode site') . '</span>',
                     'url' => ['/maintenance/index'],
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_MAINTENANCE)
-                ],
-                [
-                    'label' => '<i class="fa fa-link"></i> <span>' . Yii::t('app', 'Another Link') . '</span>',
-                    'url' => ['#']
-                ],
-                [
-                    'label' => '<i class="fa fa-link"></i> <span>' . Yii::t('app', 'Multilevel') . '</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>',
-                    'url' => ['#'],
-                    'options' => ['class' => 'treeview'],
-                    'visible' => !Yii::$app->user->isGuest,
-                    'items' => [
-                        [
-                            'label' => '<i class="fa fa-circle-o"> </i><span>' . Yii::t('app', 'Link in level 2') . '</span>',
-                            'url' => ['#']
-                        ],
-                        [
-                            'label' => '<i class="fa fa-circle-o"> </i><span>' . Yii::t('app', 'Link in level 2') . '</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>',
-                            'url' => ['#'],
-                            'options' => ['class' => 'treeview'],
-                            'items' => [
-                                [
-                                    'label' => Yii::t('app', 'Link in level 3'),
-                                    'url' => ['#']
-                                ]
-                            ]
-                        ]
-                    ]
                 ]
             ];
             echo Menu::widget([

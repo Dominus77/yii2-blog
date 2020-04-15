@@ -8,6 +8,7 @@ use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
 use modules\rbac\Module as RbacModule;
 use modules\blog\Module as BlogModule;
+use modules\comment\Module as CommentModule;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\states\FileState;
 
@@ -46,6 +47,9 @@ return [
         ],
         'blog' => [
             'class' => BlogModule::class
+        ],
+        'comment' => [
+            'class' => CommentModule::class
         ],
     ],
     'components' => [

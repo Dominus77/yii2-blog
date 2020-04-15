@@ -5,7 +5,7 @@ namespace modules\blog\widgets\tag;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\Widget;
+use yii\base\Widget;
 use modules\blog\models\Tag;
 use modules\blog\Module;
 

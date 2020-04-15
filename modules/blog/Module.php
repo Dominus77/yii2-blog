@@ -48,7 +48,7 @@ class Module extends \yii\base\Module
                     'roots' => [
                         [
                             'baseUrl' => Yii::$app->urlManagerFrontend->baseUrl,//Yii::$app->params['domainFrontend'],
-                            'basePath' => '@frontend/web',
+                            'basePath' => '@upload',
                             'path' => 'uploads/blog',
                             'name' => self::t('module', 'uploads'),
                             'access' => ['read' => '*', 'write' => Permission::PERMISSION_MANAGER_POST]

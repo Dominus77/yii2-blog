@@ -5,7 +5,7 @@ namespace modules\blog\widgets\menu;
 use Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\Widget;
+use yii\base\Widget;
 use yii\widgets\Menu;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;

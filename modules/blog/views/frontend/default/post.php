@@ -5,6 +5,8 @@ use yii\helpers\Html;
 use modules\blog\models\Post;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
+use modules\comment\widgets\CommentList;
+use modules\comment\widgets\CommentForm;
 use modules\blog\Module;
 
 /** @var $this View */
@@ -56,6 +58,17 @@ $this->params['breadcrumbs'][] = $model->title;
                         <?php } ?>
                     </div>
                 </div>
+            </div>
+
+            <div class="comment-container">
+                <?= CommentList::widget([
+                    'status' => true,
+                    'model' => $model
+                ]) ?>
+                <?= CommentForm::widget([
+                    'status' => true,
+                    'model' => $model
+                ]) ?>
             </div>
 
         </div>

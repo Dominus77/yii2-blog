@@ -10,7 +10,6 @@ use yii\helpers\ArrayHelper;
 use paulzi\autotree\AutoTreeTrait;
 use paulzi\nestedsets\NestedSetsQueryTrait;
 use Throwable;
-use yii\helpers\VarDumper;
 
 /**
  * Class CategoryTreeBehavior

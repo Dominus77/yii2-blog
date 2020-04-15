@@ -16,6 +16,7 @@ use modules\users\Bootstrap as UserBootstrap;
 use modules\rbac\Bootstrap as RbacBootstrap;
 use modules\rbac\Module;
 use modules\blog\Bootstrap as BlogBootstrap;
+use modules\comment\Bootstrap as CommentBootstrap;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -37,7 +38,8 @@ return [
         UserBootstrap::class,
         RbacBootstrap::class,
         BackendMaintenance::class,
-        BlogBootstrap::class
+        BlogBootstrap::class,
+        CommentBootstrap::class
     ],
     'modules' => [
         'main' => [
@@ -53,6 +55,9 @@ return [
             ]
         ],
         'blog' => [
+            'isBackend' => true
+        ],
+        'comment' => [
             'isBackend' => true
         ]
     ],

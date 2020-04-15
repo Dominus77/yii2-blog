@@ -4,7 +4,6 @@ namespace modules\blog\widgets\tree_menu;
 
 use modules\blog\models\Category;
 use yii\bootstrap\Widget;
-use yii\helpers\Html;
 
 /**
  * Class BaseTreeMenu

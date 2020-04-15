@@ -2,9 +2,9 @@
 
 namespace modules\blog\traits;
 
-use modules\blog\models\Category;
 use Yii;
 use yii\base\InvalidConfigException;
+use modules\blog\models\Category;
 use modules\blog\Module;
 
 /**
@@ -27,6 +27,7 @@ trait ModuleTrait
      * Get a full tree as a list, except the node and its children
      * @param null $excludeNodeId
      * @return array
+     * @throws \Throwable
      */
     public static function getCategoriesTree($excludeNodeId = null)
     {
