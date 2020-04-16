@@ -47,16 +47,17 @@ class CommentList extends Widget
         if ($this->status === true) {
             $this->registerAssets();
             echo Html::beginTag('div', ['id' => $this->id, 'class' => 'comments']) . PHP_EOL;
+            $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
             if (is_array($tree = $this->getRenderTree())) {
-                $title = Module::t('module', 'Comments ({:count})', [':count' => $this->count]);
+                $title = $icon . ' ' . Module::t('module', 'Comments ({:count})', [':count' => $this->count]);
                 echo Html::tag('h3', $title, ['class' => 'title-comments']) . PHP_EOL;
                 foreach ($tree as $items) {
                     echo $items . PHP_EOL;
                 }
             }
-            echo Html::button(Module::t('module', 'Comment this'), [
+            echo Html::button($icon . ' ' . Module::t('module', 'Comment this'), [
                 'id' => 'comment-this-button',
-                'class' => 'btn btn-primary btn-sm',
+                'class' => 'btn btn-info btn-sm',
                 'style' => 'display:none;'
             ]);
             echo Html::endTag('div') . PHP_EOL;

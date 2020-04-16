@@ -8,6 +8,8 @@ use modules\comment\Module;
 /** @var $model Comment */
 /** @var $index integer */
 /** @var $avatar string */
+
+$icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
 ?>
 <div class="media-left">
     <img class="media-object img-rounded" src="<?= $avatar ?>" alt="<?= $avatar ?>">
@@ -27,9 +29,9 @@ use modules\comment\Module;
             </div>
         </div>
         <div class="panel-footer">
-            <?= Html::button(Module::t('module', 'Reply'), [
+            <?= Html::button($icon . ' ' . Module::t('module', 'Reply'), [
                 'id' => 'reply-button-' . $model->id,
-                'class' => 'reply-button btn btn-primary btn-sm',
+                'class' => 'reply-button btn btn-info btn-sm',
                 'data' => [
                     'id' => $model->id
                 ],
