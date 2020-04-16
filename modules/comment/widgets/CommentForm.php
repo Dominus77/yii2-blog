@@ -51,6 +51,9 @@ class CommentForm extends Widget
     protected function prepareModel()
     {
         $model = new Comment();
+        if (Yii::$app->user->isGuest) {
+            $model->scenario = $model::SCENARIO_GUEST;
+        }
         $model->entity = get_class($this->model);
         $model->entity_id = $this->model->id;
         if ($user = Yii::$app->user->identity) {

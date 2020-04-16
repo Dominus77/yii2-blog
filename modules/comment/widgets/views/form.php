@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\captcha\Captcha;
 use modules\comment\models\Comment;
 use modules\comment\Module;
 
@@ -32,6 +33,24 @@ use modules\comment\Module;
         'class' => 'form-control',
         'placeholder' => true
     ]) ?>
+
+    <?php if ($model->scenario === $model::SCENARIO_GUEST) { ?>
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
+                    //'template' => '<div class="row"><div class="col-md-3">{image}</div><div class="col-md-6">{input}</div></div>',
+                    'captchaAction' => Url::to('/comment/default/captcha'),
+                    'imageOptions' => [
+                        'style' => 'display:block; border:none; cursor: pointer',
+                        'alt' => Module::t('module', 'Code'),
+                        'title' => Module::t('module', 'Click on the picture to change the code.')
+                    ],
+                    //'class' => 'form-control'
+                ])->label(false) ?>
+            </div>
+        </div>
+    <?php } ?>
+
 
     <?= $form->field($model, 'entity')->hiddenInput()->label(false) ?>
     <?= $form->field($model, 'entity_id')->hiddenInput()->label(false) ?>

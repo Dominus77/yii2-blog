@@ -50,9 +50,11 @@ class Comment extends ActiveRecord
     const STATUS_BLOCKED = 2;
     const TYPE_BEFORE = 'before';
     const TYPE_AFTER = 'after';
+    const SCENARIO_GUEST = 'guest';
 
     public $childrenList;
     public $typeMove;
+    public $verifyCode;
 
     protected $rootId;
     public $parentId;
@@ -92,8 +94,21 @@ class Comment extends ActiveRecord
             [['comment'], 'string'],
             [['entity', 'author'], 'string', 'max' => 255],
             ['email', 'email'],
+            [['verifyCode'], 'required', 'on' => self::SCENARIO_GUEST],
+            ['verifyCode', 'captcha', 'captchaAction' => Url::to('/comment/default/captcha'), 'on' => self::SCENARIO_GUEST],
             [['rootId', 'parentId', 'childrenList', 'typeMove'], 'safe']
         ];
+    }
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_GUEST] = ['entity', 'entity_id', 'author', 'email', 'comment', 'verifyCode'];
+        return $scenarios;
     }
 
     /**

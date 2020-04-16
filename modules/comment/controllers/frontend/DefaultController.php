@@ -3,6 +3,7 @@
 namespace modules\comment\controllers\frontend;
 
 use Yii;
+use yii\captcha\CaptchaAction;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -28,6 +29,18 @@ class DefaultController extends Controller
                     'add' => ['POST'],
                 ],
             ],
+        ];
+    }
+
+    public function actions()
+    {
+        return [
+            'captcha' => [
+                'class' => CaptchaAction::class,
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'backColor' => 0xF1F1F1,
+                'foreColor' => 0xEE7600
+            ]
         ];
     }
 

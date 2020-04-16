@@ -41,3 +41,7 @@
 .reply-form-container form {
     padding-top: 20px;
 }
+
+.field-comment-verifycode input {
+    width: 120px;
+}
