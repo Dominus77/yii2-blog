@@ -41,4 +41,8 @@ return [
     'Root' => 'Корень',
     '- all -' => '- все -',
     'Link' => 'Ссылка',
+    'Verify Code' => 'Проверочный код',
+    'Code' => 'Код',
+    'Click on the picture to change the code.' => 'Кликните по картинке, чтобы изменить код.',
+    'No one will see' => 'Никто не увидит',
 ];

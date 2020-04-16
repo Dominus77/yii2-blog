@@ -26,7 +26,7 @@ use modules\comment\Module;
     <?= $form->field($model, 'email')->textInput([
         'class' => 'form-control',
         'placeholder' => true
-    ]) ?>
+    ])->hint(Module::t('module', 'No one will see')) ?>
 
     <?= $form->field($model, 'comment')->textarea([
         'rows' => 6,
@@ -38,14 +38,12 @@ use modules\comment\Module;
         <div class="row">
             <div class="col-md-6">
                 <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
-                    //'template' => '<div class="row"><div class="col-md-3">{image}</div><div class="col-md-6">{input}</div></div>',
                     'captchaAction' => Url::to('/comment/default/captcha'),
                     'imageOptions' => [
                         'style' => 'display:block; border:none; cursor: pointer',
                         'alt' => Module::t('module', 'Code'),
                         'title' => Module::t('module', 'Click on the picture to change the code.')
                     ],
-                    //'class' => 'form-control'
                 ])->label(false) ?>
             </div>
         </div>

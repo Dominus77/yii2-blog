@@ -133,6 +133,7 @@ class Comment extends ActiveRecord
             'Parent' => Module::t('module', 'Parent'),
             'childrenList' => Module::t('module', 'Children List'),
             'typeMove' => Module::t('module', 'Type Move'),
+            'verifyCode' => Module::t('module', 'Verify Code')
         ];
     }
 

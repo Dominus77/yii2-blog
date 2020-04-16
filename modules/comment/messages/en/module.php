@@ -41,4 +41,8 @@ return [
     'Root' => 'Root',
     '- all -' => '- all -',
     'Link' => 'Link',
+    'Verify Code' => 'Verify Code',
+    'Code' => 'Code',
+    'Click on the picture to change the code.' => 'Click on the picture to change the code.',
+    'No one will see' => 'No one will see',
 ];
