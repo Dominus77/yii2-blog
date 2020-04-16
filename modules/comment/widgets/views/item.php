@@ -12,7 +12,7 @@ use modules\comment\Module;
     <img class="media-object img-rounded" src="<?= $avatar ?>" alt="<?= $avatar ?>">
 </div>
 <div class="media-body">
-    <div class="panel panel-primary">
+    <div class="panel panel-info">
         <div class="panel-heading">
             <div class="author"><?= $model->author ?></div>
             <div class="metadata">

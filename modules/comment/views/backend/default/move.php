@@ -1,17 +1,18 @@
 <?php
 
 use yii\helpers\Html;
+use modules\comment\models\Comment;
 use modules\comment\Module;
 
 /* @var $this yii\web\View */
-/* @var $model modules\comment\models\Comment */
+/* @var $model Comment */
 
 $this->title = Module::t('module', 'Comments');
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->getComment(), 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Module::t('module', 'Update');
+$this->params['breadcrumbs'][] = Module::t('module', 'Move');
 ?>
-<div class="comment-backend-default-update">
+<div class="comment-backend-default-move">
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title"><?= Html::encode($model->getComment()) ?></h3>
@@ -20,14 +21,14 @@ $this->params['breadcrumbs'][] = Module::t('module', 'Update');
         <div class="box-body">
             <div class="pull-left"></div>
             <div class="pull-right"></div>
-            <?= $this->render('form/_update', [
+            <?= $this->render('form/_move', [
                 'model' => $model,
             ]) ?>
         </div>
         <div class="box-footer">
-            <?= Html::submitButton('<span class="glyphicon glyphicon-floppy-disk"></span> ' . Module::t('module', 'Save'), [
+            <?= Html::submitButton('<span class="glyphicon glyphicon-random"></span> ' . Module::t('module', 'Move'), [
                 'class' => 'btn btn-success',
-                'form' => 'form-update'
+                'form' => 'form-move'
             ]) ?>
         </div>
     </div>

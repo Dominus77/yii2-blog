@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
-use yii\helpers\StringHelper;
+use modules\comment\grid\DataColumn;
 use modules\comment\models\search\CommentSearch;
 use modules\comment\models\Comment;
 use modules\comment\Module;
@@ -54,6 +54,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'tableOptions' => [
                     'class' => 'table table-bordered table-hover',
                 ],
+                'rowOptions' => static function ($model) {
+                    $options = [];
+                    if ($model->depth === 0) {
+                        $options = [
+                            'style' => 'background: #d9edf7;'
+                        ];
+                    }
+                    return $options;
+                },
                 'columns' => [
                     ['class' => SerialColumn::class],
                     [
@@ -61,63 +70,37 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'raw',
                         'value' => static function (Comment $model) {
                             if ($model->depth === 0) {
-                                return Html::tag('span', StringHelper::truncate($model->entity, 40, ' ...'), [
+                                return Html::tag('span', $model->entity, [
                                     'style' => 'font-weight: bold;'
                                 ]);
                             }
-                            return str_repeat('-', $model->depth - 1) . ' ' . StringHelper::truncate($model->comment, 30, ' ...');
+                            return str_repeat('-', $model->depth - 1) . ' ' . $model->getComment();
                         }
                     ],
                     [
+                        'class' => DataColumn::class,
                         'attribute' => 'author',
-                        'value' => static function (Comment $model) {
-                            if ($model->depth === 0) {
-                                return '-';
-                            }
-                            return $model->author;
-                        }
                     ],
                     [
+                        'class' => DataColumn::class,
                         'attribute' => 'email',
-                        'format' => 'raw',
-                        'value' => static function (Comment $model) {
-                            if ($model->depth === 0) {
-                                return '-';
-                            }
-                            return Html::mailto($model->email, $model->email);
-                        }
+                        'format' => 'email',
                     ],
                     [
+                        'class' => DataColumn::class,
                         'attribute' => 'entity',
-                        'format' => 'raw',
-                        'value' => static function (Comment $model) {
-                            if ($model->depth === 0) {
-                                return '-';
-                            }
-                            return $model->entity;
-                        }
                     ],
                     [
+                        'class' => DataColumn::class,
                         'attribute' => 'entity_id',
-                        'format' => 'raw',
-                        'value' => static function (Comment $model) {
-                            if ($model->depth === 0) {
-                                return '-';
-                            }
-                            return $model->entity_id;
-                        }
                     ],
                     [
+                        'class' => DataColumn::class,
                         'attribute' => 'created_at',
-                        'format' => 'raw',
                         'value' => static function (Comment $model) {
-                            if ($model->depth === 0) {
-                                return '-';
-                            }
                             return Comment::getFormatData($model->created_at);
                         }
                     ],
-                    //'updated_at',
                     [
                         'attribute' => 'status',
                         'filter' => Html::activeDropDownList($searchModel, 'status', $searchModel->statusesArray, [
@@ -129,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]),
                         'format' => 'raw',
                         'value' => static function (Comment $model) {
-                            $title = $model->isApproved ? Module::t('module', 'Click to change status to block') : Module::t('module', 'Click to change status to approved');
+                            $title = $model->isApproved ? Module::t('module', 'Click to change status to blocked') : Module::t('module', 'Click to change status to approved');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
                         },
                         'contentOptions' => [
@@ -137,8 +120,24 @@ $this->params['breadcrumbs'][] = $this->title;
                             'style' => 'width: 140px'
                         ],
                     ],
-
-                    ['class' => ActionColumn::class],
+                    [
+                        'class' => ActionColumn::class,
+                        'contentOptions' => [
+                            'class' => 'action-column',
+                            'style' => 'width: 90px'
+                        ],
+                        'template' => '{view} {move} {update} {delete}',
+                        'buttons' => [
+                            'move' => static function ($url) {
+                                return Html::a('<span class="glyphicon glyphicon-random"></span>', $url, [
+                                    'title' => Module::t('module', 'Move'),
+                                    'data' => [
+                                        'pjax' => 0,
+                                    ]
+                                ]);
+                            },
+                        ]
+                    ]
                 ],
             ]) ?>
         </div>

@@ -4,6 +4,7 @@ namespace modules\comment\traits;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use modules\comment\models\Comment;
 use modules\comment\Module;
 
 /**
@@ -62,5 +63,15 @@ trait ModuleTrait
             $defaultPageSize = $module->defaultPageSize;
         }
         return $defaultPageSize;
+    }
+
+    /**
+     * Get a full tree as a list, except the node and its children
+     * @param null $excludeNodeId
+     * @return array
+     */
+    public static function getCommentTree($excludeNodeId = null)
+    {
+        return Comment::getFullTree($excludeNodeId);
     }
 }

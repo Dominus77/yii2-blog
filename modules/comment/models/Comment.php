@@ -4,6 +4,7 @@ namespace modules\comment\models;
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
@@ -32,6 +33,7 @@ use modules\comment\Module;
  *
  * @property int $rootId Root ID
  * @property int $parentId Parent ID
+ * @property bool $isApproved Is Approved
  */
 class Comment extends ActiveRecord
 {
@@ -40,6 +42,11 @@ class Comment extends ActiveRecord
     const STATUS_WAIT = 0;
     const STATUS_APPROVED = 1;
     const STATUS_BLOCKED = 2;
+    const TYPE_BEFORE = 'before';
+    const TYPE_AFTER = 'after';
+
+    public $childrenList;
+    public $typeMove;
 
     protected $rootId;
     public $parentId;
@@ -79,7 +86,7 @@ class Comment extends ActiveRecord
             [['comment'], 'string'],
             [['entity', 'author'], 'string', 'max' => 255],
             ['email', 'email'],
-            [['rootId', 'parentId'], 'safe']
+            [['rootId', 'parentId', 'childrenList', 'typeMove'], 'safe']
         ];
     }
 
@@ -96,12 +103,15 @@ class Comment extends ActiveRecord
             'depth' => Module::t('module', 'Depth'),
             'entity' => Module::t('module', 'Entity'),
             'entity_id' => Module::t('module', 'Entity ID'),
-            'author' => Module::t('module', 'Author'),
+            'author' => Module::t('module', 'Name'),
             'email' => Module::t('module', 'Email'),
             'comment' => Module::t('module', 'Comment'),
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
-            'status' => Module::t('module', 'Status')
+            'status' => Module::t('module', 'Status'),
+            'Parent' => Module::t('module', 'Parent'),
+            'childrenList' => Module::t('module', 'Children List'),
+            'typeMove' => Module::t('module', 'Type Move'),
         ];
     }
 
@@ -155,6 +165,18 @@ class Comment extends ActiveRecord
             self::STATUS_WAIT => 'warning',
             self::STATUS_APPROVED => 'success',
             self::STATUS_BLOCKED => 'danger'
+        ];
+    }
+
+    /**
+     * Move types
+     * @return array
+     */
+    public static function getMoveTypesArray()
+    {
+        return [
+            self::TYPE_BEFORE => Module::t('module', 'Before'),
+            self::TYPE_AFTER => Module::t('module', 'After'),
         ];
     }
 
@@ -270,6 +292,23 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @param string $value
+     */
+    public function setComment($value)
+    {
+        $this->comment = StringHelper::truncate($value, 30, ' ...');
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        $this->setComment($this->comment);
+        return $this->comment;
+    }
+
+    /**
      * @param int $depth
      * @param string $itemsKey
      * @param string $getDataCallback
@@ -314,6 +353,44 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * Get a full tree as a list, except the node and its children
+     * @param null $excludeNodeId
+     * @return array
+     */
+    public static function getFullTree($excludeNodeId = null)
+    {
+        // don't include children and the node
+        $children = [];
+        if ($excludeNodeId !== null) {
+            /** @var $tree NestedSetsBehavior */
+            $tree = self::findOne(['id' => $excludeNodeId]);
+            $children = ArrayHelper::merge(
+                $tree->getDescendants()->column(),
+                [$excludeNodeId]
+            );
+        }
+
+        $query = self::find()
+            ->select('id, lft, depth, comment, entity')
+            ->where(['NOT IN', 'id', $children])
+            ->orderBy('entity, tree, lft');
+
+        $rows = $query->all();
+
+        $return = [];
+
+        foreach ($rows as $row) {
+            /** @var $row Comment */
+            if ($row->depth === 0) {
+                $return[$row->id] = $row->entity;
+            } else {
+                $return[$row->id] = str_repeat('-', $row->depth) . ' ' . $row->getComment();
+            }
+        }
+        return $return;
+    }
+
+    /**
      * Get request data
      * @param int $depthStart
      * @param bool $tree
@@ -331,5 +408,45 @@ class Comment extends ActiveRecord
             $query->orderBy(['lft' => SORT_ASC]);
         }
         return $query->all();
+    }
+
+    /**
+     * @param integer|null $nodeId
+     * @param integer|null $unsetId
+     * @return array
+     */
+    public static function getChildrenList($nodeId = null, $unsetId = null)
+    {
+        if ($nodeId !== null && ($node = self::findOne(['id' => $nodeId]))) {
+            $childrenArray = ArrayHelper::map($node->children, 'id', static function ($model) {
+                return $model->depth === 0 ? $model->entity :
+                    $model->getComment();
+            });
+            if ($unsetId !== null) {
+                unset($childrenArray[$unsetId]);
+            }
+            return $childrenArray;
+        }
+        return [];
+    }
+
+    /**
+     * Return Prev node id
+     * @return int|null
+     */
+    public function getPrevNodeId()
+    {
+        $prev = $this->prev;
+        return $prev ? $prev->id : null;
+    }
+
+    /**
+     * Return Next node id
+     * @return int|null
+     */
+    public function getNextNodeId()
+    {
+        $next = $this->next;
+        return $next ? $next->id : null;
     }
 }

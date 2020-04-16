@@ -100,10 +100,69 @@ class DefaultController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Comment::changeStatusChildren($model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Return children list
+     * @return array|Response
+     */
+    public function actionChildrenList()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($post = Yii::$app->request->post()) {
+                $selectList = Comment::getChildrenList($post['parent'], $post['id']);
+                return [
+                    'result' => $this->renderPartial('ajax/selectList', ['selectList' => $selectList]),
+                ];
+            }
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * Move node
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionMove($id)
+    {
+        $model = $this->findModel($id);
+        if (($post = Yii::$app->request->post()) && $model->load($post)) {
+
+            if (empty($model->parentId)) { // Перемещаем как корень
+                if (!$model->isRoot()) {
+                    $model->makeRoot()->save(false);
+                }
+            } else if ($model->id !== $model->parentId) { // Перемещаем в указанный узел
+                $node = $this->findModel($model->parentId);
+                $model->appendTo($node)->save(false);
+            }
+            // Перемещаем в пределах узла
+            $this->moveWithinNode($model);
+            return $this->redirect(['index']);
+        }
+
+        $model->parentId = $model->getParentId();
+        if ($select = $model->getPrevNodeId()) {
+            $typeMove = Comment::TYPE_AFTER;
+        } else if ($select = $model->getNextNodeId()) {
+            $typeMove = Comment::TYPE_BEFORE;
+        } else {
+            $typeMove = null;
+        }
+
+        $model->childrenList = $select;
+        $model->typeMove = $typeMove;
+        return $this->render('move', [
             'model' => $model,
         ]);
     }
@@ -137,6 +196,31 @@ class DefaultController extends Controller
         $model = $this->findModel($id);
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Move within a node
+     * @param Comment $model
+     * @return Comment
+     * @throws NotFoundHttpException
+     */
+    protected function moveWithinNode(Comment $model)
+    {
+        if ($model !== null && !empty($model->childrenList)) {
+            $moveModel = $this->findModel($model->id);
+            $node = $this->findModel($model->childrenList);
+            switch ($model->typeMove) {
+                case Comment::TYPE_BEFORE:
+                    $moveModel->insertBefore($node)->save(false);
+                    break;
+                case Comment::TYPE_AFTER:
+                    $moveModel->insertAfter($node)->save(false);
+                    break;
+                default:
+                    $moveModel->insertAfter($node)->save(false);
+            }
+        }
+        return $model;
     }
 
     /**
