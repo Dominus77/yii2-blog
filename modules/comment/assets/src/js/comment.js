@@ -3,18 +3,20 @@ function commentInit(param) {
         let parentId = $(this).val(),
             url = param.url,
             id = param.id,
-            positionContainer = $('#position-container'),
-            inputPosition = $('#input-position'),
+            entityContainer = $('#entity-container'),
             childrenListContainer = $('#children-list-container'),
-            childrenList = $('#input-children-list');
+            childrenList = $('#input-children-list'),
+            entity = $('#input-entity'),
+            entityId = $('#input-entity-id');
 
         if (parentId === '') {
             childrenList.html(parentId);
             childrenListContainer.hide();
-            positionContainer.show();
+            entity.val(null);
+            entityId.val(null);
+            entityContainer.show();
         } else {
-            inputPosition.val(0);
-            positionContainer.hide();
+            entityContainer.hide();
 
             $.ajax({
                 url: url,
@@ -23,6 +25,12 @@ function commentInit(param) {
                 data: {id: id, parent: parentId}
             }).done(function (response) {
                 childrenList.html(response.result);
+                entity.val(response.entity);
+                if (response.entityId === 0) {
+                    entityId.val(null);
+                } else {
+                    entityId.val(response.entityId);
+                }
                 if (response.result === '') {
                     childrenListContainer.hide();
                 } else {

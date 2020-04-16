@@ -8,7 +8,6 @@ use modules\comment\Module;
 
 /** @var $this yii\web\View */
 /** @var $model Comment */
-
 ?>
 
 <div class="comment-widget-form">

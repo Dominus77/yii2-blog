@@ -39,4 +39,5 @@ return [
     'Before' => 'Before',
     'After' => 'After',
     'Root' => 'Root',
+    '- all -' => '- all -',
 ];

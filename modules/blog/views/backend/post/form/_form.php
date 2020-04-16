@@ -7,7 +7,6 @@ use modules\blog\editor\TinyMce;
 use modules\blog\assets\HtmlFormattingAsset;
 use dosamigos\selectize\SelectizeTextInput;
 
-
 /* @var $this yii\web\View */
 /* @var $model modules\blog\models\Post */
 /* @var $form yii\widgets\ActiveForm */

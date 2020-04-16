@@ -73,13 +73,22 @@ class DefaultController extends Controller
     /**
      * Creates a new Comment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|Response
+     * @throws NotFoundHttpException
      */
     public function actionCreate()
     {
         $model = new Comment();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
+            if (empty($model->parentId)) {
+                $model->makeRoot()->save();
+            } else {
+                /** @var Comment $node */
+                $node = Comment::findOne(['id' => $model->parentId]);
+                $model->appendTo($node)->save();
+            }
+            // Перемещаем в пределах узла
+            $model = $this->moveWithinNode($model);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -119,8 +128,12 @@ class DefaultController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($post = Yii::$app->request->post()) {
                 $selectList = Comment::getChildrenList($post['parent'], $post['id']);
+                $comment = $this->findModel($post['parent']);
                 return [
                     'result' => $this->renderPartial('ajax/selectList', ['selectList' => $selectList]),
+                    'entity' => $comment->entity,
+                    'entityId' => $comment->entity_id,
+                    'post' => $post
                 ];
             }
         }

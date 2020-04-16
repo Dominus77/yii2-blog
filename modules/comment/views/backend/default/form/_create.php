@@ -36,9 +36,16 @@ $categoryAsset::register($this);
         ]) ?>
     </div>
 
-    <?= $form->field($model, 'entity')->textInput(['maxlength' => true]) ?>
+    <div id="entity-container">
+        <?= $form->field($model, 'entity')->textInput([
+            'id' => 'input-entity',
+            'maxlength' => true
+        ]) ?>
 
-    <?= $form->field($model, 'entity_id')->textInput() ?>
+        <?= $form->field($model, 'entity_id')->textInput([
+            'id' => 'input-entity-id',
+        ]) ?>
+    </div>
 
     <?= $form->field($model, 'author')->textInput(['maxlength' => true]) ?>
 
