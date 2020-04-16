@@ -6,6 +6,7 @@ use modules\comment\Module;
 
 /** @var $this yii\web\View */
 /** @var $model Comment */
+/** @var $index integer */
 /** @var $avatar string */
 ?>
 <div class="media-left">
@@ -14,6 +15,7 @@ use modules\comment\Module;
 <div class="media-body">
     <div class="panel panel-info">
         <div class="panel-heading">
+            <div class="link"><?= Html::a(Module::t('module', 'Link'), $model->url) ?></div>
             <div class="author"><?= $model->author ?></div>
             <div class="metadata">
                 <span class="date"><?= Yii::$app->formatter->asDatetime($model->created_at, 'php: d mm Y, H:i') ?></span>

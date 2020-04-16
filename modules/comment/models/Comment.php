@@ -4,6 +4,7 @@ namespace modules\comment\models;
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\StringHelper;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -38,6 +39,7 @@ use modules\comment\Module;
  * @property ActiveQuery|Comment $prev
  * @property ActiveQuery|Comment[] $children
  * @property bool $isApproved Is Approved
+ * @property string $url Url
  */
 class Comment extends ActiveRecord
 {
@@ -313,50 +315,6 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * @param int $depth
-     * @param string $itemsKey
-     * @param string $getDataCallback
-     * @return array
-     */
-    public function toNestedArray($depth = 1, $itemsKey = 'items', $getDataCallback = '')
-    {
-        $nodes = $this->getNodes($depth);
-        $exportedAttributes = array_diff(array_keys($this->attributes), ['lft', 'rgt']);
-
-        $trees = [];
-        $stack = [];
-
-        foreach ($nodes as $node) {
-            if ($getDataCallback) {
-                $item = $getDataCallback($node);
-            } else {
-                $item = $node->toArray($exportedAttributes);
-                $item['options'] = ['class' => 'item_' . $node->getPrimaryKey()];
-            }
-
-            $item[$itemsKey] = [];
-            $l = count($stack);
-
-            while ($l > 0 && $stack[$l - 1]['depth'] >= $item['depth']) {
-                array_pop($stack);
-                $l--;
-            }
-            if ($l === 0) {
-                // Assign root node
-                $i = count($trees);
-                $trees[$i] = $item;
-                $stack[] = &$trees[$i];
-            } else {
-                // Add node to parent
-                $i = count($stack[$l - 1][$itemsKey]);
-                $stack[$l - 1][$itemsKey][$i] = $item;
-                $stack[] = &$stack[$l - 1][$itemsKey][$i];
-            }
-        }
-        return $trees;
-    }
-
-    /**
      * Get a full tree as a list, except the node and its children
      * @param null $excludeNodeId
      * @return array
@@ -453,5 +411,18 @@ class Comment extends ActiveRecord
     {
         $next = $this->next;
         return $next ? $next->id : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        /** @var ActiveRecord $entity */
+        $entity = $this->entity;
+        /** @var $model */
+        $model = $entity::find()->where(['id' => $this->entity_id])->one();
+        $url = $model->getUrl();
+        return Url::to([$url, '#' => 'comment_' . $this->id]);
     }
 }

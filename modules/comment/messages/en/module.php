@@ -40,4 +40,5 @@ return [
     'After' => 'After',
     'Root' => 'Root',
     '- all -' => '- all -',
+    'Link' => 'Link',
 ];

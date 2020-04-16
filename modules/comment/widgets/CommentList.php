@@ -2,7 +2,6 @@
 
 namespace modules\comment\widgets;
 
-use Yii;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
@@ -88,8 +87,12 @@ class CommentList extends Widget
                         $array[] = Html::endTag('li') . PHP_EOL;
                     }
                 }
-                $array[] = Html::beginTag('li', ['class' => 'item_' . $n, 'data-id' => $items->id]) . PHP_EOL;
-                $array[] = $this->getItem($items) . PHP_EOL;
+                $array[] = Html::beginTag('li', [
+                        'id' => 'comment_' . $items->id,
+                        'class' => 'item_' . $n,
+                        'data-id' => $items->id
+                    ]) . PHP_EOL;
+                $array[] = $this->getItem($items, $n) . PHP_EOL;
                 $depth = $items->depth;
                 $i++;
             }
@@ -105,12 +108,14 @@ class CommentList extends Widget
     /**
      * Render Item
      * @param $data
+     * @param $key
      * @return string
      */
-    private function getItem($data)
+    private function getItem($data, $index)
     {
         return $this->render('item', [
             'model' => $data,
+            'index' => $index + 1,
             'avatar' => $this->getAvatar()
         ]);
     }

@@ -33,6 +33,11 @@
     font-size: 1.2rem;
 }
 
+.media-body .link {
+    float: right;
+    font-size: 1.2rem;
+}
+
 .reply-form-container form {
     padding-top: 20px;
 }
