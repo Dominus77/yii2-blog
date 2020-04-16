@@ -33,6 +33,10 @@ use modules\comment\Module;
  *
  * @property int $rootId Root ID
  * @property int $parentId Parent ID
+ * @property ActiveQuery|Comment $parent
+ * @property ActiveQuery|Comment $next
+ * @property ActiveQuery|Comment $prev
+ * @property ActiveQuery|Comment[] $children
  * @property bool $isApproved Is Approved
  */
 class Comment extends ActiveRecord
@@ -418,7 +422,8 @@ class Comment extends ActiveRecord
     public static function getChildrenList($nodeId = null, $unsetId = null)
     {
         if ($nodeId !== null && ($node = self::findOne(['id' => $nodeId]))) {
-            $childrenArray = ArrayHelper::map($node->children, 'id', static function ($model) {
+            $children = $node->children;
+            $childrenArray = ArrayHelper::map($children, 'id', static function ($model) {
                 return $model->depth === 0 ? $model->entity :
                     $model->getComment();
             });
