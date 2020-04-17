@@ -1,8 +1,11 @@
 let commentThisButton = $('#comment-this-button'),
     parentid = $('#comment-parentid'),
     form = $('#comment-form'),
+    replyContainer = $('.reply-container'),
     replyButton = $('.reply-button'),
     container = '.comment-widget-form';
+
+replyContainer.show();
 
 function reply(e) {
     let target = e,

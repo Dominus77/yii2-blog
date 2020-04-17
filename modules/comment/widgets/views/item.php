@@ -32,7 +32,7 @@ $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
                 <?= $model->comment ?>
             </div>
         </div>
-        <div class="panel-footer">
+        <div class="reply-container panel-footer" style="display:none;">
             <?= Html::button($icon . ' ' . Module::t('module', 'Reply'), [
                 'id' => 'reply-button-' . $model->id,
                 'class' => 'reply-button btn btn-info btn-sm',

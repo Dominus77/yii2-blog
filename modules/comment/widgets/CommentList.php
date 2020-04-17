@@ -8,7 +8,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use modules\comment\models\Comment;
-use modules\comment\assets\ListAsset;
+use modules\comment\widgets\assets\CommentListAsset;
 use modules\comment\Module;
 
 /**
@@ -141,7 +141,7 @@ class CommentList extends Widget
     protected function registerAssets()
     {
         $view = $this->getView();
-        $this->assets = ListAsset::register($view);
+        $this->assets = CommentListAsset::register($view);
     }
 
     /**

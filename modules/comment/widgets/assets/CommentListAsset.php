@@ -1,15 +1,15 @@
 <?php
 
-namespace modules\comment\assets;
+namespace modules\comment\widgets\assets;
 
 use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
 
 /**
- * Class ListAsset
- * @package modules\comment\assets
+ * Class CommentListAsset
+ * @package modules\comment\widgets\assets
  */
-class ListAsset extends AssetBundle
+class CommentListAsset extends AssetBundle
 {
     /** @var string */
     public $sourcePath;
@@ -25,14 +25,14 @@ class ListAsset extends AssetBundle
     /**
      * @var array
      */
-    public $publishOptions = [
-        'forceCopy' => YII_ENV_DEV
+    public $depends = [
+        JqueryAsset::class,
     ];
 
     /**
      * @var array
      */
-    public $depends = [
-        JqueryAsset::class,
+    public $publishOptions = [
+        'forceCopy' => YII_ENV_DEV
     ];
 }
