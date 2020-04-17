@@ -1,0 +1,8 @@
+.comment-widget-last-comment ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.comment-widget-last-comment ul li{
+    margin: 0 0 10px;
+}

@@ -265,6 +265,7 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @TODO: Cache
      * Change status children node
      * @param integer $nodeId
      * @return bool|int
@@ -331,6 +332,7 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @TODO: Cache
      * Get a full tree as a list, except the node and its children
      * @param null $excludeNodeId
      * @return array
@@ -430,6 +432,7 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @TODO: Cache
      * @return string
      */
     public function getUrl()
@@ -443,6 +446,7 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @TODO: Cache
      * @param int $limit
      * @return array|ActiveRecord[]
      */
@@ -453,5 +457,18 @@ class Comment extends ActiveRecord
             ->orderBy(['id' => SORT_DESC])
             ->limit($limit)
             ->all();
+    }
+
+    /**
+     * @TODO: Cache
+     * @return array|ActiveRecord|null
+     */
+    public function getEntityData()
+    {
+        /** @var ActiveRecord $entity */
+        $entity = $this->entity;
+        return $entity::find()
+            ->where(['id' => $this->entity_id])
+            ->one();
     }
 }
