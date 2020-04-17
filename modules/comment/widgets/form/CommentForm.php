@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\comment\widgets;
+namespace modules\comment\widgets\form;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -10,7 +10,7 @@ use modules\comment\models\Comment;
 
 /**
  * Class CommentForm
- * @package modules\comment\widgets
+ * @package modules\comment\widgets\form
  */
 class CommentForm extends Widget
 {

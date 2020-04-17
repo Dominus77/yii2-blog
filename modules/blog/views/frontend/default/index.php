@@ -5,7 +5,7 @@ use yii\widgets\ListView;
 use modules\blog\models\Post;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
-use modules\comment\widgets\LastComment;
+use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
 
 /** @var $this View */

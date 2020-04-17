@@ -5,9 +5,9 @@ use yii\helpers\Html;
 use modules\blog\models\Post;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
-use modules\comment\widgets\CommentList;
-use modules\comment\widgets\CommentForm;
-use modules\comment\widgets\LastComment;
+use modules\comment\widgets\items\CommentList;
+use modules\comment\widgets\form\CommentForm;
+use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
 
 /** @var $this View */

@@ -1,13 +1,13 @@
 <?php
 
-namespace modules\comment\widgets\assets;
+namespace modules\comment\widgets\items\assets;
 
 use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
 
 /**
  * Class CommentListAsset
- * @package modules\comment\widgets\assets
+ * @package modules\comment\widgets\items\assets
  */
 class CommentListAsset extends AssetBundle
 {

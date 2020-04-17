@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\comment\widgets;
+namespace modules\comment\widgets\items;
 
 use yii\base\Widget;
 use yii\base\Model;
@@ -8,12 +8,12 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use modules\comment\models\Comment;
-use modules\comment\widgets\assets\CommentListAsset;
+use modules\comment\widgets\items\assets\CommentListAsset;
 use modules\comment\Module;
 
 /**
  * Class CommentList
- * @package modules\comment\widgets
+ * @package modules\comment\widgets\items
  */
 class CommentList extends Widget
 {

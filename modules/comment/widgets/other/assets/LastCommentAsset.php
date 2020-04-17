@@ -1,12 +1,12 @@
 <?php
 
-namespace modules\comment\widgets\assets;
+namespace modules\comment\widgets\other\assets;
 
 use yii\web\AssetBundle;
 
 /**
  * Class LastCommentAsset
- * @package modules\comment\widgets\assets
+ * @package modules\comment\widgets\other\assets
  */
 class LastCommentAsset extends AssetBundle
 {

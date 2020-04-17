@@ -1,18 +1,18 @@
 <?php
 
-namespace modules\comment\widgets;
+namespace modules\comment\widgets\other;
 
 use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use modules\comment\widgets\assets\LastCommentAsset;
+use modules\comment\widgets\other\assets\LastCommentAsset;
 use modules\comment\models\Comment;
 use modules\comment\Module;
 
 /**
  * Class LastComment
- * @package modules\comment\widgets
+ * @package modules\comment\widgets\other
  */
 class LastComment extends Widget
 {
