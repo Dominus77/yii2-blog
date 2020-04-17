@@ -3,13 +3,14 @@
 namespace modules\comment\controllers\backend;
 
 use Yii;
-use modules\comment\models\Comment;
-use modules\comment\models\search\CommentSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use common\components\behaviors\DelCacheControllerBehavior;
+use modules\comment\models\Comment;
+use modules\comment\models\search\CommentSearch;
 use modules\rbac\models\Permission;
 
 /**
@@ -39,6 +40,11 @@ class DefaultController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'delCacheControllerBehavior' => [
+                'class' => DelCacheControllerBehavior::class,
+                'actions' => ['create', 'update', 'move', 'change-status', 'delete'],
+                'tags' => [Comment::CACHE_TAG_COMMENTS]
+            ]
         ];
     }
 

@@ -19,7 +19,7 @@ use modules\blog\models\query\TagQuery;
 use modules\users\models\UserProfile;
 use modules\users\models\User;
 use modules\blog\models\query\PostQuery;
-use modules\blog\behaviors\DelCacheModelBehavior;
+use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
 
 /**

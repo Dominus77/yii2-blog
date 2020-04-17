@@ -7,7 +7,7 @@ use yii\caching\TagDependency;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
-use modules\blog\behaviors\DelCacheModelBehavior;
+use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\models\query\TagQuery;
 use modules\blog\Module;
 

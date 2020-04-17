@@ -16,7 +16,7 @@ use modules\rbac\models\Permission;
 use modules\blog\models\Category;
 use modules\blog\models\search\CategorySearch;
 use modules\blog\behaviors\CategoryTreeBehavior;
-use modules\blog\behaviors\DelCacheControllerBehavior;
+use common\components\behaviors\DelCacheControllerBehavior;
 
 /**
  * Class CategoryController

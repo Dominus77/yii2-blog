@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use common\components\behaviors\DelCacheControllerBehavior;
 use modules\comment\models\Comment;
 
 /**
@@ -29,6 +30,11 @@ class DefaultController extends Controller
                     'add' => ['POST'],
                 ],
             ],
+            'delCacheControllerBehavior' => [
+                'class' => DelCacheControllerBehavior::class,
+                'actions' => ['add'],
+                'tags' => [Comment::CACHE_TAG_COMMENTS]
+            ]
         ];
     }
 

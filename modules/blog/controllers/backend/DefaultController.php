@@ -2,12 +2,9 @@
 
 namespace modules\blog\controllers\backend;
 
-use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use yii\web\Response;
 use modules\rbac\models\Permission;
-use modules\main\Module;
 
 /**
  * Class DefaultController

@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\blog\behaviors;
+namespace common\components\behaviors;
 
 use Yii;
 use yii\base\Behavior;

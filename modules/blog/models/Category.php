@@ -16,7 +16,7 @@ use paulzi\autotree\AutoTreeTrait;
 use modules\blog\models\query\CategoryQuery;
 use modules\blog\Module;
 use modules\blog\behaviors\CategoryTreeBehavior;
-use modules\blog\behaviors\DelCacheModelBehavior;
+use common\components\behaviors\DelCacheModelBehavior;
 
 /**
  * This is the model class for table "{{%blog_category}}".

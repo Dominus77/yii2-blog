@@ -2,6 +2,8 @@
 
 namespace modules\comment\models;
 
+use Throwable;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -51,6 +53,12 @@ class Comment extends ActiveRecord
     const TYPE_BEFORE = 'before';
     const TYPE_AFTER = 'after';
     const SCENARIO_GUEST = 'guest';
+
+    const CACHE_DURATION = 0;
+    const CACHE_TAG_COMMENTS = 'comments';
+    const CACHE_TAG_GET_URL = 'comment-get-url';
+    const CACHE_TAG_LAST_COMMENTS = 'last-comments';
+    const CACHE_TAG_ENTITY_DATA = 'entity-data';
 
     public $childrenList;
     public $typeMove;
@@ -432,43 +440,54 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * @TODO: Cache
      * @return string
+     * @throws Throwable
      */
     public function getUrl()
     {
         /** @var ActiveRecord $entity */
         $entity = $this->entity;
-        /** @var $model */
-        $model = $entity::find()->where(['id' => $this->entity_id])->one();
+        $query = $entity::find()->where(['id' => $this->entity_id]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_GET_URL]]);
+        $model = self::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, self::CACHE_DURATION, $dependency);
         $url = $model->getUrl();
         return Url::to([$url, '#' => 'comment-' . $this->id]);
     }
 
     /**
-     * @TODO: Cache
      * @param int $limit
-     * @return array|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     public static function getLastComments($limit = 5)
     {
-        return self::find()
+        $query = self::find()
             ->where(['status' => self::STATUS_APPROVED])
             ->orderBy(['id' => SORT_DESC])
-            ->limit($limit)
-            ->all();
+            ->limit($limit);
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_LAST_COMMENTS]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
-     * @TODO: Cache
-     * @return array|ActiveRecord|null
+     * @return mixed
+     * @throws Throwable
      */
     public function getEntityData()
     {
         /** @var ActiveRecord $entity */
         $entity = $this->entity;
-        return $entity::find()
-            ->where(['id' => $this->entity_id])
-            ->one();
+        $query = $entity::find()
+            ->where(['id' => $this->entity_id]);
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_ENTITY_DATA]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->one();
+        }, self::CACHE_DURATION, $dependency);
     }
 }
