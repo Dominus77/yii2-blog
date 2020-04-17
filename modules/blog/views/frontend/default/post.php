@@ -7,6 +7,7 @@ use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
 use modules\comment\widgets\CommentList;
 use modules\comment\widgets\CommentForm;
+use modules\comment\widgets\LastComment;
 use modules\blog\Module;
 
 /** @var $this View */
@@ -25,6 +26,9 @@ $this->params['breadcrumbs'][] = $model->title;
             <?= CategoryMenu::widget() ?>
             <noindex>
                 <?= TagCloud::widget(['limit' => 50]) ?>
+            </noindex>
+            <noindex>
+                <?= LastComment::widget(['status' => true, 'limit' => 5]) ?>
             </noindex>
         </div>
         <div class="col-md-9">

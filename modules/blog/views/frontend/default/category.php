@@ -6,6 +6,7 @@ use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
+use modules\comment\widgets\LastComment;
 use modules\blog\Module;
 
 /** @var $this View */
@@ -23,6 +24,9 @@ $this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs
             <?= CategoryMenu::widget(['status' => true]) ?>
             <noindex>
                 <?= TagCloud::widget(['status' => true, 'limit' => 50]) ?>
+            </noindex>
+            <noindex>
+                <?= LastComment::widget(['status' => true, 'limit' => 5]) ?>
             </noindex>
         </div>
         <div class="col-md-9">

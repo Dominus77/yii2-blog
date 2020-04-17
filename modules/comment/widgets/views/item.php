@@ -17,7 +17,11 @@ $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
 <div class="media-body">
     <div class="panel panel-info">
         <div class="panel-heading">
-            <div class="link"><?= Html::a(Module::t('module', 'Link'), $model->url) ?></div>
+            <div class="link">
+                <noindex>
+                    <?= Html::a(Module::t('module', 'Link'), $model->url, ['rel' => 'nofollow']) ?>
+                </noindex>
+            </div>
             <div class="author"><?= $model->author ?></div>
             <div class="metadata">
                 <span class="date"><?= Yii::$app->formatter->asDatetime($model->created_at, 'php: d mm Y, H:i') ?></span>

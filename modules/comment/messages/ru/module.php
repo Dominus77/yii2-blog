@@ -45,4 +45,5 @@ return [
     'Code' => 'Код',
     'Click on the picture to change the code.' => 'Кликните по картинке, чтобы изменить код.',
     'No one will see' => 'Никто не увидит',
+    'Last Comments' => 'Последние комментарии',
 ];

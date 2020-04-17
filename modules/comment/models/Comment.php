@@ -439,6 +439,19 @@ class Comment extends ActiveRecord
         /** @var $model */
         $model = $entity::find()->where(['id' => $this->entity_id])->one();
         $url = $model->getUrl();
-        return Url::to([$url, '#' => 'comment_' . $this->id]);
+        return Url::to([$url, '#' => 'comment-' . $this->id]);
+    }
+
+    /**
+     * @param int $limit
+     * @return array|ActiveRecord[]
+     */
+    public static function getLastComments($limit = 5)
+    {
+        return self::find()
+            ->where(['status' => self::STATUS_APPROVED])
+            ->orderBy(['id' => SORT_DESC])
+            ->limit($limit)
+            ->all();
     }
 }

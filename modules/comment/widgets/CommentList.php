@@ -89,7 +89,7 @@ class CommentList extends Widget
                     }
                 }
                 $array[] = Html::beginTag('li', [
-                        'id' => 'comment_' . $items->id,
+                        'id' => 'comment-' . $items->id,
                         'class' => 'item_' . $n,
                         'data-id' => $items->id
                     ]) . PHP_EOL;

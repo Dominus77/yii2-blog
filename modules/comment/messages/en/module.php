@@ -45,4 +45,5 @@ return [
     'Code' => 'Code',
     'Click on the picture to change the code.' => 'Click on the picture to change the code.',
     'No one will see' => 'No one will see',
+    'Last Comments' => 'Last Comments',
 ];
