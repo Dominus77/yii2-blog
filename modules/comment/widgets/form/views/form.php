@@ -49,7 +49,6 @@ use modules\comment\Module;
         </div>
     <?php } ?>
 
-
     <?= $form->field($model, 'entity')->hiddenInput()->label(false) ?>
     <?= $form->field($model, 'entity_id')->hiddenInput()->label(false) ?>
     <?= $form->field($model, 'rootId')->hiddenInput()->label(false) ?>

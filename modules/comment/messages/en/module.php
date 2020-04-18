@@ -22,7 +22,8 @@ return [
     'Submit comment' => 'Submit comment',
     'Reply' => 'Reply',
     'Comment this' => 'Comment this',
-    'Comments ({:count})' => 'Comments ({:count})',
+    'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}' =>
+        'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}',
     'Click to change status to blocked' => 'Click to change status to blocked',
     'Click to change status to approved' => 'Click to change status to approved',
     'Create' => 'Create',
