@@ -63,7 +63,12 @@ BlogAsset::register($this);
                             'style' => 'width: 50px'
                         ]
                     ],
-                    'title',
+                    [
+                        'attribute' => 'title',
+                        'value' => static function (Post $model) {
+                            return $model->title . '(' . $model->getCommentsCount() . ')';
+                        }
+                    ],
                     'slug',
                     [
                         'attribute' => 'tagNames',
