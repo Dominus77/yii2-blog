@@ -61,6 +61,16 @@ class Post extends BaseModel
     const CACHE_TAG_POST_AUTHOR = 'post-author';
     const CACHE_TAG_POST_AUTHOR_PROFILE = 'post-author-profile';
     const CACHE_TAG_POST_CATEGORY = 'post-category';
+    const CACHE_TAG_LAST_POST = 'post-last';
+
+    /**
+     * @param string $className
+     * @return Post
+     */
+    public static function model($className = __CLASS__)
+    {
+        return new $className;
+    }
 
     /**
      * {@inheritdoc}
@@ -363,5 +373,26 @@ class Post extends BaseModel
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param int $limit
+     * @param bool $published
+     * @return mixed
+     * @throws Throwable
+     */
+    public function findLastPost($limit = 5, $published = true)
+    {
+        $query = self::find();
+        if ($published === true) {
+            $query->published();
+        }
+        $query->orderBy(['id' => SORT_DESC]);
+        $query->limit($limit);
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_POST, self::CACHE_TAG_LAST_POST]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 }

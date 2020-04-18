@@ -6,6 +6,7 @@ use modules\blog\models\Post;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
 use modules\comment\widgets\other\LastComment;
+use modules\blog\widgets\other\LastPost;
 use modules\blog\Module;
 
 /** @var $this View */
@@ -23,6 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-md-3">
             <?= CategoryMenu::widget(['status' => true]) ?>
+            <noindex>
+                <?= LastPost::widget(['status' => true, 'limit' => 5]) ?>
+            </noindex>
             <noindex>
                 <?= TagCloud::widget(['status' => true, 'limit' => 50]) ?>
             </noindex>

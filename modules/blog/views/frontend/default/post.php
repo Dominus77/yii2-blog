@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use modules\blog\models\Post;
 use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
+use modules\blog\widgets\other\LastPost;
 use modules\comment\widgets\items\CommentList;
 use modules\comment\widgets\form\CommentForm;
 use modules\comment\widgets\other\LastComment;
@@ -24,6 +25,9 @@ $this->params['breadcrumbs'][] = $model->title;
     <div class="row">
         <div class="col-md-3">
             <?= CategoryMenu::widget() ?>
+            <noindex>
+                <?= LastPost::widget(['status' => true, 'limit' => 5]) ?>
+            </noindex>
             <noindex>
                 <?= TagCloud::widget(['limit' => 50]) ?>
             </noindex>

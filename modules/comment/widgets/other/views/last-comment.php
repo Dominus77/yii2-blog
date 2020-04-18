@@ -13,7 +13,7 @@ use modules\comment\models\Comment;
                 <?= $model->getEntityData()->{$title} ?><br>
                 <a rel="nofollow" href="<?= $model->url ?>">
                     <?= $model->author ?><br>
-                    <?= Yii::$app->formatter->asDatetime($model->created_at, 'php: d mm Y, H:i') ?><br>
+                    <?= Yii::$app->formatter->asRelativeTime($model->created_at) ?><br>
                     <?= $model->getComment() ?>
                 </a>
             </li>

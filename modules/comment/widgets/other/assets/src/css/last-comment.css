@@ -3,6 +3,11 @@
     padding-left: 0;
 }
 
-.comment-widget-last-comment ul li{
-    margin: 0 0 10px;
+.comment-widget-last-comment ul li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.comment-widget-last-comment ul li:last-child {
+    border-bottom: none;
 }

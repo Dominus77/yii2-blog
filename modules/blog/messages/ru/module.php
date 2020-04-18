@@ -61,4 +61,6 @@ return [
     'Entries tagged &laquo;{:tag}&raquo;' => 'Записи с меткой &laquo;{:tag}&raquo;',
     // Menu
     'Menu' => 'Меню',
+    // Last Posts
+    'Last Posts' => 'Последние посты',
 ];

@@ -61,4 +61,6 @@ return [
     'Entries tagged &laquo;{:tag}&raquo;' => 'Entries tagged &laquo;{:tag}&raquo;',
     // Menu
     'Menu' => 'Menu',
+    // Last Posts
+    'Last Posts' => 'Last Posts',
 ];
