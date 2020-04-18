@@ -1,0 +1,23 @@
+ul.menu {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+ul.menu ul {
+    margin-left: 0;
+    padding-left: 20px;
+}
+
+ul.menu,
+ul.menu li {
+    list-style: none;
+    padding: 3px 0;
+}
+
+ul.menu li a {
+    text-decoration: none;
+}
+
+a.active {
+    font-weight: bold;
+}

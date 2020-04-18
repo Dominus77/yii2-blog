@@ -5,3 +5,27 @@
 .draft {
     color: red;
 }
+
+/*Breadcrumb*/
+ul.breadcrumb li a {
+    text-decoration: none;
+}
+
+.header {
+    padding-bottom: 20px;
+}
+
+.tag-cloud a,
+.header a,
+.footer a {
+    text-decoration: none;
+}
+
+.info {
+    font-size: 10pt;
+    color: #333;
+}
+
+.content-container .footer {
+    padding-top: 10px;
+}

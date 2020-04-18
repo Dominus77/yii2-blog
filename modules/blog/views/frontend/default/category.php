@@ -9,10 +9,13 @@ use modules\blog\widgets\tag\TagCloud;
 use modules\blog\widgets\other\LastPost;
 use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
+use modules\blog\assets\BlogAsset;
 
 /** @var $this View */
 /** @var $model Category|CategoryTreeBehavior */
 /** @var $dataProvider Category */
+
+BlogAsset::register($this);
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['index']];

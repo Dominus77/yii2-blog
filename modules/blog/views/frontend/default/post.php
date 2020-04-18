@@ -10,9 +10,12 @@ use modules\comment\widgets\items\CommentList;
 use modules\comment\widgets\form\CommentForm;
 use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
+use modules\blog\assets\BlogAsset;
 
 /** @var $this View */
 /** @var $model Post */
+
+BlogAsset::register($this);
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Blog'), 'url' => ['index']];

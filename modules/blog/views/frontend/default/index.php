@@ -8,9 +8,12 @@ use modules\blog\widgets\tag\TagCloud;
 use modules\comment\widgets\other\LastComment;
 use modules\blog\widgets\other\LastPost;
 use modules\blog\Module;
+use modules\blog\assets\BlogAsset;
 
 /** @var $this View */
 /** @var $dataProvider Post */
+
+BlogAsset::register($this);
 
 $this->title = Module::t('module', 'Blog');
 if ($tag = Yii::$app->request->get('tag')) {

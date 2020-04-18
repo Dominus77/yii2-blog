@@ -10,6 +10,7 @@ use yii\widgets\Menu;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\Module;
+use modules\blog\widgets\menu\assets\CategoryMenuAsset;
 
 /**
  * Class CategoryMenu
@@ -23,7 +24,7 @@ class CategoryMenu extends Widget
     public $options = ['class' => 'menu'];
     public $panelOptions = ['class' => 'panel panel-default'];
     public $encodeLabels = false;
-    public $activateParents = true;
+    public $activateParents = false;
     public $icon;
 
 
@@ -48,6 +49,7 @@ class CategoryMenu extends Widget
     public function run()
     {
         if ($this->status === true) {
+            $this->registerAsset();
             echo Html::beginTag('div', ArrayHelper::merge(['id' => $this->id], $this->panelOptions)) . PHP_EOL;
             echo Html::tag('div', $this->title . PHP_EOL, ['class' => 'panel-heading']) . PHP_EOL;
             echo Html::beginTag('div', ['class' => 'panel-body']) . PHP_EOL;
@@ -74,5 +76,14 @@ class CategoryMenu extends Widget
             return $model->getMenuItems();
         }
         return [];
+    }
+
+    /**
+     * Register asset
+     */
+    protected function registerAsset()
+    {
+        $view = $this->getView();
+        CategoryMenuAsset::register($view);
     }
 }

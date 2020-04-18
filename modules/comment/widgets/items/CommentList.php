@@ -49,7 +49,6 @@ class CommentList extends Widget
             echo Html::beginTag('div', ['id' => $this->id, 'class' => 'comments']) . PHP_EOL;
             $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
             if (is_array($tree = $this->getRenderTree())) {
-                //$title = $icon . ' ' . Module::t('module', 'Comments ({:count})', [':count' => $this->count]);
                 $title = $icon . ' ' . Module::t('module', 'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}', ['n' => $this->count]);
                 echo Html::tag('h3', $title, ['class' => 'title-comments']) . PHP_EOL;
                 foreach ($tree as $items) {
