@@ -1,22 +1,24 @@
 <?php
 
+use yii\helpers\Html;
 use modules\comment\models\Comment;
 
 /** @var $this yii\web\View */
-/** @var $comments Comment[] */
+/** @var $comment Comment */
 /** @var $title string */
 ?>
-<div class="comment-widget-last-comment">
-    <ul>
-        <?php foreach ($comments as $model) { ?>
-            <li>
-                <?= $model->getEntityData()->{$title} ?><br>
-                <a rel="nofollow" href="<?= $model->url ?>">
-                    <?= $model->author ?><br>
-                    <?= Yii::$app->formatter->asRelativeTime($model->created_at) ?><br>
-                    <?= $model->getComment() ?>
-                </a>
-            </li>
-        <?php } ?>
-    </ul>
-</div>
+
+<li class="item">
+    <h5 class="item-title"><?= Html::encode($title) ?></h5>
+    <div class="info">
+        <div class="item-data">
+            <?= Yii::$app->formatter->asRelativeTime($comment->created_at) ?>
+        </div>
+        <div class="item-author">
+            <?= Html::a($comment->author, $comment->url) ?>
+        </div>
+        <div class="item-content">
+            <?= Html::a($comment->getComment(), $comment->url) ?>
+        </div>
+    </div>
+</li>

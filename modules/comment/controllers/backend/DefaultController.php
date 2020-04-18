@@ -43,7 +43,7 @@ class DefaultController extends Controller
             'delCacheControllerBehavior' => [
                 'class' => DelCacheControllerBehavior::class,
                 'actions' => ['create', 'update', 'move', 'change-status', 'delete'],
-                'tags' => [Comment::CACHE_TAG_COMMENTS]
+                'tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_LAST_COMMENTS]
             ]
         ];
     }

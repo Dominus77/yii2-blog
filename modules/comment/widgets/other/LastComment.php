@@ -2,8 +2,8 @@
 
 namespace modules\comment\widgets\other;
 
+use Throwable;
 use yii\base\Widget;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use modules\comment\widgets\other\assets\LastCommentAsset;
@@ -41,6 +41,7 @@ class LastComment extends Widget
 
     /**
      * @return string|void
+     * @throws Throwable
      */
     public function run()
     {
@@ -49,17 +50,23 @@ class LastComment extends Widget
             echo Html::beginTag('div', ArrayHelper::merge(['id' => $this->id], $this->panelOptions)) . PHP_EOL;
             echo Html::tag('div', $this->title . PHP_EOL, ['class' => 'panel-heading']) . PHP_EOL;
             echo Html::beginTag('div', ['class' => 'panel-body']) . PHP_EOL;
-            echo $this->render('last-comment', [
-                'comments' => $comments,
-                'title' => $this->titleAttribute
-            ]);
+            echo Html::beginTag('ul') . PHP_EOL;
+            foreach ($comments as $comment) {
+                echo $this->render('last-comment', [
+                    'comment' => $comment,
+                    'title' => $comment->getEntityData()->{$this->titleAttribute}
+                ]);
+            }
+
+            echo Html::endTag('ul') . PHP_EOL;
             echo Html::endTag('div') . PHP_EOL;
             echo Html::endTag('div') . PHP_EOL;
         }
     }
 
     /**
-     * @return array|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     public function getComments()
     {

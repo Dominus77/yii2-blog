@@ -1,13 +1,32 @@
-.comment-widget-last-comment ul {
+.last-comments ul {
     list-style: none;
-    padding-left: 0;
+    padding: 0;
+    margin: 0;
 }
 
-.comment-widget-last-comment ul li {
+.last-comments a:hover,
+.last-comments a:focus {
+    text-decoration: none;
+}
+
+.last-comments ul li {
     padding: 5px 0;
     border-bottom: 1px solid #f5f5f5;
 }
 
-.comment-widget-last-comment ul li:last-child {
+.last-comments ul li:last-child {
     border-bottom: none;
+}
+
+.last-comments .item-title {
+    margin: 0;
+    padding: 0;
+}
+
+.last-comments .item-data {
+    font-size: 1rem;
+}
+
+.last-comments .item-author {
+    font-size: 1.2rem;
 }
