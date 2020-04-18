@@ -2,6 +2,7 @@
 
 namespace modules\blog\models;
 
+use modules\comment\models\Comment;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -21,6 +22,7 @@ use modules\users\models\User;
 use modules\blog\models\query\PostQuery;
 use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
+use modules\blog\interfaces\CommentInterface;
 
 /**
  * Class Post
@@ -47,7 +49,7 @@ use modules\blog\Module;
  * @property Tag[] $tags
  * @property ActiveDataProvider $posts
  */
-class Post extends BaseModel
+class Post extends BaseModel implements CommentInterface
 {
     const POSITION_DEFAULT = 0;
 
@@ -394,5 +396,13 @@ class Post extends BaseModel
         return self::getDb()->cache(static function () use ($query) {
             return $query->all();
         }, self::CACHE_DURATION, $dependency);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::class, ['entity' => __CLASS__, 'entity_id' => $this->id]);
     }
 }
