@@ -1,7 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+
+//use yii\grid\GridView;
+use modules\blog\grid\GridView;
+use modules\blog\grid\DataDetailColumn;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
 use yii\widgets\LinkPager;
@@ -47,6 +50,7 @@ BlogAsset::register($this);
                     ]) ?>
                 </p>
             </div>
+
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -64,17 +68,23 @@ BlogAsset::register($this);
                         ]
                     ],
                     [
+                        'class' => DataDetailColumn::class,
                         'attribute' => 'title',
+                        'format' => 'raw',
                         'value' => static function (Post $model) {
-                            return $model->title . '(' . $model->getCommentsCount() . ')';
-                        }
+                            return $model->title;
+                        },
+                        'detail' => function (Post $model) {
+                            return $this->render('grid/comments', ['model' => $model]);
+                        },
                     ],
                     'slug',
                     [
+                        'class' => DataDetailColumn::class,
                         'attribute' => 'tagNames',
                         'value' => static function (Post $model) {
                             return $model->getStringTagsToPost(true, false, '-');
-                        }
+                        },
                     ],
                     [
                         'attribute' => 'authorName',

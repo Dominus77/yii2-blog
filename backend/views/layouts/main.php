@@ -1,5 +1,7 @@
 <?php
 
+use modules\blog\models\Post;
+use modules\comment\models\Comment;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -189,7 +191,7 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     ]
                 ],
                 [
-                    'label' => '<i class="fa fa-book"></i> <span>' . BlogModule::t('module', 'Blog') . '</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>',
+                    'label' => '<i class="fa fa-book"></i> ' . BlogModule::t('module', 'Blog') . '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>',
                     'url' => ['/blog/default/index'],
                     'options' => ['class' => 'treeview'],
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_POST),
@@ -207,13 +209,13 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                             'url' => ['/blog/tag/index']
                         ],
                         [
-                            'label' => BlogModule::t('module', 'Comments'),
-                            'url' => ['/comment/entity/index', 'entity' => modules\blog\models\Post::class]
+                            'label' => BlogModule::t('module', 'Comments') . '<span class="pull-right-container label label-warning">' . Post::getEntityCommentsWaitCount() . '</span>',
+                            'url' => ['/blog/comment/index']
                         ],
                     ]
                 ],
                 [
-                    'label' => '<i class="fa fa-comments"></i> <span>' . CommentModule::t('module', 'Comments') . '</span>',
+                    'label' => '<i class="fa fa-comments"></i> ' . CommentModule::t('module', 'Comments') . '<span class="pull-right-container label label-warning">' . Comment::getCommentsWaitCount() . '</span>',
                     'url' => ['/comment/default/index'],
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_COMMENTS)
                 ],

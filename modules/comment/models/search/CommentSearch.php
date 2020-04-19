@@ -2,6 +2,7 @@
 
 namespace modules\comment\models\search;
 
+use modules\comment\models\query\CommentQuery;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use modules\comment\models\Comment;
@@ -40,7 +41,7 @@ class CommentSearch extends Comment
      */
     public function search($params)
     {
-        $query = Comment::find();
+        $query = $this->getQuery();
 
         // add conditions that should always apply here
 
@@ -82,5 +83,13 @@ class CommentSearch extends Comment
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
+    }
+
+    /**
+     * @return CommentQuery
+     */
+    protected function getQuery()
+    {
+        return Comment::find();
     }
 }

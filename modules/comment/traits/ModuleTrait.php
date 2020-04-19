@@ -74,4 +74,15 @@ trait ModuleTrait
     {
         return Comment::getFullTree($excludeNodeId);
     }
+
+    /**
+     * Count wait status comments
+     * @return int
+     */
+    public static function getCommentsWaitCount()
+    {
+        return Comment::find()
+            ->where(['status' => Comment::STATUS_WAIT])
+            ->count();
+    }
 }
