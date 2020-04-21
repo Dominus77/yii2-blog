@@ -19,11 +19,11 @@ use modules\comment\Module;
 class CommentList extends Widget
 {
     public $status;
+    public $reply = true;
     public $model;
     public $depthStart = 0;
     public $tree = true;
     public $showAll = false;
-    private $assets;
     private $count = 0;
 
     /**
@@ -51,17 +51,25 @@ class CommentList extends Widget
             echo Html::beginTag('div', ['id' => $this->id, 'class' => 'comments']) . PHP_EOL;
             $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
             if (is_array($tree = $this->getRenderTree())) {
-                $title = $icon . ' ' . Module::t('module', 'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}', ['n' => $this->count]);
-                echo Html::tag('h3', $title, ['class' => 'title-comments']) . PHP_EOL;
+                if ($this->count > 0 || $this->reply === true) {
+                    $title = $icon . ' ' . Module::t('module', 'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}', ['n' => $this->count]);
+                    $options = ['class' => 'title-comments'];
+                } else {
+                    $title = $icon . ' ' . Module::t('module', 'Commenting is disabled');
+                    $options = ['class' => 'title-comments-off'];
+                }
+                echo Html::tag('h3', $title, $options) . PHP_EOL;
                 foreach ($tree as $items) {
                     echo $items . PHP_EOL;
                 }
             }
-            echo Html::button($icon . ' ' . Module::t('module', 'Comment this'), [
-                'id' => 'comment-this-button',
-                'class' => 'btn btn-info btn-sm',
-                'style' => 'display:none;'
-            ]);
+            if ($this->reply === true) {
+                echo Html::button($icon . ' ' . Module::t('module', 'Comment this'), [
+                    'id' => 'comment-this-button',
+                    'class' => 'btn btn-info btn-sm',
+                    'style' => 'display:none;'
+                ]);
+            }
             echo Html::endTag('div') . PHP_EOL;
         }
     }
@@ -111,7 +119,7 @@ class CommentList extends Widget
     /**
      * Render Item
      * @param $data
-     * @param $key
+     * @param $index
      * @return string
      */
     protected function getItem($data, $index)
@@ -119,7 +127,8 @@ class CommentList extends Widget
         return $this->render('item', [
             'model' => $data,
             'index' => $index + 1,
-            'avatar' => $this->getAvatar()
+            'avatar' => $this->getAvatar(),
+            'reply' => $this->reply
         ]);
     }
 
@@ -144,7 +153,7 @@ class CommentList extends Widget
     protected function registerAssets()
     {
         $view = $this->getView();
-        $this->assets = CommentListAsset::register($view);
+        CommentListAsset::register($view);
     }
 
     /**

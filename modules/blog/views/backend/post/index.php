@@ -150,31 +150,9 @@ $this->registerJs($script);
                         'attribute' => 'title',
                         'format' => 'raw',
                         'value' => static function (Post $model) {
-                            $countWait = $model->getCommentsWaitCount();
-                            $countApproved = $model->getCommentsApprovedCount();
-                            $countBlocked = $model->getCommentsBlockedCount();
-                            $commentsWait = '';
-                            $commentsApproved = '';
-                            $commentsBlocked = '';
-                            if ($countWait > 0) {
-                                $commentsWait = Html::tag('span', $countWait, [
-                                    'class' => 'pull-right label label-warning',
-                                    'title' => CommentModule::t('module', 'Comments waiting moderation')
-                                ]);
-                            }
-                            if ($countApproved > 0) {
-                                $commentsApproved = Html::tag('span', $countApproved, [
-                                    'class' => 'pull-right label label-success',
-                                    'title' => CommentModule::t('module', 'Approved comments')
-                                ]);
-                            }
-                            if ($countBlocked > 0) {
-                                $commentsBlocked = Html::tag('span', $countBlocked, [
-                                    'class' => 'pull-right label label-danger',
-                                    'title' => CommentModule::t('module', 'Blocked comments')
-                                ]);
-                            }
-                            return $model->title . $commentsBlocked . $commentsApproved . $commentsWait;
+                            return $model->title . $model->getCommentsLabelBlockedCount()
+                                . $model->getCommentsLabelApprovedCount()
+                                . $model->getCommentsLabelWaitCount();
                         },
                         'contentOptions' => [
                             'class' => 'row-detail',
@@ -234,6 +212,25 @@ $this->registerJs($script);
                         'value' => static function (Post $model) {
                             $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
+                        },
+                        'contentOptions' => [
+                            'class' => 'data-column',
+                            'style' => 'width: 140px'
+                        ],
+                    ],
+                    [
+                        'attribute' => 'is_comment',
+                        'filter' => Html::activeDropDownList($searchModel, 'is_comment', $searchModel->commentsArray, [
+                            'class' => 'form-control',
+                            'prompt' => Module::t('module', '- all -'),
+                            'data' => [
+                                'pjax' => true
+                            ]
+                        ]),
+                        'format' => 'raw',
+                        'value' => static function (Post $model) {
+                            $title = $model->is_comment ? Module::t('module', 'Click to disable commenting') : Module::t('module', 'Click to enable commenting');
+                            return Html::a($model->getCommentLabelName(), ['change-status-comment', 'id' => $model->id], ['title' => $title]);
                         },
                         'contentOptions' => [
                             'class' => 'data-column',

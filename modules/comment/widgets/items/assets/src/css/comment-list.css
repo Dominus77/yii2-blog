@@ -8,7 +8,8 @@
     padding-left: 60px;
 }
 
-.title-comments {
+.title-comments,
+.title-comments-off {
     font-size: 1.4rem;
     font-weight: bold;
     line-height: 1.5rem;
@@ -16,6 +17,11 @@
     margin-bottom: 1rem;
     padding-bottom: .25rem;
     border-bottom: 1px solid rgba(34, 36, 38, .15);
+}
+
+.title-comments-off {
+    color: #c5c5c5;
+    border-bottom: none;
 }
 
 .media-left img {
@@ -36,6 +42,10 @@
 .media-body .link {
     float: right;
     font-size: 1.2rem;
+}
+
+.media-body .link a {
+    text-decoration: none;
 }
 
 .reply-form-container form {

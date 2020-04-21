@@ -47,7 +47,8 @@ class m200331_103455_create_blog_table extends Migration
             'created_at' => $this->integer()->notNull()->comment('Created'),
             'updated_at' => $this->integer()->notNull()->comment('Updated'),
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
-            'sort' => $this->integer()->notNull()->defaultValue(0)->comment('Sort')
+            'sort' => $this->integer()->notNull()->defaultValue(0)->comment('Sort'),
+            'is_comment' => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('Is Comment'),
         ], $tableOptions);
 
         $this->createIndex('IDX_blog_post', '{{%blog_post}}', ['category_id', 'author_id', 'sort', 'created_at', 'updated_at']);

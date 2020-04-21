@@ -8,6 +8,7 @@ use modules\comment\Module;
 /** @var $model Comment */
 /** @var $index integer */
 /** @var $avatar string */
+/** @var $reply bool */
 
 $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
 ?>
@@ -32,16 +33,18 @@ $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
                 <?= $model->comment ?>
             </div>
         </div>
-        <div class="reply-container panel-footer" style="display:none;">
-            <?= Html::button($icon . ' ' . Module::t('module', 'Reply'), [
-                'id' => 'reply-button-' . $model->id,
-                'class' => 'reply-button btn btn-info btn-sm',
-                'data' => [
-                    'id' => $model->id
-                ],
-                'onclick' => 'reply(this);',
-            ]) ?>
-            <div class="reply-form-container" id="reply-form-container-<?= $model->id ?>"></div>
-        </div>
+        <?php if ($reply === true) { ?>
+            <div class="reply-container panel-footer" style="display:none;">
+                <?= Html::button($icon . ' ' . Module::t('module', 'Reply'), [
+                    'id' => 'reply-button-' . $model->id,
+                    'class' => 'reply-button btn btn-info btn-sm',
+                    'data' => [
+                        'id' => $model->id
+                    ],
+                    'onclick' => 'reply(this);',
+                ]) ?>
+                <div class="reply-form-container" id="reply-form-container-<?= $model->id ?>"></div>
+            </div>
+        <?php } ?>
     </div>
 </div>

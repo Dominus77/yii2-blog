@@ -28,7 +28,7 @@ class PostSearch extends Post
     public function rules()
     {
         return [
-            [['id', 'category_id', 'author_id', 'created_at', 'updated_at', 'status', 'sort'], 'integer'],
+            [['id', 'category_id', 'author_id', 'created_at', 'updated_at', 'status', 'sort', 'is_comment'], 'integer'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
             [['title', 'slug', 'anons', 'content', 'tagNames', 'authorName'], 'safe'],
         ];
@@ -82,6 +82,7 @@ class PostSearch extends Post
                     'sort',
                     'created_at',
                     'status',
+                    'is_comment'
                 ]
             ],
         ]);
@@ -101,6 +102,7 @@ class PostSearch extends Post
             'updated_at' => $this->updated_at,
             'status' => $this->status,
             'sort' => $this->sort,
+            'is_comment' => $this->is_comment
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

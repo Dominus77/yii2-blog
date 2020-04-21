@@ -74,10 +74,11 @@ $this->params['breadcrumbs'][] = $model->title;
             <div class="comment-container">
                 <?= CommentList::widget([
                     'status' => true,
+                    'reply' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model
                 ]) ?>
                 <?= CommentForm::widget([
-                    'status' => true,
+                    'status' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model
                 ]) ?>
             </div>

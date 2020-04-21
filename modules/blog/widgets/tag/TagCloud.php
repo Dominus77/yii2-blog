@@ -2,7 +2,7 @@
 
 namespace modules\blog\widgets\tag;
 
-use yii\db\Exception;
+use Throwable;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Widget;
@@ -34,7 +34,7 @@ class TagCloud extends Widget
 
     /**
      * @return string|void
-     * @throws Exception
+     * @throws Throwable
      */
     public function run()
     {

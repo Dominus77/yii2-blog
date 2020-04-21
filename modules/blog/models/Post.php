@@ -39,6 +39,7 @@ use modules\comment\traits\CommentTrait;
  * @property int $updated_at Updated
  * @property int $status Status
  * @property int $sort Position
+ * @property int $is_comment Is Comment
  *
  * @property User $author
  * @property User $postAuthor
@@ -67,6 +68,9 @@ class Post extends BaseModel
     const CACHE_TAG_POST_AUTHOR_PROFILE = 'post-author-profile';
     const CACHE_TAG_POST_CATEGORY = 'post-category';
     const CACHE_TAG_LAST_POST = 'post-last';
+
+    const COMMENT_OFF = 0;
+    const COMMENT_ON = 1;
 
     /**
      * @param string $className
@@ -122,12 +126,14 @@ class Post extends BaseModel
         return [
             [['title'], 'required'],
             [['anons', 'content'], 'string'],
-            [['category_id', 'author_id', 'status'], 'integer'],
+            [['category_id', 'author_id'], 'integer'],
             [['title', 'slug'], 'string', 'max' => 255],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
 
-            [['sort'], 'integer'],
+            ['status', 'in', 'range' => [self::STATUS_DRAFT, self::STATUS_PUBLISH]],
+
+            [['sort', 'is_comment'], 'integer'],
             ['sort', 'default', 'value' => self::POSITION_DEFAULT],
             [['tagNames'], 'safe']
         ];
@@ -151,8 +157,68 @@ class Post extends BaseModel
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
             'sort' => Module::t('module', 'Sort'),
+            'is_comment' => Module::t('module', 'Is Comment'),
             'tagNames' => Module::t('module', 'Tags')
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCommentsArray()
+    {
+        return [
+            self::COMMENT_OFF => Module::t('module', 'Off'),
+            self::COMMENT_ON => Module::t('module', 'On'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCommentLabelsArray()
+    {
+        return [
+            self::COMMENT_OFF => 'default',
+            self::COMMENT_ON => 'success'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommentName()
+    {
+        return ArrayHelper::getValue(self::getCommentsArray(), $this->is_comment);
+    }
+
+    /**
+     * Return <span class="label label-success">Active</span>
+     * @return string
+     */
+    public function getCommentLabelName()
+    {
+        $name = ArrayHelper::getValue(self::getCommentLabelsArray(), $this->is_comment);
+        return Html::tag('span', $this->getCommentName(), ['class' => 'label label-' . $name]);
+    }
+
+    /**
+     * Set Status
+     * @return int|string
+     */
+    public function setCommentStatus()
+    {
+        switch ($this->is_comment) {
+            case self::COMMENT_ON:
+                $this->is_comment = self::COMMENT_OFF;
+                break;
+            case self::COMMENT_OFF:
+                $this->is_comment = self::COMMENT_ON;
+                break;
+            default:
+                $this->is_comment = self::COMMENT_OFF;
+        }
+        return $this->is_comment;
     }
 
     /**

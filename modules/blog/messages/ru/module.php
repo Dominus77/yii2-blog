@@ -49,6 +49,11 @@ return [
     'Author' => 'Автор',
     'Sort' => 'Позиция',
     'If left blank, filled automatically' => 'Если оставить пустым, заполняется автоматически',
+    'Is Comment' => 'Комментирование',
+    'On' => 'Включено',
+    'Off' => 'Отключено',
+    'Click to disable commenting' => 'Клик что бы отключить комментирование',
+    'Click to enable commenting' => 'Клик что бы включить комментирование',
     // Tag
     'Tags' => 'Метки',
     'Tag' => 'Метка',

@@ -15,9 +15,12 @@ ul.breadcrumb li a {
     padding-bottom: 20px;
 }
 
+.header h2 a,
 .tag-cloud a,
+.tag-cloud .panel-body a,
 .header a,
-.footer a {
+.footer a,
+.footer .info a {
     text-decoration: none;
 }
 

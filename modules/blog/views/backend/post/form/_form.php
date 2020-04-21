@@ -75,5 +75,7 @@ $tinyMceFileManager = require dirname(dirname(dirname(dirname(__DIR__)))) . '/co
 
     <?= $form->field($model, 'status')->dropDownList(Post::getStatusesArray()) ?>
 
+    <?= $form->field($model, 'is_comment')->dropDownList(Post::getCommentsArray()) ?>
+
     <?php ActiveForm::end(); ?>
 </div>

@@ -76,6 +76,14 @@ BlogAsset::register($this);
                             $title = $model->isPublish ? Module::t('module', 'Click to change status to draft') : Module::t('module', 'Click to change status to publish');
                             return Html::a($model->getStatusLabelName(), ['change-status', 'id' => $model->id], ['title' => $title]);
                         }
+                    ],
+                    [
+                        'attribute' => 'is_comment',
+                        'format' => 'raw',
+                        'value' => static function (Post $model) {
+                            $title = $model->is_comment ? Module::t('module', 'Click to disable commenting') : Module::t('module', 'Click to enable commenting');
+                            return Html::a($model->getCommentLabelName(), ['change-status-comment', 'id' => $model->id], ['title' => $title]);
+                        }
                     ]
                 ],
             ]) ?>

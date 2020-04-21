@@ -122,7 +122,7 @@ class PostController extends Controller
 
     /**
      * Change status
-     * @param integer $id
+     * @param int $id
      * @return Response
      * @throws NotFoundHttpException
      */
@@ -131,6 +131,21 @@ class PostController extends Controller
         $model = $this->findModel($id);
         $model->scenario = Post::SCENARIO_SET_STATUS;
         $model->setStatus();
+        $model->save(false);
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * On/Off Commenting
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionChangeStatusComment($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Post::SCENARIO_SET_STATUS;
+        $model->setCommentStatus();
         $model->save(false);
         return $this->redirect(Yii::$app->request->referrer);
     }

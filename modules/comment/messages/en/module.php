@@ -52,4 +52,5 @@ return [
     'Click on the picture to change the code.' => 'Click on the picture to change the code.',
     'No one will see' => 'No one will see',
     'Last Comments' => 'Last Comments',
+    'Commenting is disabled' => 'Commenting is disabled',
 ];

@@ -49,6 +49,11 @@ return [
     'Author' => 'Author',
     'Sort' => 'Sort',
     'If left blank, filled automatically' => 'If left blank, filled automatically',
+    'Is Comment' => 'Is Comment',
+    'On' => 'On',
+    'Off' => 'Off',
+    'Click to disable commenting' => 'Click to disable commenting',
+    'Click to enable commenting' => 'Click to enable commenting',
     // Tag
     'Tags' => 'Tags',
     'Tag' => 'Tag',

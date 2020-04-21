@@ -2,9 +2,12 @@
 
 namespace modules\comment\traits;
 
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use modules\comment\models\Comment;
 use modules\comment\models\query\CommentQuery;
 use yii\db\ActiveQuery;
+use modules\comment\Module;
 
 /**
  * Trait CommentTrait
@@ -43,6 +46,17 @@ trait CommentTrait
     }
 
     /**
+     * @param string[] $options
+     * @return string
+     */
+    public function getCommentsLabelWaitCount($options = ['class' => 'pull-right label label-warning'])
+    {
+        $count = $this->getCommentsWaitCount();
+        $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Comments waiting moderation')]);
+        return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
+    }
+
+    /**
      * Return count comments this status approved
      * @return int
      */
@@ -54,6 +68,17 @@ trait CommentTrait
     }
 
     /**
+     * @param string[] $options
+     * @return string
+     */
+    public function getCommentsLabelApprovedCount($options = ['class' => 'pull-right label label-success'])
+    {
+        $count = $this->getCommentsApprovedCount();
+        $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Approved comments')]);
+        return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
+    }
+
+    /**
      * Return count comments this status blocked
      * @return int
      */
@@ -62,6 +87,13 @@ trait CommentTrait
         return $this->getComments()
             ->andWhere(['status' => Comment::STATUS_BLOCKED])
             ->count();
+    }
+
+    public function getCommentsLabelBlockedCount($options = ['class' => 'pull-right label label-danger'])
+    {
+        $count = $this->getCommentsBlockedCount();
+        $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Blocked comments')]);
+        return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
     }
 
     /**
