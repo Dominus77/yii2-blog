@@ -43,6 +43,28 @@ trait CommentTrait
     }
 
     /**
+     * Return count comments this status approved
+     * @return int
+     */
+    public function getCommentsApprovedCount()
+    {
+        return $this->getComments()
+            ->andWhere(['status' => Comment::STATUS_APPROVED])
+            ->count();
+    }
+
+    /**
+     * Return count comments this status blocked
+     * @return int
+     */
+    public function getCommentsBlockedCount()
+    {
+        return $this->getComments()
+            ->andWhere(['status' => Comment::STATUS_BLOCKED])
+            ->count();
+    }
+
+    /**
      * Count this entity comments status wait
      * @return int
      */

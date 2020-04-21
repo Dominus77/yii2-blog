@@ -48,6 +48,9 @@ tr.detail:focus {
     padding: 10px;
     color: #c5c5c5;
 }
+.label {
+    margin-left: 2px;
+}
 ';
 $this->registerCss($style);
 
@@ -147,15 +150,31 @@ $this->registerJs($script);
                         'attribute' => 'title',
                         'format' => 'raw',
                         'value' => static function (Post $model) {
-                            $count = $model->getCommentsWaitCount();
-                            $comments = '';
-                            if ($count > 0) {
-                                $comments = Html::tag('span', $count, [
+                            $countWait = $model->getCommentsWaitCount();
+                            $countApproved = $model->getCommentsApprovedCount();
+                            $countBlocked = $model->getCommentsBlockedCount();
+                            $commentsWait = '';
+                            $commentsApproved = '';
+                            $commentsBlocked = '';
+                            if ($countWait > 0) {
+                                $commentsWait = Html::tag('span', $countWait, [
                                     'class' => 'pull-right label label-warning',
-                                    'title' => CommentModule::t('module', 'Comments awaiting moderation')
+                                    'title' => CommentModule::t('module', 'Comments waiting moderation')
                                 ]);
                             }
-                            return $model->title . $comments;
+                            if ($countApproved > 0) {
+                                $commentsApproved = Html::tag('span', $countApproved, [
+                                    'class' => 'pull-right label label-success',
+                                    'title' => CommentModule::t('module', 'Approved comments')
+                                ]);
+                            }
+                            if ($countBlocked > 0) {
+                                $commentsBlocked = Html::tag('span', $countBlocked, [
+                                    'class' => 'pull-right label label-danger',
+                                    'title' => CommentModule::t('module', 'Blocked comments')
+                                ]);
+                            }
+                            return $model->title . $commentsBlocked . $commentsApproved . $commentsWait;
                         },
                         'contentOptions' => [
                             'class' => 'row-detail',
