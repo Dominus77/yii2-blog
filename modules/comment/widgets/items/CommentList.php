@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use modules\comment\models\Comment;
 use modules\comment\widgets\items\assets\CommentListAsset;
 use modules\comment\Module;
@@ -21,6 +22,7 @@ class CommentList extends Widget
     public $model;
     public $depthStart = 0;
     public $tree = true;
+    public $showAll = false;
     private $assets;
     private $count = 0;
 
@@ -112,7 +114,7 @@ class CommentList extends Widget
      * @param $key
      * @return string
      */
-    private function getItem($data, $index)
+    protected function getItem($data, $index)
     {
         return $this->render('item', [
             'model' => $data,
@@ -130,7 +132,8 @@ class CommentList extends Widget
         $model = new Comment();
         $model->entity = get_class($this->model);
         $model->entity_id = $this->model->id;
-        $nodes = $model->getNodes();
+        $status = $this->showAll === false ? Comment::STATUS_APPROVED : false;
+        $nodes = $model->getNodes($status);
         $this->count = count($nodes);
         return $nodes;
     }
@@ -150,6 +153,6 @@ class CommentList extends Widget
      */
     public function getAvatar()
     {
-        return $this->assets->baseUrl . '/image/defaultAvatar.jpg';
+        return Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
     }
 }

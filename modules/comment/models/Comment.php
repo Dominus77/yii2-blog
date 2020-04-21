@@ -41,6 +41,8 @@ use modules\comment\Module;
  * @property ActiveQuery|Comment $prev
  * @property ActiveQuery|Comment[] $children
  * @property bool $isApproved Is Approved
+ * @property bool $isBlocked Is Blocked
+ * @property string $statusLabelName Status Label Name
  * @property string $url Url
  */
 class Comment extends ActiveRecord
@@ -53,6 +55,7 @@ class Comment extends ActiveRecord
     const TYPE_BEFORE = 'before';
     const TYPE_AFTER = 'after';
     const SCENARIO_GUEST = 'guest';
+    const SCENARIO_REPLY = 'reply';
 
     const CACHE_DURATION = 0;
     const CACHE_TAG_COMMENTS = 'comments';
@@ -116,6 +119,7 @@ class Comment extends ActiveRecord
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_GUEST] = ['entity', 'entity_id', 'author', 'email', 'comment', 'verifyCode'];
+        $scenarios[self::SCENARIO_REPLY] = ['entity', 'entity_id', 'author', 'email', 'comment'];
         return $scenarios;
     }
 
@@ -380,15 +384,19 @@ class Comment extends ActiveRecord
 
     /**
      * Get request data
+     * @param int|bool $status
      * @param int $depthStart
      * @param bool $tree
      * @return array|Comment[]|ActiveRecord[]
      */
-    public function getNodes($depthStart = 0, $tree = true)
+    public function getNodes($status = false, $depthStart = 0, $tree = true)
     {
         $query = self::find()->where('depth' . ' >=' . $depthStart);
         $query->andWhere(['entity' => $this->entity, 'entity_id' => $this->entity_id]);
-        $query->andWhere(['status' => self::STATUS_APPROVED]);
+
+        if (is_int($status)) {
+            $query->andWhere(['status' => $status]);
+        }
 
         if ($tree === true) {
             $query->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC]);

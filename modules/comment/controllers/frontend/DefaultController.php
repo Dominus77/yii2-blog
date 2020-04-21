@@ -4,7 +4,7 @@ namespace modules\comment\controllers\frontend;
 
 use Yii;
 use yii\captcha\CaptchaAction;
-use yii\web\Controller;
+use modules\comment\controllers\common\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -15,7 +15,7 @@ use modules\comment\models\Comment;
  * Class DefaultController
  * @package modules\comment\controllers\frontend
  */
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     /**
      * {@inheritdoc}

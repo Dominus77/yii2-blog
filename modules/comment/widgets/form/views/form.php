@@ -57,7 +57,7 @@ use modules\comment\Module;
     <div class="form-group">
         <?= Html::submitButton('<span class="glyphicon glyphicon-send"></span> ' . Module::t('module', 'Submit comment'), [
             'class' => 'btn btn-primary',
-            'name' => 'contact-button'
+            'name' => 'comment-button'
         ]) ?>
     </div>
     <?php ActiveForm::end(); ?>

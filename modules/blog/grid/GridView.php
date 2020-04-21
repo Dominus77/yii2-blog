@@ -4,7 +4,6 @@ namespace modules\blog\grid;
 
 use Closure;
 use yii\grid\Column;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView as BaseGridView;
 
@@ -14,7 +13,7 @@ use yii\grid\GridView as BaseGridView;
  */
 class GridView extends BaseGridView
 {
-    public $detailRowOptions = ['class' => 'detail'];
+    public $detailRowOptions = [];
 
     /**
      * @param mixed $model
@@ -41,11 +40,12 @@ class GridView extends BaseGridView
         }
         $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
 
-        $detailRowOptions = ArrayHelper::merge($options, $this->detailRowOptions);
-
+        $cssClass = 'detail';
+        $this->detailRowOptions['id'] = $cssClass . '-' . $options['data-key'];
+        Html::addCssClass($this->detailRowOptions, $cssClass);
 
         $row = Html::tag('tr', implode('', $cells), $options);
-        $detailRow = Html::tag('tr', implode('', $cellDetail), $detailRowOptions);
+        $detailRow = Html::tag('tr', implode('', $cellDetail), $this->detailRowOptions);
 
         return $cellDetail ? $row . PHP_EOL . $detailRow : $row;
     }

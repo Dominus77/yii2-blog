@@ -4,7 +4,7 @@ namespace modules\comment\controllers\backend;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
+use modules\comment\controllers\common\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +17,7 @@ use modules\rbac\models\Permission;
  * Class DefaultController
  * @package modules\comment\controllers\backend
  */
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -86,6 +86,10 @@ class DefaultController extends Controller
     {
         $model = new Comment();
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
+            if (isset($post['comment-button'])) {
+                $model->scenario = $post['comment-button'];
+            }
+
             if (empty($model->parentId)) {
                 $model->makeRoot()->save();
             } else {
@@ -95,6 +99,11 @@ class DefaultController extends Controller
             }
             // Перемещаем в пределах узла
             $model = $this->moveWithinNode($model);
+
+            if ($model->scenario === Comment::SCENARIO_REPLY) {
+                $referer = Yii::$app->request->referrer . '#item-' . $model->id;
+                return $this->redirect($referer);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -203,6 +212,51 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionApproved($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = Comment::STATUS_APPROVED;
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionBlocked($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = Comment::STATUS_BLOCKED;
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionWait($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = Comment::STATUS_WAIT;
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
      * @param integer $id
      * @return Response
      * @throws NotFoundHttpException
@@ -214,7 +268,7 @@ class DefaultController extends Controller
     {
         $model = $this->findModel($id);
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
-        return $this->redirect(['index']);
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

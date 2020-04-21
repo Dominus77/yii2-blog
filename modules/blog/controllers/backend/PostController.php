@@ -2,6 +2,7 @@
 
 namespace modules\blog\controllers\backend;
 
+use modules\comment\models\Comment;
 use Yii;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -53,9 +54,18 @@ class PostController extends Controller
         $searchModel = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $comment = new Comment();
+        $user = Yii::$app->user;
+        $identity = $user->identity;
+        $comment->author = $identity->username;
+        $comment->email = $identity->email;
+        $comment->entity = Post::class;
+        $comment->scenario = Comment::SCENARIO_REPLY;
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'comment' => $comment
         ]);
     }
 

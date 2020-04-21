@@ -10,6 +10,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -398,5 +399,14 @@ class Post extends BaseModel
         return self::getDb()->cache(static function () use ($query) {
             return $query->all();
         }, self::CACHE_DURATION, $dependency);
+    }
+
+    /**
+     * All comments this entity
+     * @return array|ActiveRecord[]
+     */
+    public function getCommentsData()
+    {
+        return $this->getComments()->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC])->all();
     }
 }
