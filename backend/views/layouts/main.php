@@ -1,6 +1,5 @@
 <?php
 
-use modules\blog\models\Post;
 use modules\comment\models\Comment;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -207,10 +206,6 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                         [
                             'label' => BlogModule::t('module', 'Tags'),
                             'url' => ['/blog/tag/index']
-                        ],
-                        [
-                            'label' => BlogModule::t('module', 'Comments') . '<span class="pull-right-container label label-warning">' . Post::getEntityCommentsWaitCount() . '</span>',
-                            'url' => ['/blog/comment/index']
                         ],
                     ]
                 ],

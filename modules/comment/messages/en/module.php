@@ -16,6 +16,7 @@ return [
     'Created' => 'Created',
     'Updated' => 'Updated',
     'Status' => 'Status',
+    'Comments awaiting moderation' => 'Comments awaiting moderation',
     'Wait' => 'Wait',
     'Approve' => 'Approve',
     'Approved' => 'Approved',

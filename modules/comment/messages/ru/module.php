@@ -16,6 +16,7 @@ return [
     'Created' => 'Дата создания',
     'Updated' => 'Дата изменения',
     'Status' => 'Статус',
+    'Comments awaiting moderation' => 'Комментарии ожидающие модерации',
     'Wait' => 'Ожидает',
     'Approve' => 'Одобрить',
     'Approved' => 'Одобрено',

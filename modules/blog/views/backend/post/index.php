@@ -147,7 +147,15 @@ $this->registerJs($script);
                         'attribute' => 'title',
                         'format' => 'raw',
                         'value' => static function (Post $model) {
-                            return $model->title;
+                            $count = $model->getCommentsWaitCount();
+                            $comments = '';
+                            if ($count > 0) {
+                                $comments = Html::tag('span', $count, [
+                                    'class' => 'pull-right label label-warning',
+                                    'title' => CommentModule::t('module', 'Comments awaiting moderation')
+                                ]);
+                            }
+                            return $model->title . $comments;
                         },
                         'contentOptions' => [
                             'class' => 'row-detail',

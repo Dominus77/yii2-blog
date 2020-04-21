@@ -100,11 +100,11 @@ class DefaultController extends BaseController
             // Перемещаем в пределах узла
             $model = $this->moveWithinNode($model);
 
+            $redirect = ['view', 'id' => $model->id];
             if ($model->scenario === Comment::SCENARIO_REPLY) {
-                $referer = Yii::$app->request->referrer . '#item-' . $model->id;
-                return $this->redirect($referer);
+                $redirect = Yii::$app->request->referrer . '#item-' . $model->id;
             }
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect($redirect);
         }
 
         return $this->render('create', [
