@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
+use yii\helpers\Url;
 use yii\widgets\LinkPager;
 use modules\blog\widgets\grid\GridView;
 use modules\blog\widgets\grid\CollapseColumn;
@@ -200,5 +201,6 @@ BlogAsset::register($this);
 </div>
 
 <?= CommentForm::widget([
-    'model' => (new Post(['scenario' => \modules\comment\models\Comment::SCENARIO_REPLY]))
+    'model' => (new Post(['scenario' => \modules\comment\models\Comment::SCENARIO_REPLY])),
+    'formUrl' => Url::to(['/comment/default/create'])
 ]) ?>

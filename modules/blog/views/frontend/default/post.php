@@ -1,7 +1,5 @@
 <?php
 
-use modules\comment\widgets\form\CommentForm;
-use yii\helpers\Url;
 use yii\web\View;
 use yii\helpers\Html;
 use modules\blog\models\Post;
@@ -10,8 +8,9 @@ use modules\blog\widgets\tag\TagCloud;
 use modules\blog\widgets\other\LastPost;
 use modules\comment\widgets\items\CommentList;
 use modules\comment\widgets\other\LastComment;
-use modules\blog\Module;
 use modules\blog\assets\BlogAsset;
+use modules\comment\widgets\form\CommentForm;
+use modules\blog\Module;
 
 /** @var $this View */
 /** @var $model Post */
@@ -80,8 +79,7 @@ $this->params['breadcrumbs'][] = $model->title;
                 ]) ?>
                 <?= CommentForm::widget([
                     'status' => $model->is_comment === Post::COMMENT_ON,
-                    'model' => $model,
-                    'formUrl' => Url::to(['/comment/default/add'])
+                    'model' => $model
                 ]) ?>
             </div>
 

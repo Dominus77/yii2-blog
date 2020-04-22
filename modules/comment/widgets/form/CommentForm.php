@@ -46,7 +46,7 @@ class CommentForm extends Widget
         if (!$this->model instanceof Model) {
             throw new InvalidConfigException('The model is not an instance of the class' . ' ' . Model::class);
         }
-        $this->formUrl = $this->formUrl ?: Url::to(['/comment/default/create']);
+        $this->formUrl = $this->formUrl ?: Url::to(['/comment/default/add']);
         $this->captchaUrl = $this->captchaUrl ?: Url::to('/comment/default/captcha');
         $this->formOptions = ArrayHelper::merge([
             'id' => 'reply-form',
