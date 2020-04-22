@@ -2,17 +2,19 @@
 
 namespace modules\blog\controllers\backend;
 
-use modules\comment\models\Comment;
+
 use Yii;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 use modules\rbac\models\Permission;
 use modules\blog\models\Post;
 use modules\blog\models\search\PostSearch;
-use yii\web\Response;
+use modules\comment\models\Comment;
+use modules\users\models\User;
 use Throwable;
 
 /**
@@ -56,6 +58,7 @@ class PostController extends Controller
 
         $comment = new Comment();
         $user = Yii::$app->user;
+        /** @var User $identity */
         $identity = $user->identity;
         $comment->author = $identity->username;
         $comment->email = $identity->email;
