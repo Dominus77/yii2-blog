@@ -61,6 +61,7 @@ class Comment extends ActiveRecord
 
     const CACHE_DURATION = 0;
     const CACHE_TAG_COMMENTS = 'comments';
+    const CACHE_TAG_COMMENTS_GET_NODES = 'comments-get-nodes';
     const CACHE_TAG_GET_URL = 'comment-get-url';
     const CACHE_TAG_LAST_COMMENTS = 'last-comments';
     const CACHE_TAG_ENTITY_DATA = 'entity-data';
@@ -390,10 +391,11 @@ class Comment extends ActiveRecord
 
     /**
      * Get request data
-     * @param int|bool $status
+     * @param bool|int $status
      * @param int $depthStart
      * @param bool $tree
-     * @return array|Comment[]|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     public function getNodes($status = false, $depthStart = 0, $tree = true)
     {
@@ -409,7 +411,11 @@ class Comment extends ActiveRecord
         } else {
             $query->orderBy(['lft' => SORT_ASC]);
         }
-        return $query->all();
+
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_COMMENTS_GET_NODES]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**

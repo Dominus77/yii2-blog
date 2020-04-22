@@ -210,7 +210,7 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     ]
                 ],
                 [
-                    'label' => '<i class="fa fa-comments"></i> ' . CommentModule::t('module', 'Comments') . '<span class="pull-right-container label label-warning">' . Comment::getCommentsWaitCount() . '</span>',
+                    'label' => '<i class="fa fa-comments"></i> ' . CommentModule::t('module', 'Comments') . Comment::getCommentsLabelWaitCount(['pull-right-container label label-warning']),
                     'url' => ['/comment/default/index'],
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_COMMENTS)
                 ],

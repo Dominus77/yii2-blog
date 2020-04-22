@@ -6,6 +6,9 @@ use Yii;
 use yii\base\InvalidConfigException;
 use modules\comment\models\Comment;
 use modules\comment\Module;
+use yii\caching\TagDependency;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * Trait ModuleTrait
@@ -81,8 +84,22 @@ trait ModuleTrait
      */
     public static function getCommentsWaitCount()
     {
-        return Comment::find()
-            ->where(['status' => Comment::STATUS_WAIT])
-            ->count();
+        $query = Comment::find()->where(['status' => Comment::STATUS_WAIT]);
+        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_WAIT]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->count();
+        }, self::CACHE_DURATION, $dependency);
+    }
+
+    /**
+     * @param string[] $options
+     * @return string
+     */
+    public static function getCommentsLabelWaitCount($options = [])
+    {
+        $count = self::getCommentsWaitCount();
+        Html::addCssClass($options, 'pull-right label label-warning');
+        $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Comments waiting moderation')]);
+        return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
     }
 }

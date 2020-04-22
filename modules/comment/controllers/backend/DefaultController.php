@@ -54,6 +54,7 @@ class DefaultController extends BaseController
                     Comment::CACHE_TAG_COMMENTS_COUNT_APPROVED,
                     Comment::CACHE_TAG_COMMENTS_COUNT_BLOCKED,
                     Comment::CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT,
+                    Comment::CACHE_TAG_COMMENTS_GET_NODES,
                     Post::CACHE_TAG_POST_ALL_COMMENTS,
                 ]
             ]
