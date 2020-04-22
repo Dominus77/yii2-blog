@@ -28,7 +28,7 @@ return [
     'Reply' => 'Reply',
     'Comment this' => 'Comment this',
     'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}' =>
-        'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}',
+        '{n, plural, =0{No comments yet} =1{There is one comment} other{There are # comments}}',
     'Click to change status to blocked' => 'Click to change status to blocked',
     'Click to change status to approved' => 'Click to change status to approved',
     'Create' => 'Create',

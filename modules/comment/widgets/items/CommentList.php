@@ -51,14 +51,20 @@ class CommentList extends Widget
             echo Html::beginTag('div', ['id' => $this->id, 'class' => 'comments']) . PHP_EOL;
             $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
             if (is_array($tree = $this->getRenderTree())) {
+                $msgAddCommentsIsDisable = '';
                 if ($this->count > 0 || $this->reply === true) {
                     $title = $icon . ' ' . Module::t('module', 'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}', ['n' => $this->count]);
                     $options = ['class' => 'title-comments'];
+                    if ($this->reply === false) {
+                        $msgAddCommentsIsDisable = Html::tag('small', 'Добавление комментариев отключено');
+                    }
                 } else {
                     $title = $icon . ' ' . Module::t('module', 'Commenting is disabled');
                     $options = ['class' => 'title-comments-off'];
                 }
+
                 echo Html::tag('h3', $title, $options) . PHP_EOL;
+                echo Html::tag('p', $msgAddCommentsIsDisable, ['class' => 'hint title-comments-off']) . PHP_EOL;
                 foreach ($tree as $items) {
                     echo $items . PHP_EOL;
                 }

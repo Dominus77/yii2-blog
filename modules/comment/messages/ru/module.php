@@ -28,7 +28,7 @@ return [
     'Reply' => 'Ответить',
     'Comment this' => 'Комментировать',
     'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}' =>
-        '{n, plural, =0{Комментариев пока нет, ваш будет первым} =1{Всего один комментарий} one{Всего # комментарий} few{Всего # комментария} many{Всего # комментариев} other{Всего # комментария}}',
+        '{n, plural, =0{Комментариев пока нет} =1{Всего один комментарий} one{Всего # комментарий} few{Всего # комментария} many{Всего # комментариев} other{Всего # комментария}}',
     'Click to change status to blocked' => 'Клик, чтобы изменить статус на заблокированно',
     'Click to change status to approved' => 'Клик, чтобы изменить статус на одобренно',
     'Create' => 'Создать',
