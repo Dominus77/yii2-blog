@@ -2,6 +2,7 @@
 
 namespace modules\comment\traits;
 
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use modules\comment\models\Comment;
@@ -40,9 +41,11 @@ trait CommentTrait
      */
     public function getCommentsWaitCount()
     {
-        return $this->getComments()
-            ->andWhere(['status' => Comment::STATUS_WAIT])
-            ->count();
+        $query = $this->getComments()->andWhere(['status' => Comment::STATUS_WAIT]);
+        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_WAIT]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->count();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -63,9 +66,11 @@ trait CommentTrait
      */
     public function getCommentsApprovedCount()
     {
-        return $this->getComments()
-            ->andWhere(['status' => Comment::STATUS_APPROVED])
-            ->count();
+        $query = $this->getComments()->andWhere(['status' => Comment::STATUS_APPROVED]);
+        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_APPROVED]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->count();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**
@@ -85,9 +90,11 @@ trait CommentTrait
      */
     public function getCommentsBlockedCount()
     {
-        return $this->getComments()
-            ->andWhere(['status' => Comment::STATUS_BLOCKED])
-            ->count();
+        $query = $this->getComments()->andWhere(['status' => Comment::STATUS_BLOCKED]);
+        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_BLOCKED]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->count();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     public function getCommentsLabelBlockedCount($options = ['class' => 'pull-right label label-danger'])
@@ -103,9 +110,11 @@ trait CommentTrait
      */
     public static function getEntityCommentsWaitCount()
     {
-        return self::getEntityAllCommentsQuery()
-            ->andWhere(['status' => Comment::STATUS_WAIT])
-            ->count();
+        $query = self::getEntityAllCommentsQuery()->andWhere(['status' => Comment::STATUS_WAIT]);
+        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->count();
+        }, self::CACHE_DURATION, $dependency);
     }
 
     /**

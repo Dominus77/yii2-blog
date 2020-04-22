@@ -10,7 +10,6 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -69,6 +68,7 @@ class Post extends BaseModel
     const CACHE_TAG_POST_AUTHOR_PROFILE = 'post-author-profile';
     const CACHE_TAG_POST_CATEGORY = 'post-category';
     const CACHE_TAG_LAST_POST = 'post-last';
+    const CACHE_TAG_POST_ALL_COMMENTS = 'post-all-comments';
 
     const COMMENT_OFF = 0;
     const COMMENT_ON = 1;
@@ -470,10 +470,15 @@ class Post extends BaseModel
 
     /**
      * All comments this entity
-     * @return array|ActiveRecord[]
+     * @return mixed
+     * @throws Throwable
      */
     public function getCommentsData()
     {
-        return $this->getComments()->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC])->all();
+        $query = $this->getComments()->orderBy(['tree' => SORT_ASC, 'lft' => SORT_ASC]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_POST_ALL_COMMENTS]]);
+        return self::getDb()->cache(static function () use ($query) {
+            return $query->all();
+        }, self::CACHE_DURATION, $dependency);
     }
 }

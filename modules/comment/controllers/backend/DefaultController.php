@@ -2,6 +2,7 @@
 
 namespace modules\comment\controllers\backend;
 
+use modules\blog\models\Post;
 use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
@@ -45,8 +46,16 @@ class DefaultController extends BaseController
             ],
             'delCacheControllerBehavior' => [
                 'class' => DelCacheControllerBehavior::class,
-                'actions' => ['create', 'update', 'move', 'change-status', 'delete'],
-                'tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_LAST_COMMENTS]
+                'actions' => ['create', 'update', 'move', 'change-status', 'delete', 'approved', 'blocked', 'wait'],
+                'tags' => [
+                    Comment::CACHE_TAG_COMMENTS,
+                    Comment::CACHE_TAG_LAST_COMMENTS,
+                    Comment::CACHE_TAG_COMMENTS_COUNT_WAIT,
+                    Comment::CACHE_TAG_COMMENTS_COUNT_APPROVED,
+                    Comment::CACHE_TAG_COMMENTS_COUNT_BLOCKED,
+                    Comment::CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT,
+                    Post::CACHE_TAG_POST_ALL_COMMENTS,
+                ]
             ]
         ];
     }

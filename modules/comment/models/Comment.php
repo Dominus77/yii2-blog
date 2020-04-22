@@ -64,6 +64,10 @@ class Comment extends ActiveRecord
     const CACHE_TAG_GET_URL = 'comment-get-url';
     const CACHE_TAG_LAST_COMMENTS = 'last-comments';
     const CACHE_TAG_ENTITY_DATA = 'entity-data';
+    const CACHE_TAG_COMMENTS_COUNT_WAIT = 'comments-count-wait';
+    const CACHE_TAG_COMMENTS_COUNT_APPROVED = 'comments-count-approved';
+    const CACHE_TAG_COMMENTS_COUNT_BLOCKED = 'comments-count-blocked';
+    const CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT = 'comments-count-entity-wait';
 
     public $childrenList;
     public $typeMove;
