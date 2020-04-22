@@ -1,15 +1,15 @@
 <?php
 
 use yii\helpers\Html;
-use modules\blog\widgets\grid\GridView;
-use modules\blog\widgets\grid\CollapseColumn;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
 use yii\widgets\LinkPager;
+use modules\blog\widgets\grid\GridView;
+use modules\blog\widgets\grid\CollapseColumn;
 use modules\blog\assets\BlogAsset;
 use modules\blog\models\Post;
 use modules\blog\Module;
-use modules\comment\widgets\form\Form;
+use modules\comment\widgets\form\CommentForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel modules\blog\models\search\PostSearch */
@@ -199,6 +199,6 @@ BlogAsset::register($this);
     </div>
 </div>
 
-<?= Form::widget([
+<?= CommentForm::widget([
     'model' => (new Post(['scenario' => \modules\comment\models\Comment::SCENARIO_REPLY]))
 ]) ?>

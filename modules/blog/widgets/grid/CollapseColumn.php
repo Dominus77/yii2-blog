@@ -15,7 +15,7 @@ class CollapseColumn extends DataColumn
 {
     /** @var string|Closure */
     public $detail;
-    /** @var string  */
+    /** @var string */
     public $collapse = 'collapse';
 
     /** @var array */
@@ -58,7 +58,7 @@ class CollapseColumn extends DataColumn
         } else {
             $options = $this->contentOptions;
         }
-
+        $options['data-detail'] = 'detail-' . $key;
         Html::addCssClass($options, 'row-detail');
         Html::addCssStyle($options, 'cursor: pointer;');
         return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);

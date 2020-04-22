@@ -8,11 +8,11 @@ use yii\db\ActiveRecord;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use Throwable;
 use modules\blog\behaviors\CategoryTreeBehavior;
 use modules\blog\models\Category;
 use modules\blog\models\Post;
 use modules\blog\models\Tag;
+use Throwable;
 
 /**
  * Class DefaultController

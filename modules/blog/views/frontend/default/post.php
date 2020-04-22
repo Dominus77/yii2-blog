@@ -1,6 +1,7 @@
 <?php
 
-use modules\comment\widgets\form\Form;
+use modules\comment\widgets\form\CommentForm;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\helpers\Html;
 use modules\blog\models\Post;
@@ -77,14 +78,11 @@ $this->params['breadcrumbs'][] = $model->title;
                     'reply' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model
                 ]) ?>
-                <?= Form::widget([
+                <?= CommentForm::widget([
                     'status' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model,
+                    'formUrl' => Url::to(['/comment/default/add'])
                 ]) ?>
-                <?php /*= CommentForm::widget([
-                    'status' => $model->is_comment === Post::COMMENT_ON,
-                    'model' => $model
-                ])*/ ?>
             </div>
 
         </div>

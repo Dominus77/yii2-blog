@@ -38,6 +38,9 @@ class DefaultController extends BaseController
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function actions()
     {
         return [
@@ -53,7 +56,7 @@ class DefaultController extends BaseController
     /**
      * @return Response
      */
-    public function actionCreate()
+    public function actionAdd()
     {
         $model = new Comment();
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {

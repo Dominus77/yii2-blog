@@ -46,17 +46,21 @@ if ($model->isBlocked) {
             ]
         ]) ?>
 
-        <?= Html::a('<span class="glyphicon glyphicon-ok"></span> ' . Module::t('module', 'Approve'), [
-            '/comment/default/approved',
-            'id' => $model->id,
-            '#' => 'item-' . $model->id
-        ], ['class' => 'btn btn-success btn-sm']) ?>
+        <?php if ($model->status !== Comment::STATUS_APPROVED) { ?>
+            <?= Html::a('<span class="glyphicon glyphicon-ok"></span> ' . Module::t('module', 'Approve'), [
+                '/comment/default/approved',
+                'id' => $model->id,
+                '#' => 'item-' . $model->id
+            ], ['class' => 'btn btn-success btn-sm']) ?>
+        <?php } ?>
 
-        <?= Html::a('<span class="glyphicon glyphicon-ban-circle"></span> ' . Module::t('module', 'Block'), [
-            '/comment/default/blocked',
-            'id' => $model->id,
-            '#' => 'item-' . $model->id
-        ], ['class' => 'btn btn-danger btn-sm']) ?>
+        <?php if ($model->status !== Comment::STATUS_BLOCKED) { ?>
+            <?= Html::a('<span class="glyphicon glyphicon-ban-circle"></span> ' . Module::t('module', 'Block'), [
+                '/comment/default/blocked',
+                'id' => $model->id,
+                '#' => 'item-' . $model->id
+            ], ['class' => 'btn btn-danger btn-sm']) ?>
+        <?php } ?>
 
         <?= Html::a('<span class="glyphicon glyphicon-trash"></span> ' . Module::t('module', 'Delete'), [
             '/comment/default/delete',
@@ -70,5 +74,5 @@ if ($model->isBlocked) {
             ]
         ]) ?>
     </div>
-    <div id="form-container-<?= $model->id ?>"></div>
+    <div class="reply-form-container" id="form-container-<?= $model->id ?>"></div>
 </div>
