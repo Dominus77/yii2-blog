@@ -29,6 +29,9 @@ use modules\blog\Module;
                     <span class="glyphicon glyphicon-folder-open"></span> <?= Html::a($category->title, [$category->url], ['rel' => 'nofollow']) ?>
                 </noindex>
             <?php } ?>
+            <?php if (($commentsCount = $model->getCommentsApprovedCount()) && $commentsCount > 0) { ?>
+                <span class="glyphicon glyphicon-comment"></span> <?= Module::t('module', 'Comments') ?>: <?= $commentsCount ?>
+            <?php } ?>
             <?php if ($tags = $model->getStringTagsToPost(true, true)) { ?>
                 <noindex>
                     <span class="glyphicon glyphicon-tags"></span> <?= Module::t('module', 'Tags') ?>: <?= $tags ?>
