@@ -56,7 +56,7 @@ class CommentList extends Widget
                     $title = $icon . ' ' . Module::t('module', 'There {n, plural, =0{are no comments yet, yours will be the first} =1{is one comment} other{are # comments}}', ['n' => $this->count]);
                     $options = ['class' => 'title-comments'];
                     if ($this->reply === false) {
-                        $msgAddCommentsIsDisable = Html::tag('small', 'Добавление комментариев отключено');
+                        $msgAddCommentsIsDisable = Html::tag('small', Module::t('module', 'Commenting is disabled'));
                     }
                 } else {
                     $title = $icon . ' ' . Module::t('module', 'Commenting is disabled');
