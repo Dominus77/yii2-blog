@@ -1,0 +1,4 @@
+tr.detail:hover,
+tr.detail:focus {
+    background-color: inherit !important;
+}

@@ -53,7 +53,7 @@ class DefaultController extends BaseController
     /**
      * @return Response
      */
-    public function actionAdd()
+    public function actionCreate()
     {
         $model = new Comment();
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {

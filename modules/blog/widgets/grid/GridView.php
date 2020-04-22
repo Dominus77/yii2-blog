@@ -1,11 +1,12 @@
 <?php
 
-namespace modules\blog\grid;
+namespace modules\blog\widgets\grid;
 
 use Closure;
 use yii\grid\Column;
 use yii\helpers\Html;
 use yii\grid\GridView as BaseGridView;
+use modules\blog\widgets\grid\assets\GridAsset;
 
 /**
  * Class GridView
@@ -14,6 +15,12 @@ use yii\grid\GridView as BaseGridView;
 class GridView extends BaseGridView
 {
     public $detailRowOptions = [];
+
+    public function init()
+    {
+        parent::init();
+        $this->registerAssets();
+    }
 
     /**
      * @param mixed $model
@@ -26,7 +33,7 @@ class GridView extends BaseGridView
         $cells = [];
         $cellDetail = [];
         $colspan = count($this->columns);
-        /* @var $column Column|DataDetailColumn */
+        /* @var $column Column|CollapseColumn */
         foreach ($this->columns as $column) {
             $cells[] = $column->renderDataCell($model, $key, $index);
             if (isset($column->detail) && !empty($column->detail)) {
@@ -48,5 +55,14 @@ class GridView extends BaseGridView
         $detailRow = Html::tag('tr', implode('', $cellDetail), $this->detailRowOptions);
 
         return $cellDetail ? $row . PHP_EOL . $detailRow : $row;
+    }
+
+    /**
+     * Register resource
+     */
+    protected function registerAssets()
+    {
+        $view = $this->getView();
+        GridAsset::register($view);
     }
 }

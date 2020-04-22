@@ -47,10 +47,12 @@ return [
     'Root' => 'Корень',
     '- all -' => '- все -',
     'Link' => 'Ссылка',
+    'Link this comment' => 'Ссылка на комментарий',
     'Verify Code' => 'Проверочный код',
     'Code' => 'Код',
     'Click on the picture to change the code.' => 'Кликните по картинке, чтобы изменить код.',
     'No one will see' => 'Никто не увидит',
     'Last Comments' => 'Последние комментарии',
     'Commenting is disabled' => 'Комментирование отключено',
+    'The model is not an instance of the class' => 'Модель не является экземпляром класса',
 ];

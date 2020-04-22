@@ -47,10 +47,12 @@ return [
     'Root' => 'Root',
     '- all -' => '- all -',
     'Link' => 'Link',
+    'Link this comment' => 'Link this comment',
     'Verify Code' => 'Verify Code',
     'Code' => 'Code',
     'Click on the picture to change the code.' => 'Click on the picture to change the code.',
     'No one will see' => 'No one will see',
     'Last Comments' => 'Last Comments',
     'Commenting is disabled' => 'Commenting is disabled',
+    'The model is not an instance of the class' => 'The model is not an instance of the class',
 ];

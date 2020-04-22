@@ -20,7 +20,10 @@ $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
         <div class="panel-heading">
             <div class="link">
                 <noindex>
-                    <?= Html::a(Module::t('module', 'Link'), $model->url, ['rel' => 'nofollow']) ?>
+                    <?= Html::a(Module::t('module', 'Link'), $model->url, [
+                        'rel' => 'nofollow',
+                        'title' => Module::t('module', 'Link this comment')
+                    ]) ?>
                 </noindex>
             </div>
             <div class="author"><?= $model->author ?></div>
@@ -34,16 +37,16 @@ $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
             </div>
         </div>
         <?php if ($reply === true) { ?>
-            <div class="reply-container panel-footer" style="display:none;">
+            <div class="reply-container panel-footer">
                 <?= Html::button($icon . ' ' . Module::t('module', 'Reply'), [
                     'id' => 'reply-button-' . $model->id,
-                    'class' => 'reply-button btn btn-info btn-sm',
+                    'class' => 'btn-reply btn btn-info btn-sm',
                     'data' => [
-                        'id' => $model->id
-                    ],
-                    'onclick' => 'reply(this);',
+                        'id' => $model->id,
+                        'entityId' => $model->entityData->id
+                    ]
                 ]) ?>
-                <div class="reply-form-container" id="reply-form-container-<?= $model->id ?>"></div>
+                <div class="reply-form-container" id="form-container-<?= $model->id ?>"></div>
             </div>
         <?php } ?>
     </div>

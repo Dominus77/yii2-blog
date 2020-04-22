@@ -62,14 +62,13 @@ if ($model->isBlocked) {
             '/comment/default/delete',
             'id' => $model->id,
             '#' => 'item-' . $model->id
-        ], ['class' => 'btn btn-default btn-sm',
+        ], [
+            'class' => 'btn btn-default btn-sm',
             'data' => [
                 'method' => 'post',
                 'confirm' => Module::t('module', 'Are you sure you want to delete this item?')
             ]
         ]) ?>
     </div>
-    <div id="form-container-<?= $model->id ?>">
-
-    </div>
+    <div id="form-container-<?= $model->id ?>"></div>
 </div>

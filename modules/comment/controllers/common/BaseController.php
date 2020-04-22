@@ -8,11 +8,15 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
+/**
+ * Class BaseController
+ * @package modules\comment\controllers\common
+ */
 class BaseController extends Controller
 {
     /**
      * Read file storage folder
-     * <img src="<?= Url::to(['/main/default/file', 'filename' => '1.png'])?>">
+     * <img src="<?= Url::to(['/comment/default/file', 'filename' => '1.png'])?>">
      * @throws NotFoundHttpException
      */
     public function actionFile()

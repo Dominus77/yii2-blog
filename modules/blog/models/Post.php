@@ -58,6 +58,7 @@ class Post extends BaseModel
 
     /** @var string */
     public $authorName;
+    public $collapse;
 
     /** @var string */
     private $_url;

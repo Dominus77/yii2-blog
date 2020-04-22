@@ -6,6 +6,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use modules\blog\models\Category;
 use modules\blog\Module;
+use yii\helpers\StringHelper;
 
 /**
  * Trait ModuleTrait
@@ -74,5 +75,16 @@ trait ModuleTrait
             $defaultPageSize = $module->defaultPageSize;
         }
         return $defaultPageSize;
+    }
+
+    /**
+     * @param $string
+     * @param int $length
+     * @param string $sufix
+     * @return string
+     */
+    public static function truncate($string, $length = 30, $sufix = ' ...')
+    {
+        return StringHelper::truncate($string, $length, $sufix);
     }
 }

@@ -44,6 +44,7 @@ use modules\comment\Module;
  * @property bool $isBlocked Is Blocked
  * @property string $statusLabelName Status Label Name
  * @property string $url Url
+ * @property object $entityData Object Entity
  */
 class Comment extends ActiveRecord
 {
@@ -56,6 +57,7 @@ class Comment extends ActiveRecord
     const TYPE_AFTER = 'after';
     const SCENARIO_GUEST = 'guest';
     const SCENARIO_REPLY = 'reply';
+    const SCENARIO_DELETE = 'delete';
 
     const CACHE_DURATION = 0;
     const CACHE_TAG_COMMENTS = 'comments';

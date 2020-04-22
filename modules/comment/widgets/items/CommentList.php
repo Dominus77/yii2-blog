@@ -65,9 +65,7 @@ class CommentList extends Widget
             }
             if ($this->reply === true) {
                 echo Html::button($icon . ' ' . Module::t('module', 'Comment this'), [
-                    'id' => 'comment-this-button',
-                    'class' => 'btn btn-info btn-sm',
-                    'style' => 'display:none;'
+                    'class' => 'comment-button btn btn-info btn-sm',
                 ]);
             }
             echo Html::endTag('div') . PHP_EOL;
@@ -154,6 +152,11 @@ class CommentList extends Widget
     {
         $view = $this->getView();
         CommentListAsset::register($view);
+        $script = "
+            $('#form-container').show();
+            $('.comment-button').hide();
+        ";
+        $view->registerJs($script);
     }
 
     /**

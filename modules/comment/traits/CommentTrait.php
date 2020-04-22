@@ -49,9 +49,10 @@ trait CommentTrait
      * @param string[] $options
      * @return string
      */
-    public function getCommentsLabelWaitCount($options = ['class' => 'pull-right label label-warning'])
+    public function getCommentsLabelWaitCount($options = [])
     {
         $count = $this->getCommentsWaitCount();
+        Html::addCssClass($options, 'pull-right label label-warning');
         $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Comments waiting moderation')]);
         return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
     }

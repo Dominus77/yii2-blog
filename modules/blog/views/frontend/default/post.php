@@ -1,5 +1,6 @@
 <?php
 
+use modules\comment\widgets\form\Form;
 use yii\web\View;
 use yii\helpers\Html;
 use modules\blog\models\Post;
@@ -7,7 +8,6 @@ use modules\blog\widgets\menu\CategoryMenu;
 use modules\blog\widgets\tag\TagCloud;
 use modules\blog\widgets\other\LastPost;
 use modules\comment\widgets\items\CommentList;
-use modules\comment\widgets\form\CommentForm;
 use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
 use modules\blog\assets\BlogAsset;
@@ -77,10 +77,14 @@ $this->params['breadcrumbs'][] = $model->title;
                     'reply' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model
                 ]) ?>
-                <?= CommentForm::widget([
+                <?= Form::widget([
+                    'status' => $model->is_comment === Post::COMMENT_ON,
+                    'model' => $model,
+                ]) ?>
+                <?php /*= CommentForm::widget([
                     'status' => $model->is_comment === Post::COMMENT_ON,
                     'model' => $model
-                ]) ?>
+                ])*/ ?>
             </div>
 
         </div>

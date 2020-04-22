@@ -3,6 +3,8 @@
 namespace modules\comment\controllers\backend;
 
 use Yii;
+use yii\db\Exception;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use modules\comment\controllers\common\BaseController;
 use yii\web\NotFoundHttpException;
@@ -12,6 +14,7 @@ use common\components\behaviors\DelCacheControllerBehavior;
 use modules\comment\models\Comment;
 use modules\comment\models\search\CommentSearch;
 use modules\rbac\models\Permission;
+use Throwable;
 
 /**
  * Class DefaultController
@@ -86,8 +89,8 @@ class DefaultController extends BaseController
     {
         $model = new Comment();
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
-            if (isset($post['comment-button'])) {
-                $model->scenario = $post['comment-button'];
+            if (isset($post['comment-submit-button'])) {
+                $model->scenario = $post['comment-submit-button'];
             }
 
             if (empty($model->parentId)) {
@@ -136,6 +139,7 @@ class DefaultController extends BaseController
     /**
      * Return children list
      * @return array|Response
+     * @throws NotFoundHttpException
      */
     public function actionChildrenList()
     {
@@ -260,15 +264,15 @@ class DefaultController extends BaseController
      * @param integer $id
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\Exception
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws Exception
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
-        return $this->redirect(Yii::$app->request->referrer);
+        return $this->redirect(['index']);
     }
 
     /**

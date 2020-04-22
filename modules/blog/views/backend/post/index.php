@@ -1,98 +1,23 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
-use modules\comment\models\Comment;
-use modules\blog\grid\GridView;
-use modules\blog\grid\DataDetailColumn;
+use modules\blog\widgets\grid\GridView;
+use modules\blog\widgets\grid\CollapseColumn;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
 use yii\widgets\LinkPager;
 use modules\blog\assets\BlogAsset;
 use modules\blog\models\Post;
 use modules\blog\Module;
-use modules\comment\Module as CommentModule;
+use modules\comment\widgets\form\Form;
 
 /* @var $this yii\web\View */
 /* @var $searchModel modules\blog\models\search\PostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $comment Comment */
 
 echo $this->render('_base', ['link' => false]);
 
 BlogAsset::register($this);
-
-
-$style = '
-tr.detail:hover,
-tr.detail:focus {
-    background-color: inherit !important;
-}
-.comment-list .item {
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 5px 5px 0 0;
-}
-.comment-list .item .item-comment {
-    border: 1px solid #c5c5c5;
-    padding: 5px;
-    margin: 5px 0;
-    border-radius: 5px 0 5px 0;
-}
-.comment-list .item-avatar img {
-    width: 50px;
-    margin: 0 5px 5px 0;
-}
-.comment-list .item-blank {
-    padding: 10px;
-    color: #c5c5c5;
-}
-.label {
-    margin-left: 2px;
-}
-';
-$this->registerCss($style);
-
-$script = "
-let loc = window.location.hash.replace('#',''),
-    tr;
-    
-if (loc !== '') {    
-    tr = $('#' + loc).parent().parent().parent('tr');    
-    tr.show();
-}
-
-$('#post-table .row-detail').on('click', function(){
-    let key = $(this).parent('tr').data('key')
-        detail = $('.detail')
-        targetDetail = $('#detail-' + key);
-    
-    if(targetDetail.is(':visible')) {
-        targetDetail.hide();
-    } else {
-        detail.hide(); 
-        targetDetail.show();
-    }
-});
-
-$('.btn-reply').on('click', function(e){       
-    e.preventDefault();
-    
-    let target = $(this),
-        id = target.data('id'),
-        entityId = target.data('entityid'),
-        form = $('#reply-form'),
-        replyContainer = '#form-container-' + id;
-        
-        console.log(entityId);
-        form.appendTo(replyContainer);
-        form.show();
-        $('#comment-entity_id').val(entityId);
-        $('#comment-parentid').val(id);
-});
-";
-$this->registerJs($script);
 ?>
 <div class="blog-backend-post-index">
     <div class="box">
@@ -146,27 +71,21 @@ $this->registerJs($script);
                         ]
                     ],
                     [
-                        'class' => DataDetailColumn::class,
-                        'attribute' => 'title',
-                        'format' => 'raw',
-                        'value' => static function (Post $model) {
-                            return $model->title . $model->getCommentsLabelBlockedCount()
-                                . $model->getCommentsLabelApprovedCount()
-                                . $model->getCommentsLabelWaitCount();
-                        },
-                        'contentOptions' => [
-                            'class' => 'row-detail',
-                            'style' => 'cursor:pointer;'
-                        ],
+                        'class' => CollapseColumn::class,
                         'detail' => function (Post $model) {
                             return $this->render('comments/index', [
                                 'model' => $model
                             ]);
                         },
                     ],
-                    'slug',
                     [
-                        'class' => DataDetailColumn::class,
+                        'attribute' => 'title',
+                        'format' => 'raw',
+                        'value' => static function (Post $model) {
+                            return Html::tag('span', $model->title . $model->getCommentsLabelWaitCount(), ['title' => $model->slug]);
+                        },
+                    ],
+                    [
                         'attribute' => 'tagNames',
                         'value' => static function (Post $model) {
                             return $model->getStringTagsToPost(true, false, '-');
@@ -280,40 +199,6 @@ $this->registerJs($script);
     </div>
 </div>
 
-<div id="form-container" style="display: none;">
-    <?php $form = ActiveForm::begin([
-        'id' => 'reply-form',
-        'enableClientValidation' => true,
-        'action' => Url::to(['/comment/default/create'])
-    ]); ?>
-
-    <?= $form->field($comment, 'author')->textInput([
-        'class' => 'form-control',
-        'placeholder' => true
-    ]) ?>
-
-    <?= $form->field($comment, 'email')->textInput([
-        'class' => 'form-control',
-        'placeholder' => true
-    ])->hint(CommentModule::t('module', 'No one will see')) ?>
-
-    <?= $form->field($comment, 'comment')->textarea([
-        'rows' => 6,
-        'class' => 'form-control',
-        'placeholder' => true
-    ]) ?>
-
-    <?= $form->field($comment, 'entity')->hiddenInput()->label(false) ?>
-    <?= $form->field($comment, 'entity_id')->hiddenInput()->label(false) ?>
-    <?= $form->field($comment, 'rootId')->hiddenInput()->label(false) ?>
-    <?= $form->field($comment, 'parentId')->hiddenInput()->label(false) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-send"></span> ' . CommentModule::t('module', 'Submit comment'), [
-            'class' => 'btn btn-primary',
-            'name' => 'comment-button',
-            'value' => $comment->scenario
-        ]) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
-</div>
+<?= Form::widget([
+    'model' => (new Post(['scenario' => \modules\comment\models\Comment::SCENARIO_REPLY]))
+]) ?>
