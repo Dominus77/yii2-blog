@@ -52,12 +52,13 @@ class LastComment extends Widget
             echo Html::beginTag('div', ['class' => 'panel-body']) . PHP_EOL;
             echo Html::beginTag('ul') . PHP_EOL;
             foreach ($comments as $comment) {
-                echo $this->render('last-comment', [
-                    'comment' => $comment,
-                    'title' => $comment->getEntityData()->{$this->titleAttribute}
-                ]);
+                if (($entityData = $comment->getEntityData()) && $entityData !== null) {
+                    echo $this->render('last-comment', [
+                        'comment' => $comment,
+                        'title' => $entityData->{$this->titleAttribute}
+                    ]);
+                }
             }
-
             echo Html::endTag('ul') . PHP_EOL;
             echo Html::endTag('div') . PHP_EOL;
             echo Html::endTag('div') . PHP_EOL;

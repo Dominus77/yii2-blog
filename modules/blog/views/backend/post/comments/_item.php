@@ -64,8 +64,7 @@ if ($model->isBlocked) {
 
         <?= Html::a('<span class="glyphicon glyphicon-trash"></span> ' . Module::t('module', 'Delete'), [
             '/comment/default/delete',
-            'id' => $model->id,
-            '#' => 'item-' . $model->id
+            'id' => $model->id
         ], [
             'class' => 'btn btn-default btn-sm',
             'data' => [

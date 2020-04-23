@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\grid\ActionColumn;
+use yii\widgets\LinkPager;
 use modules\comment\grid\DataColumn;
 use modules\comment\models\search\CommentSearch;
 use modules\comment\models\Comment;
@@ -139,6 +140,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
                     ]
                 ],
+            ]) ?>
+        </div>
+        <div class="box-footer">
+            <?= LinkPager::widget([
+                'pagination' => $dataProvider->pagination,
+                'registerLinkTags' => true,
+                'options' => [
+                    'class' => 'pagination pagination-sm no-margin pull-right',
+                ]
             ]) ?>
         </div>
     </div>

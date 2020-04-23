@@ -2,6 +2,7 @@
 
 namespace modules\comment\models;
 
+use Yii;
 use Throwable;
 use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
@@ -58,6 +59,7 @@ class Comment extends ActiveRecord
     const SCENARIO_GUEST = 'guest';
     const SCENARIO_REPLY = 'reply';
     const SCENARIO_DELETE = 'delete';
+    const SCENARIO_VIEW = 'view';
 
     const CACHE_DURATION = 0;
     const CACHE_TAG_COMMENTS = 'comments';
@@ -495,19 +497,56 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * @return mixed
+     * @return mixed|null
      * @throws Throwable
      */
     public function getEntityData()
     {
         /** @var ActiveRecord $entity */
         $entity = $this->entity;
-        $query = $entity::find()
-            ->where(['id' => $this->entity_id]);
+        if (class_exists($entity)) {
+            $query = $entity::find()->where(['id' => $this->entity_id]);
+            $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_ENTITY_DATA]]);
+            return self::getDb()->cache(static function () use ($query) {
+                return $query->one();
+            }, self::CACHE_DURATION, $dependency);
+        }
+        return null;
+    }
 
-        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_ENTITY_DATA]]);
-        return self::getDb()->cache(static function () use ($query) {
-            return $query->one();
-        }, self::CACHE_DURATION, $dependency);
+    /**
+     * Set message success
+     */
+    public static function messageSuccess()
+    {
+        $msgSuccess = 'Спасибо! Ваш комментарий будет опубликован после успешной модерации.';
+        Yii::$app->session->setFlash('success', $msgSuccess);
+    }
+
+    /**
+     * Set message error
+     */
+    public static function messageError()
+    {
+        $msgError = 'Произошла ошибка! Не удалось добавить комментарий.';
+        Yii::$app->session->setFlash('error', $msgError);
+    }
+
+    /**
+     * Sending notify to email
+     * @param array $params
+     * @return bool
+     */
+    public function send($params = [])
+    {
+        // Отправляем сообщение о новом комментарии
+        return Yii::$app->mailer->compose([
+            'html' => '@modules/comment/mail/newComment-html',
+            'text' => '@modules/comment/mail/newComment-text'
+        ], ['model' => $this, 'params' => $params])
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
+            ->setTo($this->email)
+            ->setSubject(Module::t('module', 'New comment') . ' ' . Yii::$app->name)
+            ->send();
     }
 }

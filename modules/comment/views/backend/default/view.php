@@ -62,6 +62,9 @@ YiiAsset::register($this);
                 'data' => [
                     'confirm' => Module::t('module', 'Are you sure you want to delete this item?'),
                     'method' => 'post',
+                    'params' => [
+                        'scenario' => Comment::SCENARIO_VIEW
+                    ]
                 ],
             ]) ?>
         </div>

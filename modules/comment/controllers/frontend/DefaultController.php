@@ -3,12 +3,9 @@
 namespace modules\comment\controllers\frontend;
 
 use Yii;
+use yii\web\Response;
 use yii\captcha\CaptchaAction;
 use modules\comment\controllers\common\BaseController;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\Response;
-use common\components\behaviors\DelCacheControllerBehavior;
 use modules\comment\models\Comment;
 
 /**
@@ -17,26 +14,16 @@ use modules\comment\models\Comment;
  */
 class DefaultController extends BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
+    /*public function init()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                    'add' => ['POST'],
-                ],
-            ],
-            'delCacheControllerBehavior' => [
-                'class' => DelCacheControllerBehavior::class,
-                'actions' => ['add'],
-                'tags' => [Comment::CACHE_TAG_COMMENTS]
-            ]
-        ];
-    }
+        parent::init();
+        Yii::$app->on(__CLASS__, Comment::EVENT_CREATE_COMMENT_SUCCESS, function ($event) {
+            return $this->messageSuccess();
+        });
+        Yii::$app->on(__CLASS__, Comment::EVENT_CREATE_COMMENT_ERROR, function ($event) {
+            return $this->messageError();
+        });
+    }*/
 
     /**
      * @return array|array[]
@@ -54,90 +41,21 @@ class DefaultController extends BaseController
     }
 
     /**
-     * @return Response
+     * @return Comment|string|Response
      */
-    public function actionAdd()
+    public function actionCreate()
     {
-        $model = new Comment();
-        if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
-            $msgSuccess = 'Спасибо! Ваш комментарий будет опубликован после успешной модерации.';
-            $msgError = 'Произошла ошибка! Не удалось добавить комментарий.';
-            if (empty($model->rootId)) {
-                if ($this->processFirst($model, $post)) {
-                    Yii::$app->session->setFlash('success', $msgSuccess);
-                } else {
-                    Yii::$app->session->setFlash('error', $msgError);
-                }
-            } else if (empty($model->parentId)) {
-                if ($this->processComment($model)) {
-                    Yii::$app->session->setFlash('success', $msgSuccess);
-                } else {
-                    Yii::$app->session->setFlash('error', $msgError);
-                }
-            } else if ($this->processAnswer($model)) {
-                Yii::$app->session->setFlash('success', $msgSuccess);
-            } else {
-                Yii::$app->session->setFlash('error', $msgError);
-            }
+        $actionCreate = parent::actionCreate();
+        $model = $actionCreate['model'];
+        $result = $actionCreate['result'];
+        $params = ['request' => Yii::$app->request->referrer];
+        if ($result === true) {
+            Comment::messageSuccess();
+            $model->send($params);
         }
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * Comment to post is root
-     * @param Comment $model
-     * @param array $post
-     * @return bool
-     */
-    protected function processFirst(Comment $model, array $post)
-    {
-        $model->status = Comment::STATUS_APPROVED;
-        $model->entity_id = 0;
-        if ($model->makeRoot()->save()) {
-            $node = $model;
-            $model = new Comment();
-            if ($model->load($post) && $model->validate()) {
-                return $model->appendTo($node)->save();
-            }
+        if ($result === false) {
+            Comment::messageError();
         }
-        return false;
-    }
-
-    /**
-     * Comment to post
-     * @param Comment $model
-     * @return bool
-     */
-    protected function processComment(Comment $model)
-    {
-        $node = Comment::findOne(['id' => $model->rootId, 'entity' => $model->entity]);
-        return $model->appendTo($node)->save();
-    }
-
-    /**
-     * Answer to comment
-     * @param Comment $model
-     * @return bool
-     */
-    protected function processAnswer(Comment $model)
-    {
-        $node = Comment::findOne(['id' => $model->parentId, 'entity' => $model->entity]);
-        return $model->appendTo($node)->save();
-    }
-
-    /**
-     * Finds the Comment model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Comment the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Comment::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        return $this->redirect($params['request']);
     }
 }

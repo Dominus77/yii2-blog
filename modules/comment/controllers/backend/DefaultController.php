@@ -2,11 +2,11 @@
 
 namespace modules\comment\controllers\backend;
 
-use modules\blog\models\Post;
 use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -16,6 +16,7 @@ use modules\comment\models\Comment;
 use modules\comment\models\search\CommentSearch;
 use modules\rbac\models\Permission;
 use Throwable;
+use modules\blog\models\Post;
 
 /**
  * Class DefaultController
@@ -28,7 +29,7 @@ class DefaultController extends BaseController
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(), [
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
@@ -58,7 +59,7 @@ class DefaultController extends BaseController
                     Post::CACHE_TAG_POST_ALL_COMMENTS,
                 ]
             ]
-        ];
+        ]);
     }
 
     /**
@@ -90,36 +91,19 @@ class DefaultController extends BaseController
     }
 
     /**
-     * Creates a new Comment model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|Response
-     * @throws NotFoundHttpException
+     * @return Comment|string|Response
      */
     public function actionCreate()
     {
-        $model = new Comment();
-        if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
-            if (isset($post['comment-submit-button'])) {
-                $model->scenario = $post['comment-submit-button'];
-            }
-
-            if (empty($model->parentId)) {
-                $model->makeRoot()->save();
-            } else {
-                /** @var Comment $node */
-                $node = Comment::findOne(['id' => $model->parentId]);
-                $model->appendTo($node)->save();
-            }
-            // Перемещаем в пределах узла
-            $model = $this->moveWithinNode($model);
-
+        $actionCreate = parent::actionCreate();
+        $model = $actionCreate['model'];
+        if (Yii::$app->request->post()) {
             $redirect = ['view', 'id' => $model->id];
             if ($model->scenario === Comment::SCENARIO_REPLY) {
                 $redirect = Yii::$app->request->referrer . '#item-' . $model->id;
             }
             return $this->redirect($redirect);
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -281,8 +265,15 @@ class DefaultController extends BaseController
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $post = Yii::$app->request->post();
+        if(isset($post['scenario']) && !empty($post['scenario'])) {
+            $model->scenario = $post['scenario'];
+        }
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
-        return $this->redirect(['index']);
+        if ($model->scenario === Comment::SCENARIO_VIEW) {
+            return $this->redirect(['index']);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**
@@ -308,21 +299,5 @@ class DefaultController extends BaseController
             }
         }
         return $model;
-    }
-
-    /**
-     * Finds the Comment model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Comment the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Comment::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
