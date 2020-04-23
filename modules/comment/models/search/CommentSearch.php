@@ -48,7 +48,7 @@ class CommentSearch extends Comment
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => isset($params['per-page']) ? $params['per-page'] : Comment::getDefaultPageSize()
+                'pageSize' => isset($params['per-page']) ? $params['per-page'] : self::getDefaultPageSize()
             ],
             'sort' => [
                 'defaultOrder' => [

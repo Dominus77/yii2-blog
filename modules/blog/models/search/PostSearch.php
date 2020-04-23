@@ -62,7 +62,7 @@ class PostSearch extends Post
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'defaultPageSize' => 25
+                'pageSize' => isset($params['per-page']) ? $params['per-page'] : self::getDefaultPageSize()
             ],
             'sort' => [
                 //'defaultOrder' => ['id' => SORT_ASC],

@@ -50,6 +50,9 @@ class TagSearch extends Tag
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => isset($params['per-page']) ? $params['per-page'] : self::getDefaultPageSize()
+            ],
         ]);
 
         $this->load($params);

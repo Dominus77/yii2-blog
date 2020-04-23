@@ -5,8 +5,6 @@ namespace modules\blog\models\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use modules\blog\models\Category;
-use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
 
 /**
  * CategorySearch represents the model behind the search form of `modules\blog\models\Category`.
@@ -52,6 +50,9 @@ class CategorySearch extends Category
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => isset($params['per-page']) ? $params['per-page'] : self::getDefaultPageSize()
+            ],
             'sort' => [
                 'defaultOrder' => [
                     'position' => SORT_ASC,

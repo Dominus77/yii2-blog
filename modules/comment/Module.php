@@ -14,7 +14,7 @@ class Module extends \yii\base\Module
     /** @var string */
     public static $name = 'comment';
     /** @var array */
-    public $sizes = [10 => 10, 15 => 15, 20 => 20, 25 => 25, 50 => 50, 100 => 100, 200 => 200, 500 => 500, 1000 => 1000];
+    public $sizes = [20 => 20, 25 => 25, 50 => 50, 100 => 100, 200 => 200, 500 => 500, 1000 => 1000];
     /** @var int */
     public $defaultPageSize = 100;
 
