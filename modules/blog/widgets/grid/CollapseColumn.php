@@ -64,15 +64,6 @@ class CollapseColumn extends DataColumn
         return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);
     }
 
-    /*protected function renderDataCellContent($model, $key, $index)
-    {
-        if ($this->content === null) {
-            return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
-        }
-
-        return parent::renderDataCellContent($model, $key, $index);
-    }*/
-
     /**
      * @param mixed $model
      * @param mixed $key

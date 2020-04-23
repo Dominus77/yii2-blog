@@ -72,9 +72,10 @@ BlogAsset::register($this);
                     ],
                     [
                         'class' => CollapseColumn::class,
-                        'detail' => function (Post $model) {
+                        'detail' => function (Post $model, $key) {
                             return $this->render('comments/index', [
-                                'model' => $model
+                                'model' => $model,
+                                'key' => $key
                             ]);
                         },
                     ],

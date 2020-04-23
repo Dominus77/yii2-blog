@@ -32,9 +32,13 @@ $(document).ready(function () {
 
     function setLocation() {
         let loc = window.location.hash.replace('#', ''),
+            trRoot,
             tr;
         if (loc !== '') {
-            tr = $('#' + loc).parent().parent().parent('tr');
+            trRoot = $('#' + loc);
+            trRoot.show();
+
+            tr = trRoot.parent().parent().parent('tr');
             tr.show();
         }
     }

@@ -7,6 +7,7 @@ use modules\comment\models\Comment;
 
 /** @var $this View */
 /** @var $model Post|Comment */
+/** @var $key int */
 
 $comments = $model->getCommentsData();
 $avatar = Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
@@ -18,7 +19,8 @@ $avatar = Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
             <?= $this->render('_item', [
                 'model' => $item,
                 'entity' => $model,
-                'avatar' => $avatar
+                'avatar' => $avatar,
+                'key' => $key
             ]) ?>
         <?php } ?>
     <?php } else { ?>
