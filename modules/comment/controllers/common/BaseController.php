@@ -4,6 +4,7 @@ namespace modules\comment\controllers\common;
 
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -138,5 +139,18 @@ class BaseController extends Controller
             return $model;
         }
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @param Comment $model
+     * @return array
+     */
+    protected function getParams(Comment $model)
+    {
+        return [
+            'model' => $model,
+            'request' => Yii::$app->request->referrer,
+            'adminLink' => Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/blog/post/index', '#' => 'item-' . $model->id])
+        ];
     }
 }

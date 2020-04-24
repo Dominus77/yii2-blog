@@ -55,4 +55,7 @@ return [
     'Last Comments' => 'Last Comments',
     'Commenting is disabled' => 'Commenting is disabled',
     'The model is not an instance of the class' => 'The model is not an instance of the class',
+    'New comment' => 'New comment',
+    'New comment awaiting moderation' => 'New comment awaiting moderation',
+    'Link to comment moderation' => 'Link to comment moderation',
 ];

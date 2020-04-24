@@ -118,4 +118,9 @@ class DefaultController extends Controller
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionEmailTemplate()
+    {
+        return $this->render('@modules/comment/mail/newComment-html.php');
+    }
 }

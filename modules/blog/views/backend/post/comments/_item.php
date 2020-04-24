@@ -10,7 +10,6 @@ use modules\comment\Module;
 /** @var $model Comment */
 /** @var $entity Post */
 /** @var string $avatar */
-/** @var $key int */
 
 $borderColor = 'orange';
 if ($model->isApproved) {
@@ -66,7 +65,7 @@ if ($model->isBlocked) {
         <?= Html::a('<span class="glyphicon glyphicon-trash"></span> ' . Module::t('module', 'Delete'), [
             '/comment/default/delete',
             'id' => $model->id,
-            '#' => 'detail-' . $key
+            '#' => 'detail-' . $model->entity_id
         ], [
             'class' => 'btn btn-default btn-sm',
             'data' => [

@@ -30,7 +30,10 @@ YiiAsset::register($this);
                     'entity_id',
                     'author',
                     'email:email',
-                    'comment:ntext',
+                    [
+                        'attribute' => 'comment',
+                        'format' => 'raw',
+                    ],
                     [
                         'attribute' => 'created_at',
                         'value' => static function (Comment $model) {

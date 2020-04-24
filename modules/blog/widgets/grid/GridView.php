@@ -4,6 +4,7 @@ namespace modules\blog\widgets\grid;
 
 use Closure;
 use yii\grid\Column;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView as BaseGridView;
 use modules\blog\widgets\grid\assets\GridAsset;
@@ -47,12 +48,16 @@ class GridView extends BaseGridView
         }
         $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
 
+        if ($this->detailRowOptions instanceof Closure) {
+            $detailOptions = call_user_func($this->detailRowOptions, $model, $key, $index, $this);
+        } else {
+            $detailOptions = $this->detailRowOptions;
+        }
         $cssClass = 'detail';
-        $this->detailRowOptions['id'] = $cssClass . '-' . $options['data-key'];
-        Html::addCssClass($this->detailRowOptions, $cssClass);
+        $detailOptions = ArrayHelper::merge(['id' => $cssClass . '-' . $options['data-key'], 'class' => $cssClass], $detailOptions);
 
         $row = Html::tag('tr', implode('', $cells), $options);
-        $detailRow = Html::tag('tr', implode('', $cellDetail), $this->detailRowOptions);
+        $detailRow = Html::tag('tr', implode('', $cellDetail), $detailOptions);
 
         return $cellDetail ? $row . PHP_EOL . $detailRow : $row;
     }

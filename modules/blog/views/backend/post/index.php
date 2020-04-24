@@ -59,9 +59,12 @@ BlogAsset::register($this);
                 'tableOptions' => [
                     'class' => 'table table-bordered table-hover',
                 ],
-                'detailRowOptions' => [
-                    'style' => 'display: none;',
-                ],
+                'detailRowOptions' => static function ($model) {
+                    return [
+                        'id' => 'detail-' . $model->id,
+                        'style' => 'display: none;',
+                    ];
+                },
                 'columns' => [
                     [
                         'class' => SerialColumn::class,
@@ -72,10 +75,9 @@ BlogAsset::register($this);
                     ],
                     [
                         'class' => CollapseColumn::class,
-                        'detail' => function (Post $model, $key) {
+                        'detail' => function (Post $model) {
                             return $this->render('comments/index', [
-                                'model' => $model,
-                                'key' => $key
+                                'model' => $model
                             ]);
                         },
                     ],

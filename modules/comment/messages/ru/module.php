@@ -55,4 +55,7 @@ return [
     'Last Comments' => 'Последние комментарии',
     'Commenting is disabled' => 'Комментирование отключено',
     'The model is not an instance of the class' => 'Модель не является экземпляром класса',
+    'New comment' => 'Новый комментарий',
+    'New comment awaiting moderation' => 'Новый комментарий ожидает модерации',
+    'Link to comment moderation' => 'Ссылка на модерацию комментария',
 ];

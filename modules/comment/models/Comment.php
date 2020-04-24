@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use paulzi\nestedsets\NestedSetsBehavior;
 use paulzi\autotree\AutoTreeTrait;
+use modules\comment\services\Sender;
 use modules\comment\traits\ModuleTrait;
 use modules\comment\models\query\CommentQuery;
 use modules\comment\Module;
@@ -533,20 +534,22 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * Sending notify to email
+     * Sending to email
      * @param array $params
      * @return bool
      */
     public function send($params = [])
     {
         // Отправляем сообщение о новом комментарии
-        return Yii::$app->mailer->compose([
-            'html' => '@modules/comment/mail/newComment-html',
-            'text' => '@modules/comment/mail/newComment-text'
-        ], ['model' => $this, 'params' => $params])
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
-            ->setTo($this->email)
-            ->setSubject(Module::t('module', 'New comment') . ' ' . Yii::$app->name)
-            ->send();
+        $path = '@modules/comment/mail/';
+        $templates = [
+            'html' => $path . 'newComment-html',
+            'text' => $path . 'newComment-text'
+        ];
+        $from = [Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']]; // От кого
+        $to = [Yii::$app->params['adminEmail']]; // Кому
+        $subject = Module::t('module', 'New comment') . ' ' . Yii::$app->name; // Тема
+
+        return Sender::send($templates, $from, $to, $subject, $params);
     }
 }
