@@ -20,6 +20,13 @@ class Sender
      */
     public static function send($templates = [], $from = [], $to = [], $subject = '', $params = [])
     {
+        $path = '@modules/comment/mail/';
+        if (isset($templates['html'])) {
+            $templates['html'] = $path . $templates['html'];
+        }
+        if (isset($templates['text'])) {
+            $templates['text'] = $path . $templates['text'];
+        }
         $mailer = Yii::$app->mailer;
         return $mailer->compose($templates, ['params' => $params])
             ->setFrom($from)

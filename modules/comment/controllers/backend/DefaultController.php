@@ -10,13 +10,11 @@ use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-use common\components\behaviors\DelCacheControllerBehavior;
 use modules\comment\controllers\common\BaseController;
 use modules\comment\models\Comment;
 use modules\comment\models\search\CommentSearch;
 use modules\rbac\models\Permission;
 use Throwable;
-use modules\blog\models\Post;
 
 /**
  * Class DefaultController
@@ -45,20 +43,6 @@ class DefaultController extends BaseController
                     'delete' => ['POST'],
                 ],
             ],
-            'delCacheControllerBehavior' => [
-                'class' => DelCacheControllerBehavior::class,
-                'actions' => ['create', 'update', 'move', 'change-status', 'delete', 'approved', 'blocked', 'wait'],
-                'tags' => [
-                    Comment::CACHE_TAG_COMMENTS,
-                    Comment::CACHE_TAG_LAST_COMMENTS,
-                    Comment::CACHE_TAG_COMMENTS_COUNT_WAIT,
-                    Comment::CACHE_TAG_COMMENTS_COUNT_APPROVED,
-                    Comment::CACHE_TAG_COMMENTS_COUNT_BLOCKED,
-                    Comment::CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT,
-                    Comment::CACHE_TAG_COMMENTS_GET_NODES,
-                    Post::CACHE_TAG_POST_ALL_COMMENTS,
-                ]
-            ]
         ]);
     }
 
@@ -203,51 +187,6 @@ class DefaultController extends BaseController
     {
         $model = $this->findModel($id);
         $model->setStatus();
-        if ($model->save(false)) {
-            Comment::changeStatusChildren($model->id);
-        }
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * @param $id
-     * @return Response
-     * @throws NotFoundHttpException
-     */
-    public function actionApproved($id)
-    {
-        $model = $this->findModel($id);
-        $model->status = Comment::STATUS_APPROVED;
-        if ($model->save(false)) {
-            Comment::changeStatusChildren($model->id);
-        }
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * @param $id
-     * @return Response
-     * @throws NotFoundHttpException
-     */
-    public function actionBlocked($id)
-    {
-        $model = $this->findModel($id);
-        $model->status = Comment::STATUS_BLOCKED;
-        if ($model->save(false)) {
-            Comment::changeStatusChildren($model->id);
-        }
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * @param $id
-     * @return Response
-     * @throws NotFoundHttpException
-     */
-    public function actionWait($id)
-    {
-        $model = $this->findModel($id);
-        $model->status = Comment::STATUS_WAIT;
         if ($model->save(false)) {
             Comment::changeStatusChildren($model->id);
         }

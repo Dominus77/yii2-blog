@@ -2,6 +2,7 @@
 
 namespace modules\comment\controllers\frontend;
 
+use modules\comment\services\SenderParams;
 use yii\web\Response;
 use yii\captcha\CaptchaAction;
 use modules\comment\controllers\common\BaseController;
@@ -35,13 +36,16 @@ class DefaultController extends BaseController
     public function actionCreate()
     {
         $actionCreate = parent::actionCreate();
+        /** @var Comment $model */
         $model = $actionCreate['model'];
         $result = $actionCreate['result'];
 
         $params = $this->getParams($model);
         if ($result === true) {
+            $senderParams = new SenderParams();
+            $senderParams->setSenderCreate($params);
+            $model->send($senderParams);
             Comment::messageSuccess();
-            $model->send($params);
         }
         if ($result === false) {
             Comment::messageError();

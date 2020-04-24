@@ -55,7 +55,15 @@ return [
     'Last Comments' => 'Последние комментарии',
     'Commenting is disabled' => 'Комментирование отключено',
     'The model is not an instance of the class' => 'Модель не является экземпляром класса',
+
+    //Mail
     'New comment' => 'Новый комментарий',
     'New comment awaiting moderation' => 'Новый комментарий ожидает модерации',
     'Link to comment moderation' => 'Ссылка на модерацию комментария',
+    'Comment approved' => 'Комментарий одобрен',
+    'Hello {:name}' => 'Здравствуйте {:name}',
+    '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.' =>
+        '{:datetime} Вы оставили комментарий на сайте {:siteName}. Сообщаем Вам, что комментарий успешно прошел модерацию и был опубликован.',
+    'You can go to the comment link: {:link}' => 'Вы можете перейти к комментарию по ссылке: {:link}',
+    'Best regards, administration {:siteName}' => 'С наилучшими пожеланиями, администрация сайта {:siteName}',
 ];

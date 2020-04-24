@@ -2,8 +2,10 @@
 
 namespace modules\comment\models;
 
+use modules\comment\services\SenderParams;
 use Yii;
 use Throwable;
+use yii\base\Event;
 use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -72,6 +74,10 @@ class Comment extends ActiveRecord
     const CACHE_TAG_COMMENTS_COUNT_APPROVED = 'comments-count-approved';
     const CACHE_TAG_COMMENTS_COUNT_BLOCKED = 'comments-count-blocked';
     const CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT = 'comments-count-entity-wait';
+
+    const EVENT_COMMENT_WAIT = 'comment-wait';
+    const EVENT_COMMENT_APPROVED = 'comment-approved';
+    const EVENT_COMMENT_BLOCKED = 'comment-blocked';
 
     public $childrenList;
     public $typeMove;
@@ -188,6 +194,14 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getEntityQuery()
+    {
+        return $this->hasOne($this->entity, ['id' => 'entity_id']);
+    }
+
+    /**
      * Statuses
      * @return array
      */
@@ -296,6 +310,13 @@ class Comment extends ActiveRecord
     {
         if ($node = self::findOne(['id' => $nodeId])) {
             $childrenId = ArrayHelper::getColumn($node->getDescendants()->all(), 'id');
+            foreach ($childrenId as $itemId) {
+                /** @var Comment $model */
+                $model = self::findOne($itemId);
+                if ($model->status === self::STATUS_WAIT) {
+                    Yii::$app->trigger(self::EVENT_COMMENT_APPROVED, new Event(['sender' => $model]));
+                }
+            }
             return self::updateAll(['status' => $node->status], ['id' => $childrenId]);
         }
         return false;
@@ -535,21 +556,17 @@ class Comment extends ActiveRecord
 
     /**
      * Sending to email
-     * @param array $params
+     * @param SenderParams $senderParams
      * @return bool
      */
-    public function send($params = [])
+    public function send(SenderParams $senderParams)
     {
-        // Отправляем сообщение о новом комментарии
-        $path = '@modules/comment/mail/';
-        $templates = [
-            'html' => $path . 'newComment-html',
-            'text' => $path . 'newComment-text'
-        ];
-        $from = [Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']]; // От кого
-        $to = [Yii::$app->params['adminEmail']]; // Кому
-        $subject = Module::t('module', 'New comment') . ' ' . Yii::$app->name; // Тема
-
-        return Sender::send($templates, $from, $to, $subject, $params);
+        return Sender::send(
+            $senderParams->templates,
+            $senderParams->from,
+            $senderParams->to,
+            $senderParams->subject,
+            $senderParams->params
+        );
     }
 }

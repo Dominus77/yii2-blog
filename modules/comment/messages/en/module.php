@@ -55,7 +55,14 @@ return [
     'Last Comments' => 'Last Comments',
     'Commenting is disabled' => 'Commenting is disabled',
     'The model is not an instance of the class' => 'The model is not an instance of the class',
+    //Mail
     'New comment' => 'New comment',
     'New comment awaiting moderation' => 'New comment awaiting moderation',
     'Link to comment moderation' => 'Link to comment moderation',
+    'Comment approved' => 'Comment approved',
+    'Hello {:name}' => 'Hello {:name}',
+    '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.' =>
+        '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.',
+    'You can go to the comment link: {:link}' => 'You can go to the comment link: {:link}',
+    'Best regards, administration {:siteName}' => 'Best regards, administration {:siteName}',
 ];

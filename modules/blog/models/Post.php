@@ -231,11 +231,11 @@ class Post extends BaseModel
     {
         if ($this->_url === null) {
             if (Yii::$app->id === 'app-backend') {
-                $this->_url = Url::to(['view', 'id' => $this->id]);
+                $this->_url = Url::to(['/blog/post/view', 'id' => $this->id]);
             } else if (($category = $this->postCategory) && $category !== null) {
-                $this->_url = Url::to(['default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
+                $this->_url = Url::to(['/blog/default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
             } else {
-                $this->_url = Url::to(['default/post', 'post' => $this->slug, 'prefix' => '.html']);
+                $this->_url = Url::to(['/blog/default/post', 'post' => $this->slug, 'prefix' => '.html']);
             }
         }
         return $this->_url;

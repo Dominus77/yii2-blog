@@ -8,7 +8,9 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\base\Event;
 use common\components\behaviors\DelCacheControllerBehavior;
+use modules\comment\services\SenderParams;
 use modules\comment\models\Comment;
 
 /**
@@ -17,6 +19,18 @@ use modules\comment\models\Comment;
  */
 class BaseController extends Controller
 {
+    public function init()
+    {
+        parent::init();
+        Yii::$app->on(Comment::EVENT_COMMENT_APPROVED, function ($event) {
+            /** @var Comment $model */
+            $model = $event->sender;
+            $senderParams = new SenderParams();
+            $senderParams->setSenderApprove($this->getParams($model));
+            return $model->send($senderParams);
+        });
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +77,57 @@ class BaseController extends Controller
             }
         }
         return ['model' => $model, 'result' => $result];
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionApproved($id)
+    {
+        $model = $this->findModel($id);
+        $status = $model->status;
+        $model->status = Comment::STATUS_APPROVED;
+        if ($model->save(false)) {
+            if ($status === Comment::STATUS_WAIT) {
+                Yii::$app->trigger(Comment::EVENT_COMMENT_APPROVED, new Event(['sender' => $model]));
+            }
+            Comment::changeStatusChildren($model->id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionBlocked($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = Comment::STATUS_BLOCKED;
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+            Yii::$app->trigger(Comment::EVENT_COMMENT_BLOCKED, new Event(['sender' => $model]));
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionWait($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = Comment::STATUS_WAIT;
+        if ($model->save(false)) {
+            Comment::changeStatusChildren($model->id);
+            Yii::$app->trigger(Comment::EVENT_COMMENT_WAIT, new Event(['sender' => $model]));
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**
@@ -145,12 +210,16 @@ class BaseController extends Controller
      * @param Comment $model
      * @return array
      */
-    protected function getParams(Comment $model)
+    public function getParams(Comment $model)
     {
+        Yii::$app->id = 'app-frontend';
+        $url = str_replace('/admin/admin/', '/', $model->url);
+        $commentLink = preg_replace('|%2F|i', '/', Yii::$app->urlManagerFrontend->hostInfo . Url::to($url));
         return [
             'model' => $model,
             'request' => Yii::$app->request->referrer,
-            'adminLink' => Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/blog/post/index', '#' => 'item-' . $model->id])
+            'adminLink' => Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/blog/post/index', '#' => 'item-' . $model->id]),
+            'commentLink' => $commentLink,
         ];
     }
 }

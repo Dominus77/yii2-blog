@@ -1,181 +1,18 @@
-# Yii2 Start Project Advanced Template
+# Yii2 Blog
 
-[![Latest Stable Version](https://poser.pugx.org/dominus77/yii2-advanced-start/v/stable)](https://packagist.org/packages/dominus77/yii2-advanced-start)
-[![License](https://poser.pugx.org/dominus77/yii2-advanced-start/license)](https://github.com/Dominus77/yii2-advanced-start/blob/master/LICENSE.md)
-[![Build Status](https://travis-ci.org/Dominus77/yii2-advanced-start.svg?branch=master)](https://travis-ci.org/Dominus77/yii2-advanced-start)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Dominus77/yii2-advanced-start/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Dominus77/yii2-advanced-start/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/Dominus77/yii2-advanced-start/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
-[![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HV9N4G6NSKCGL "Donate once-off to this project using Paypal")
-[![Total Downloads](https://poser.pugx.org/dominus77/yii2-advanced-start/downloads)](https://packagist.org/packages/dominus77/yii2-advanced-start)
-
-The application is built using advanced pattern and has a modular structure.
-Backend part uses [AdminLTE](https://almsaeedstudio.com) template
-Available console user management commands and RBAC system.
-
-## Base components
-
-Pages (backend AdminLTE template)
-- Home
-- Users
-- RBAC
-- Profile
-- Login
-- [Maintenance](https://github.com/Dominus77/yii2-maintenance)
-
-Pages (frontend)
-- Home
-- Contact
-- Sign Up
-- Profile
-- Login
-- [Maintenance](https://github.com/Dominus77/yii2-maintenance)
-
-Modules
-- main
-- rbac
-- users
-
-Functional
-- Reset password
-- Confirmation by email
-- Last visit
-- RBAC Management from the console and web interface
-- [Maintenance](https://github.com/Dominus77/yii2-maintenance)
-
-System
-- RBAC (DbManager)
-- Manage users
-- [Manage maintenance](https://github.com/Dominus77/yii2-maintenance)
-- Console commands
-- i18n
-
-## CSS Themes Bootstrap
-
-The template includes the of the CSS Theme Bootstrap
-
-Switching the theme occurs in the `/frontend/config/main.php`
-
-
-## Requirements
-
-The minimum requirement by this project template that your Web server supports PHP 5.6.0.
-
-## DIRECTORY STRUCTURE
-
-```
-api
-    components/          contains components api application
-    config/              contains api application configurations
-    messages/            contains i18n api application
-    modules/             contains modules api version application
-    runtime/             contains files generated during runtime
-    tests/               contains tests for api application
-    web/                 contains the entry script
-common
-    assets/              contains application assets such as JavaScript and CSS
-    components/          contains components frontend, backend and console
-    config/              contains shared configurations
-    mail/                contains layouts files for e-mails
-    messages/            contains i18n backend frontend
-    models/              contains model classes used in both backend and frontend    
-    tests/               contains tests for common classes
-    widgets/             contains widgets backend and frontend
-console
-    components/          contains console components
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    messages/            contains i18n console
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
-backend
-    assets/              contains application assets such as JavaScript and CSS
-    components/          contains backend components
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    messages/            contains i18n backend
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for backend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains backend widgets
-frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    messages/            contains i18n frontend
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for frontend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-vendor/                  contains dependent 3rd-party packages
-environments/            contains environment-based overrides
-modules/
-    main/               contains module main
-        controllers/    contains module Web controller classes
-            backend/    contains module backend Web controller classes
-            frontend/   contains module frontend Web controller classes
-        messages/       contains i18n module
-        models/         contains module-specific model classes
-            backend/    contains module backend-specific model classes
-            frontend/   contains module frontend-specific model classes
-        traits/         contains module traits
-        views/          contains module view files for the Web application
-            backend/    contains module backend view files for the Web application
-            frontend/   contains module frontend view files for the Web application
-        Bootstrap.php   File autoload module settings app components (urlManager)
-        Module.php      General Module class
-    rbac/               contains module rbac
-        components/     rules and rbac init
-            behavior/   access backend behavior
-        console/        contains console controllers (commands)
-        controllers/    contains module Web controller classes
-            backend/    contains module backend Web controller classes
-        messages/       contains i18n module
-        migrations/     contains database migrations module
-        models/         contains module-specific model classes
-        tests/          contains module tests
-        traits/         contains module traits
-        views/          contains module view files for the Web application
-            backend/    contains module backend view files for the Web application
-        Bootstrap.php   File autoload module settings app components (urlManager)
-        Module.php      General Module class
-    users/              contains module users
-        behavior/       contains module behavior
-        commands/       contains console controllers (commands)
-        controllers/    contains module Web controller classes
-            backend/    contains module backend Web controller classes
-            frontend/   contains module frontend Web controller classes
-        mail/           contains module view files for e-mails
-        messages/       contains i18n module
-        migrations/     contains database migrations module
-        models/         contains module-specific model classes
-            backend/    contains module backend-specific model classes
-            frontend/   contains module frontend-specific model classes
-        traits/         contains module traits
-        views/          contains module view files for the Web application
-            ajax/       contains module ajax.js
-            backend/    contains module backend view files for the Web application
-            frontend/   contains module frontend view files for the Web application
-        widgets/        contains module widgets
-        Bootstrap.php   File autoload module settings app components (urlManager)
-        Module.php      General Module class
-```
+> The project is under construction.
 
 ## INSTALLATION
 
 Create a project:
 ```
-composer create-project --prefer-dist --stability=dev dominus77/yii2-advanced-start public_html
+composer create-project --prefer-dist --stability=dev dominus77/yii2-blog public_html
 ```
 
 or clone the repository for `pull` command availability:
 
 ```
-git clone https://github.com/Dominus77/yii2-advanced-start.git public_html
+git clone https://github.com/Dominus77/yii2-blog.git public_html
 cd public_html
 composer install
 ```
@@ -187,9 +24,11 @@ cd public_html
 php init
 ```
 
+Select: Development
+
 ### Yii Application Requirement Checker 
 
-See `http://sitename.com/requirements.php`
+See `http://yii2-blog.loc/requirements.php`
 
 > Note: For production version it is recommended to delete the `frontend\web\requirements.php` file
 
@@ -202,7 +41,7 @@ Create a database, default configure yii2_advanced_start in `common\config\main-
 //...
 'components' => [
     'db' => [
-        'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_start',
+        'dsn' => 'mysql:host=localhost;dbname=yii2_blog',
         //...
     ],
     //...
@@ -214,6 +53,8 @@ Apply migration:
 
 ```
 php yii migrate
+php yii migrate -p=@modules/blog/migrations
+php yii migrate -p=@modules/comment/migrations
 ```
 
 See all available commands:
@@ -323,7 +164,7 @@ Create a database, default configure yii2_advanced_start_test in `common\config\
 //...
 'components' => [
     'db' => [
-        'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_start_test',
+        'dsn' => 'mysql:host=localhost;dbname=yii2_blog_test',
     ],
 ]
 //...
@@ -332,7 +173,9 @@ Create a database, default configure yii2_advanced_start_test in `common\config\
 Apply migration:
 
 ```
-php yii_test migrate/up
+php yii_test migrate
+php yii_test migrate -p=@modules/blog/migrations
+php yii_test migrate -p=@modules/comment/migrations
 ```
 
 #### Run in console
