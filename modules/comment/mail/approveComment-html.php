@@ -22,7 +22,7 @@ $formatter = Yii::$app->formatter;
     </p>
     <p>
         <?= Module::t('module', 'You can go to the comment link: {:link}', [
-            ':link' => Html::a($params['commentLink'], $params['commentLink'])
+            ':link' => Html::a($params['frontendLinkEntityComment'], $params['frontendLinkEntityComment'])
         ]) ?>
     </p>
     <p>

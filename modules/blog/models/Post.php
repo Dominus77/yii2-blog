@@ -224,14 +224,17 @@ class Post extends BaseModel
 
     /**
      * Генрирует URL.
-     * Используйте $model->url вместо Yii::$app->urlManager->createUrl(...);
+     * Используйте $model->getUrl() вместо Yii::$app->urlManager->createUrl(...);
+     * @param string $type
      * @return string
      */
-    public function getUrl()
+    public function getUrl($type = '')
     {
-        if ($this->_url === null) {
-            if (Yii::$app->id === 'app-backend') {
+        if ($this->_url === null || !empty($type)) {
+            if (empty($type) && Yii::$app->id === 'app-backend') {
                 $this->_url = Url::to(['/blog/post/view', 'id' => $this->id]);
+            } else if ($type === 'index') {
+                $this->_url = Url::to(['/blog/post/index']);
             } else if (($category = $this->postCategory) && $category !== null) {
                 $this->_url = Url::to(['/blog/default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
             } else {

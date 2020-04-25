@@ -20,7 +20,7 @@ $formatter = Yii::$app->formatter;
 ]) ?>
 
 <?= Module::t('module', 'You can go to the comment link: {:link}', [
-    ':link' => $params['commentLink']
+    ':link' => $params['frontendLinkEntityComment']
 ]) ?>
 
 <?= Module::t('module', 'Best regards, administration {:siteName}', [

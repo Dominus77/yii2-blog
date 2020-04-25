@@ -4,7 +4,6 @@ namespace modules\comment\controllers\common;
 
 use Yii;
 use yii\filters\VerbFilter;
-use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -26,7 +25,7 @@ class BaseController extends Controller
             /** @var Comment $model */
             $model = $event->sender;
             $senderParams = new SenderParams();
-            $senderParams->setSenderApprove($this->getParams($model));
+            $senderParams->setSenderApprove($senderParams->getParams($model));
             return $model->send($senderParams);
         });
     }
@@ -210,7 +209,7 @@ class BaseController extends Controller
      * @param Comment $model
      * @return array
      */
-    public function getParams(Comment $model)
+    /*public function getParams(Comment $model)
     {
         Yii::$app->id = 'app-frontend';
         $url = str_replace('/admin/admin/', '/', $model->url);
@@ -221,5 +220,5 @@ class BaseController extends Controller
             'adminLink' => Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/blog/post/index', '#' => 'item-' . $model->id]),
             'commentLink' => $commentLink,
         ];
-    }
+    }*/
 }

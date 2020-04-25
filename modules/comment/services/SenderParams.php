@@ -3,6 +3,7 @@
 namespace modules\comment\services;
 
 use Yii;
+use modules\comment\models\Comment;
 use modules\comment\Module;
 
 /**
@@ -46,5 +47,35 @@ class SenderParams
         $this->to = [$model->email];
         $this->subject = Module::t('module', 'Comment approved') . ' ' . Yii::$app->name;
         $this->params = $params;
+    }
+
+    /**
+     * @param Comment $model
+     * @return array
+     */
+    public function getParams(Comment $model)
+    {
+        /** @var $query \modules\blog\models\Post */
+        $query = $model->entityQuery;
+        $backendLink = Yii::$app->urlManager->hostInfo . Yii::$app->urlManagerBackend->baseUrl;
+        $frontendLinkEntityComment = Yii::$app->urlManager->hostInfo . $this->normalizeUrl($query->getUrl('frontend')) . '#comment-' . $model->id;
+        $backendLinkEntityComment = $backendLink . $this->normalizeUrl($query->getUrl('index')) . '#item-' . $model->id;
+        return [
+            'model' => $model, // Модель Comment
+            'request' => Yii::$app->request->referrer,
+            'backendLink' => $backendLink, // Ссылка на админку
+            'backendLinkEntityComment' => $backendLinkEntityComment, // Ссылка на комментарий в сущности админки
+            'frontendLinkEntityComment' => $frontendLinkEntityComment, // Ссылка на комментарий сущности на фронте
+        ];
+    }
+
+    /**
+     * @param $url
+     * @return string|string[]|null
+     */
+    protected function normalizeUrl($url)
+    {
+        $url = str_replace(Yii::$app->urlManager->baseUrl . '/', '/', $url);
+        return preg_replace('|%2F|i', '/', $url);
     }
 }

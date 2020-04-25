@@ -6,13 +6,11 @@
  * @var $params array
  */
 
-use yii\helpers\Url;
 use yii\widgets\DetailView;
 use modules\comment\models\Comment;
 use modules\comment\Module;
 
-$model = isset($params['model']) ? $params['model'] : null;
-$adminLink = isset($params['adminLink']) ? $params['adminLink'] : Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/comment/default/view', 'id' => $model->id]);
+$model = $params['model'];
 $model->status = Comment::STATUS_WAIT;
 ?>
 <div class="email-new-comment">
@@ -51,6 +49,7 @@ $model->status = Comment::STATUS_WAIT;
         ]) ?>
     </p>
     <p>
-        <?= Module::t('module', 'Link to comment moderation') ?>: <a href="<?= $adminLink ?>"><?= $adminLink ?></a>
+        <?= Module::t('module', 'Link to comment moderation') ?>:
+        <a href="<?= $params['backendLinkEntityComment'] ?>"><?= $params['backendLinkEntityComment'] ?></a>
     </p>
 </div>

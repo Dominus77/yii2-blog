@@ -7,6 +7,6 @@ return [
     'senderEmail' => 'noreply@example.loc',
     'senderName' => 'Example.loc mailer',
     // This is for console application. Enter your addresses before the frontend and backend
-    'frontendUrl' => 'http://yii2-advanced-start.loc',
-    'backendUrl' => 'http://yii2-advanced-start.loc/admin'
+    'frontendUrl' => 'http://yii2-blog.loc',
+    'backendUrl' => 'http://yii2-blog.loc/admin'
 ];

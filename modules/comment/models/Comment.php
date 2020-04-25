@@ -44,6 +44,7 @@ use modules\comment\Module;
  * @property ActiveQuery|Comment $next
  * @property ActiveQuery|Comment $prev
  * @property ActiveQuery|Comment[] $children
+ * @property ActiveQuery $entityQuery
  * @property bool $isApproved Is Approved
  * @property bool $isBlocked Is Blocked
  * @property string $statusLabelName Status Label Name
@@ -497,7 +498,7 @@ class Comment extends ActiveRecord
             return $query->one();
         }, self::CACHE_DURATION, $dependency);
         $url = $model->getUrl();
-        return Url::to([$url, '#' => 'comment-' . $this->id]);
+        return $url . '#comment-' . $this->id;
     }
 
     /**

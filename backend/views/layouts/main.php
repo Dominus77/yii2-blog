@@ -207,10 +207,6 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                             'label' => BlogModule::t('module', 'Tags'),
                             'url' => ['/blog/tag/index']
                         ],
-                        [
-                            'label' => BlogModule::t('module', 'Settings'),
-                            'url' => ['/blog/settings/index']
-                        ],
                     ]
                 ],
                 [

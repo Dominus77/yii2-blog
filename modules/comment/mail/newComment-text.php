@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Url;
 use modules\comment\Module;
 
 /**
@@ -9,8 +8,7 @@ use modules\comment\Module;
  * @var $params array
  */
 
-$model = isset($params['model']) ? $params['model'] : null;
-$adminLink = isset($params['adminLink']) ? $params['adminLink'] : Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/comment/default/view', 'id' => $model->id]);
+$model = $params['model'];
 $formatter = Yii::$app->formatter;
 ?>
 
@@ -27,4 +25,4 @@ $formatter = Yii::$app->formatter;
 <?= Module::t('module', 'Comment') ?>: <?= $model->comment ?>
 
 
-<?= Module::t('module', 'Link to comment moderation') ?>: <?= $adminLink ?>
+<?= Module::t('module', 'Link to comment moderation') ?>: <?= $params['backendLinkEntityComment'] ?>

@@ -3,6 +3,7 @@
 use yii\bootstrap\BootstrapAsset;
 use yii\bootstrap\BootstrapPluginAsset;
 use yii\log\FileTarget;
+use yii\web\UrlManager;
 use modules\blog\url\BlogUrlManager;
 use yii\helpers\ArrayHelper;
 use dominus77\maintenance\BackendMaintenance;
@@ -112,6 +113,14 @@ return [
             'errorAction' => 'backend/error'
         ],
         'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => true,
+            'rules' => []
+        ],
+        'urlManagerBackend' => [
+            'class' => UrlManager::class,
+            'baseUrl' => '/admin',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => true,
