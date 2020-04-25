@@ -21,7 +21,7 @@ class BaseController extends Controller
     public function init()
     {
         parent::init();
-        Yii::$app->on(Comment::EVENT_COMMENT_APPROVED, function ($event) {
+        Yii::$app->on(Comment::EVENT_COMMENT_APPROVED, static function ($event) {
             /** @var Comment $model */
             $model = $event->sender;
             $senderParams = new SenderParams();
