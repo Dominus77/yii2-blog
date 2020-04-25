@@ -1,12 +1,12 @@
 {
-    "name": "dominus77/yii2-advanced-start",
-    "description": "Yii 2 Advanced start template on Yii2",
-    "keywords": ["Dominus77", "yii2", "framework", "advanced", "project template"],
-    "homepage": "http://dominus77.github.io/yii2-advanced-start",
+    "name": "dominus77/yii2-blog",
+    "description": "Example yii2-blog",
+    "keywords": ["Dominus77", "yii2", "framework", "advanced", "project template", "blog", "yii2-blog"],
+    "homepage": "http://dominus77.github.io/yii2-blog",
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
-        "source": "https://github.com/Dominus77/yii2-advanced-start"
+        "source": "https://github.com/Dominus77/yii2-blog"
     },
     "minimum-stability": "stable",
     "require": {
