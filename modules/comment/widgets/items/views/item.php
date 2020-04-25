@@ -13,7 +13,7 @@ use modules\comment\Module;
 $icon = Html::tag('span', '', ['class' => 'glyphicon glyphicon-comment']);
 ?>
 <div class="media-left">
-    <img class="media-object img-rounded" src="<?= $avatar ?>" alt="<?= $avatar ?>">
+    <img class="media-object img-rounded" src="<?= $model->getAvatar() ?>" alt="<?= $model->getAvatar() ?>">
 </div>
 <div class="media-body">
     <div class="panel panel-info">

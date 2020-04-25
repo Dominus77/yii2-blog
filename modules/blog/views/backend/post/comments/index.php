@@ -1,7 +1,6 @@
 <?php
 
 use yii\web\View;
-use yii\helpers\Url;
 use modules\blog\models\Post;
 use modules\comment\models\Comment;
 
@@ -9,7 +8,6 @@ use modules\comment\models\Comment;
 /** @var $model Post|Comment */
 
 $comments = $model->getCommentsData();
-$avatar = Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
 ?>
 
 <div class="comment-list">
@@ -18,7 +16,6 @@ $avatar = Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
             <?= $this->render('_item', [
                 'model' => $item,
                 'entity' => $model,
-                'avatar' => $avatar
             ]) ?>
         <?php } ?>
     <?php } else { ?>

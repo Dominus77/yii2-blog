@@ -84,8 +84,8 @@ trait ModuleTrait
      */
     public static function getCommentsWaitCount()
     {
-        $query = Comment::find()->where(['status' => Comment::STATUS_WAIT]);
-        $dependency = new TagDependency(['tags' => [Comment::CACHE_TAG_COMMENTS, Comment::CACHE_TAG_COMMENTS_COUNT_WAIT]]);
+        $query = self::find()->where(['status' => self::STATUS_WAIT]);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_COMMENTS_COUNT_WAIT]]);
         return self::getDb()->cache(static function () use ($query) {
             return $query->count();
         }, self::CACHE_DURATION, $dependency);
@@ -101,5 +101,33 @@ trait ModuleTrait
         Html::addCssClass($options, 'pull-right label label-warning');
         $tagOptions = ArrayHelper::merge($options, ['title' => Module::t('module', 'Comments waiting moderation')]);
         return ($count > 0) ? Html::tag('span', $count, $tagOptions) : '';
+    }
+
+    /**
+     * Get either a Gravatar URL or complete image tag for a specified email address.
+     *
+     * @param string $email The email address
+     * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
+     * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+     * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+     * @return string containing either just a URL or a complete image tag
+     * @source https://gravatar.com/site/implement/images/php/
+     */
+    public static function getGravatar($email = '', $s = '50', $d = 'mm', $r = 'g')
+    {
+        $data = ['email' => $email, 's' => $s, 'd' => $d, 'r' => $r];
+        $key = 'gravatar_' . md5($email);
+        $dependency = new TagDependency(['tags' => [self::CACHE_TAG_COMMENTS, self::CACHE_TAG_COMMENTS_AVATAR]]);
+        $cache = Yii::$app->cache;
+        return $cache->getOrSet($key, static function () use ($data) {
+            $url = 'https://www.gravatar.com/avatar/';
+            $url .= md5(strtolower(trim($data['email']))) . '?';
+            $url .= http_build_query([
+                's' => $data['s'],
+                'd' => $data['d'],
+                'r' => $data['r'],
+            ]);
+            return $url;
+        }, self::CACHE_DURATION, $dependency);
     }
 }

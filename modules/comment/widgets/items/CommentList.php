@@ -5,9 +5,7 @@ namespace modules\comment\widgets\items;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use modules\comment\models\Comment;
 use modules\comment\widgets\items\assets\CommentListAsset;
 use modules\comment\Module;
@@ -43,6 +41,7 @@ class CommentList extends Widget
 
     /**
      * @return string|void
+     * @throws \Throwable
      */
     public function run()
     {
@@ -81,6 +80,7 @@ class CommentList extends Widget
     /**
      * Render List Tree
      * @return array
+     * @throws \Throwable
      */
     protected function getRenderTree()
     {
@@ -131,14 +131,14 @@ class CommentList extends Widget
         return $this->render('item', [
             'model' => $data,
             'index' => $index + 1,
-            'avatar' => $this->getAvatar(),
             'reply' => $this->reply
         ]);
     }
 
     /**
      * Get prepare data tree
-     * @return array|Comment[]|ActiveRecord[]
+     * @return mixed
+     * @throws \Throwable
      */
     protected function prepareModel()
     {
@@ -163,14 +163,5 @@ class CommentList extends Widget
             $('.comment-button').hide();
         ";
         $view->registerJs($script);
-    }
-
-    /**
-     * Avatar
-     * @return string
-     */
-    public function getAvatar()
-    {
-        return Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
     }
 }

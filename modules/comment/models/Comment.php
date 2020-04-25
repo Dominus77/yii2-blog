@@ -75,6 +75,7 @@ class Comment extends ActiveRecord
     const CACHE_TAG_COMMENTS_COUNT_APPROVED = 'comments-count-approved';
     const CACHE_TAG_COMMENTS_COUNT_BLOCKED = 'comments-count-blocked';
     const CACHE_TAG_COMMENTS_COUNT_ENTITY_WAIT = 'comments-count-entity-wait';
+    const CACHE_TAG_COMMENTS_AVATAR = 'comments-avatar';
 
     const EVENT_COMMENT_WAIT = 'comment-wait';
     const EVENT_COMMENT_APPROVED = 'comment-approved';
@@ -569,5 +570,14 @@ class Comment extends ActiveRecord
             $senderParams->subject,
             $senderParams->params
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return self::getGravatar($this->email);
+        //return Url::to(['/comment/default/file', 'filename' => 'defaultAvatar.jpg']);
     }
 }

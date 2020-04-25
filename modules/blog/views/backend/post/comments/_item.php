@@ -9,7 +9,6 @@ use modules\comment\Module;
 /** @var $this View */
 /** @var $model Comment */
 /** @var $entity Post */
-/** @var string $avatar */
 
 $borderColor = 'orange';
 if ($model->isApproved) {
@@ -25,7 +24,7 @@ if ($model->isBlocked) {
         <?= $model->statusLabelName ?>
     </div>
     <div class="item-avatar pull-left">
-        <img class="img-rounded" src="<?= $avatar ?>" alt="...">
+        <img class="img-rounded" src="<?= $model->getAvatar() ?>" alt="<?= $model->getAvatar() ?>">
     </div>
     <div class="item-author">
         <?= $model->author ?>
