@@ -6,7 +6,7 @@ Example yii2-blog
 
 ## INSTALLATION
 
-clone the repository for `pull` command availability:
+clone the repository:
 
 ```
 git clone https://github.com/Dominus77/yii2-blog.git public_html
