@@ -107,8 +107,8 @@ class BaseController extends Controller
         $model = $this->findModel($id);
         $model->status = Comment::STATUS_BLOCKED;
         if ($model->save(false)) {
-            Comment::changeStatusChildren($model->id);
             Yii::$app->trigger(Comment::EVENT_COMMENT_BLOCKED, new Event(['sender' => $model]));
+            Comment::changeStatusChildren($model->id);
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
@@ -123,8 +123,8 @@ class BaseController extends Controller
         $model = $this->findModel($id);
         $model->status = Comment::STATUS_WAIT;
         if ($model->save(false)) {
-            Comment::changeStatusChildren($model->id);
             Yii::$app->trigger(Comment::EVENT_COMMENT_WAIT, new Event(['sender' => $model]));
+            Comment::changeStatusChildren($model->id);
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
