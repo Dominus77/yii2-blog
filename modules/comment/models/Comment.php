@@ -37,6 +37,8 @@ use modules\comment\Module;
  * @property int $created_at Created
  * @property int $updated_at Updated
  * @property int $status Status
+ * @property string $confirm Confirm Token
+ * @property string $redirect Redirect URL
  *
  * @property int $rootId Root ID
  * @property int $parentId Parent ID
@@ -80,6 +82,8 @@ class Comment extends ActiveRecord
     const EVENT_COMMENT_WAIT = 'comment-wait';
     const EVENT_COMMENT_APPROVED = 'comment-approved';
     const EVENT_COMMENT_BLOCKED = 'comment-blocked';
+
+    const CONFIRM_EMAIL_SUCCESS = 'success';
 
     public $childrenList;
     public $typeMove;
@@ -125,7 +129,7 @@ class Comment extends ActiveRecord
             ['email', 'email'],
             [['verifyCode'], 'required', 'on' => self::SCENARIO_GUEST],
             ['verifyCode', 'captcha', 'captchaAction' => Url::to('/comment/default/captcha'), 'on' => self::SCENARIO_GUEST],
-            [['rootId', 'parentId', 'childrenList', 'typeMove'], 'safe']
+            [['rootId', 'parentId', 'childrenList', 'typeMove', 'confirm', 'redirect'], 'safe']
         ];
     }
 
@@ -163,7 +167,9 @@ class Comment extends ActiveRecord
             'Parent' => Module::t('module', 'Parent'),
             'childrenList' => Module::t('module', 'Children List'),
             'typeMove' => Module::t('module', 'Type Move'),
-            'verifyCode' => Module::t('module', 'Verify Code')
+            'verifyCode' => Module::t('module', 'Verify Code'),
+            'confirm' => Module::t('module', 'Confirm Token'),
+            'redirect' => Module::t('module', 'Redirect URL')
         ];
     }
 
@@ -539,12 +545,30 @@ class Comment extends ActiveRecord
     }
 
     /**
+     * Set message sending email
+     */
+    public static function messageSendingEmail()
+    {
+        $msg = Module::t('module', 'A letter was sent to you to verify your mail address. Please check your inbox.');
+        Yii::$app->session->setFlash('success', $msg);
+    }
+
+    /**
+     * Set message success
+     */
+    public static function messageApproved()
+    {
+        $msg = Module::t('module', 'Thank! Your comment has been posted successfully.');
+        Yii::$app->session->setFlash('success', $msg);
+    }
+
+    /**
      * Set message success
      */
     public static function messageSuccess()
     {
-        $msgSuccess = 'Спасибо! Ваш комментарий будет опубликован после успешной модерации.';
-        Yii::$app->session->setFlash('success', $msgSuccess);
+        $msg = Module::t('module', 'Your comment will be published after successful moderation.');
+        Yii::$app->session->setFlash('success', $msg);
     }
 
     /**
@@ -552,8 +576,8 @@ class Comment extends ActiveRecord
      */
     public static function messageError()
     {
-        $msgError = 'Произошла ошибка! Не удалось добавить комментарий.';
-        Yii::$app->session->setFlash('error', $msgError);
+        $msg = Module::t('module', 'An error has occurred! Failed to add comment.');
+        Yii::$app->session->setFlash('error', $msg);
     }
 
     /**

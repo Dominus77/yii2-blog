@@ -17,17 +17,20 @@ $formatter = Yii::$app->formatter;
     <p>
         <?= Module::t('module', '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.', [
             ':datetime' => $formatter->asDatetime($model->created_at, 'php: d mm Y, H:i'),
-            ':siteName' => Html::a(Yii::$app->name, Yii::$app->urlManager->hostInfo),
+            ':siteName' => Html::a(Html::encode(Yii::$app->name), Yii::$app->urlManager->hostInfo),
         ]) ?>
     </p>
     <p>
         <?= Module::t('module', 'You can go to the comment link: {:link}', [
-            ':link' => Html::a($params['frontendLinkEntityComment'], $params['frontendLinkEntityComment'])
+            ':link' => Html::a(Html::encode($params['frontendLinkEntityComment']), $params['frontendLinkEntityComment'])
         ]) ?>
     </p>
     <p>
         <?= Module::t('module', 'Best regards, administration {:siteName}', [
-            ':siteName' => Html::a(Yii::$app->name, Yii::$app->urlManager->hostInfo),
+            ':siteName' => Html::a(Html::encode(Yii::$app->name), Yii::$app->urlManager->hostInfo),
         ]) ?>
+    </p>
+    <p>
+        <small><?= Module::t('module', 'This letter is generated automatically and does not require a response.') ?></small>
     </p>
 </div>

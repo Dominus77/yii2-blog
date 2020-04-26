@@ -60,9 +60,23 @@ return [
     'New comment awaiting moderation' => 'New comment awaiting moderation',
     'Link to comment moderation' => 'Link to comment moderation',
     'Comment approved' => 'Comment approved',
+    'Hello' => 'Hello',
     'Hello {:name}' => 'Hello {:name}',
     '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.' =>
         '{:datetime} You left a comment on the site {:siteName}. We inform you that the comment was successfully moderated.',
     'You can go to the comment link: {:link}' => 'You can go to the comment link: {:link}',
     'Best regards, administration {:siteName}' => 'Best regards, administration {:siteName}',
+    'Confirm Email' => 'Confirm Email',
+    'You or someone on your behalf indicated the address of this mailbox on {: siteName}. If it wasn’t you, then just ignore this letter, otherwise click on the link below.' =>
+        'You or someone on your behalf indicated the address of this mailbox on {: siteName}. If it wasn’t you, then just ignore this letter, otherwise click on the link below.',
+    'Please follow the link to confirm your email address: {:confirmLink}' => 'Please follow the link to confirm your email address: {:confirmLink}',
+    'Set Login and Password' => 'Set Login and Password',
+    'Please fill in the following fields to sign up' => 'Please fill in the following fields to sign up',
+    'Send' => 'Send',
+    'A letter was sent to you to verify your mail address. Please check your inbox.' =>
+        'A letter was sent to you to verify your mail address. Please check your inbox.',
+    'Thank! Your comment has been posted successfully.' => 'Thank! Your comment has been posted successfully.',
+    'Your comment will be published after successful moderation.' => 'Your comment will be published after successful moderation.',
+    'An error has occurred! Failed to add comment.' => 'An error has occurred! Failed to add comment.',
+    'This letter is generated automatically and does not require a response.' => 'This letter is generated automatically and does not require a response.'
 ];

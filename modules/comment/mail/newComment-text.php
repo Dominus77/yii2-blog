@@ -26,3 +26,5 @@ $formatter = Yii::$app->formatter;
 
 
 <?= Module::t('module', 'Link to comment moderation') ?>: <?= $params['backendLinkEntityComment'] ?>
+
+<?= Module::t('module', 'This letter is generated automatically and does not require a response.') ?>

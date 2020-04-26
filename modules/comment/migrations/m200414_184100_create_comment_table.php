@@ -32,10 +32,12 @@ class m200414_184100_create_comment_table extends Migration
             'created_at' => $this->integer()->notNull()->comment('Created'),
             'updated_at' => $this->integer()->notNull()->comment('Updated'),
             'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Status'),
+            'confirm' => $this->string()->comment('Confirm Token'),
+            'redirect' => $this->string()->comment('Redirect URL'),
         ], $tableOptions);
 
         $this->createIndex('IDX_comment_nested_sets', '{{%comment}}', [
-            'tree', 'lft', 'rgt', 'entity', 'entity_id', 'author'
+            'tree', 'lft', 'rgt', 'entity', 'entity_id', 'author', 'confirm'
         ]);
     }
 

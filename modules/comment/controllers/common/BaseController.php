@@ -44,7 +44,7 @@ class BaseController extends Controller
             ],
             'delCacheControllerBehavior' => [
                 'class' => DelCacheControllerBehavior::class,
-                'actions' => ['create', 'update', 'move', 'change-status', 'delete', 'approved', 'blocked', 'wait'],
+                'actions' => ['create', 'update', 'move', 'change-status', 'delete', 'approved', 'blocked', 'wait', 'confirm-email', 'set-password'],
                 'tags' => [
                     Comment::CACHE_TAG_COMMENTS,
                     Comment::CACHE_TAG_LAST_COMMENTS,
@@ -204,21 +204,4 @@ class BaseController extends Controller
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
-    /**
-     * @param Comment $model
-     * @return array
-     */
-    /*public function getParams(Comment $model)
-    {
-        Yii::$app->id = 'app-frontend';
-        $url = str_replace('/admin/admin/', '/', $model->url);
-        $commentLink = preg_replace('|%2F|i', '/', Yii::$app->urlManagerFrontend->hostInfo . Url::to($url));
-        return [
-            'model' => $model,
-            'request' => Yii::$app->request->referrer,
-            'adminLink' => Yii::$app->urlManager->hostInfo . '/admin' . Url::to(['/blog/post/index', '#' => 'item-' . $model->id]),
-            'commentLink' => $commentLink,
-        ];
-    }*/
 }
