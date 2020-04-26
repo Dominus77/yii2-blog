@@ -64,13 +64,16 @@ class DefaultController extends BaseController
         $senderParams->setSenderCreate($params);
 
         if ($result === true) {
-            $model->send($senderParams);
-            Comment::messageSuccess();
+            $model->status = Comment::STATUS_APPROVED;
+            if ($model->save()) {
+                $model->send($senderParams);
+                Comment::messageApproved();
+            }
         }
         if ($result === false) {
             Comment::messageError();
         }
-        return $this->redirect($params['request']);
+        return $this->redirect($params['request'] . '#comment-' . $model->id);
     }
 
     /**
@@ -92,7 +95,7 @@ class DefaultController extends BaseController
             $redirect = $model->redirect;
             $model->confirm = null;
             $model->redirect = null;
-            $model->status = Comment::STATUS_WAIT;
+            $model->status = Comment::STATUS_APPROVED;
             if ($model->save()) {
 
                 $senderParams = new SenderParams();
@@ -100,8 +103,8 @@ class DefaultController extends BaseController
                 $senderParams->setSenderCreate($params);
                 $model->send($senderParams);
 
-                Comment::messageSuccess();
-                return $this->redirect($redirect);
+                Comment::messageApproved();
+                return $this->redirect($redirect . '#comment-' . $model->id);
             }
         }
         throw new NotFoundHttpException('The requested page does not exist.');
@@ -122,7 +125,7 @@ class DefaultController extends BaseController
                 if ($user !== null) {
                     Yii::$app->user->login($user, 3600 * 24 * 30);
                     $redirect = $comment->redirect;
-                    $comment->status = Comment::STATUS_WAIT;
+                    $comment->status = Comment::STATUS_APPROVED;
                     $comment->confirm = null;
                     $comment->redirect = null;
                     if ($comment->save()) {
@@ -132,8 +135,8 @@ class DefaultController extends BaseController
                         $senderParams->setSenderCreate($params);
                         $comment->send($senderParams);
 
-                        Comment::messageSuccess();
-                        return $this->redirect($redirect);
+                        Comment::messageApproved();
+                        return $this->redirect($redirect . '#comment-' . $comment->id);
                     }
                 }
             }
