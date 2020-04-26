@@ -82,7 +82,7 @@ class SenderParams
         $confirmLink = Yii::$app->urlManager->hostInfo . trim('/comment/confirm-email?token=' . $model->confirm);
         return [
             'model' => $model, // Модель Comment
-            'request' => Yii::$app->request->referrer,
+            'request' => $model->redirect ?: Yii::$app->request->referrer,
             'confirmLink' => $confirmLink, // Ссылка подтверждение адреса електронной почты
             'backendLink' => $backendLink, // Ссылка на админку
             'backendLinkEntityComment' => $backendLinkEntityComment, // Ссылка на комментарий в сущности админки
