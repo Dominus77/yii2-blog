@@ -12,7 +12,6 @@ use modules\comment\models\Comment;
 use modules\comment\Module;
 
 $model = $params['model'];
-$model->status = Comment::STATUS_WAIT;
 ?>
 <div class="email-new-comment">
     <p><?= Module::t('module', 'New comment awaiting moderation') ?></p>

@@ -69,13 +69,13 @@ return [
     'Best regards, administration {:siteName}' => 'С наилучшими пожеланиями, администрация сайта {:siteName}',
     'Confirm Email' => 'Подтверждение email',
     'You or someone on your behalf indicated the address of this mailbox on {: siteName}. If it wasn’t you, then just ignore this letter, otherwise click on the link below.' =>
-        'Вы или кто-то от Вашего имени указал адрес этого почтового ящика на сайте {:siteName}. Если это были не Вы, то просто проигнорируйте это письмо, в противном случае, нажмите на ссылку ниже.',
+        'Вы или кто-то от Вашего имени указал адрес этого почтового ящика на сайте {:siteName}. Если это были не Вы, то просто проигнорируйте это письмо, иначе, перейдите по ссылке ниже.',
     'Please follow the link to confirm your email address: {:confirmLink}' => 'Пожалуйста, перейдите по ссылке что бы подтвердить адрес электронной почты: {:confirmLink}',
     'Set Login and Password' => 'Установите логин и пароль',
     'Please fill in the following fields to sign up' => 'Пожалуйста, заполните следующие поля, чтобы зарегистрироваться',
     'Send' => 'Отправить',
     'A letter was sent to you to verify your mail address. Please check your inbox.' =>
-        'Вам было отправленно письмо для верификации вашего mail адреса. Пожалуйста, проверьте ваш почтовый ящик.',
+        'Вам было отправленно письмо для подтверждения указанного email адреса адреса. Пожалуйста, проверьте ваш почтовый ящик.',
     'Thank! Your comment has been posted successfully.' => 'Спасибо! Ваш комментарий успешно опубликован.',
     'Your comment will be published after successful moderation.' => 'Ваш комментарий будет опубликован после успешной модерации.',
     'An error has occurred! Failed to add comment.' => 'Произошла ошибка! Не удалось добавить комментарий.',
