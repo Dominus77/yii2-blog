@@ -53,7 +53,7 @@ class Bootstrap
 
                 'blog/<post:[\w_\/-]+><prefix:.html+>' => 'blog/default/post',
                 'blog/<id:\d+>/<_a:[\w\-]+>' => 'blog/default/<_a>',
-                'blog/<_a:[\w\-]+>' => 'blog/default/<_a>',
+                'blog/<_a:[\w\-]+>' => 'blog/default/<_a>'
             ]
         );
     }

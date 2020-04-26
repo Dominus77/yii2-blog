@@ -6,6 +6,7 @@
  * @var $params array
  */
 
+use yii\helpers\Html;
 use yii\widgets\DetailView;
 use modules\comment\models\Comment;
 use modules\comment\Module;
@@ -50,6 +51,9 @@ $model->status = Comment::STATUS_WAIT;
     </p>
     <p>
         <?= Module::t('module', 'Link to comment moderation') ?>:
-        <a href="<?= $params['backendLinkEntityComment'] ?>"><?= $params['backendLinkEntityComment'] ?></a>
+        <a href="<?= Html::encode($params['backendLinkEntityComment']) ?>"><?= $params['backendLinkEntityComment'] ?></a>
+    </p>
+    <p>
+        <small><?= Module::t('module', 'This letter is generated automatically and does not require a response.') ?></small>
     </p>
 </div>

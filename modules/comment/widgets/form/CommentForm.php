@@ -75,15 +75,21 @@ class CommentForm extends Widget
     public function renderForm()
     {
         $form = ActiveForm::begin($this->formOptions);
-        echo $form->field($this->comment, 'author')->textInput([
-            'class' => 'form-control',
-            'placeholder' => true
-        ]);
 
-        echo $form->field($this->comment, 'email')->textInput([
-            'class' => 'form-control',
-            'placeholder' => true
-        ])->hint(Module::t('module', 'No one will see'));
+        if (Yii::$app->user->isGuest) {
+            echo $form->field($this->comment, 'author')->textInput([
+                'class' => 'form-control',
+                'placeholder' => true,
+            ]);
+
+            echo $form->field($this->comment, 'email')->textInput([
+                'class' => 'form-control',
+                'placeholder' => true
+            ])->hint(Module::t('module', 'No one will see'));
+        } else {
+            echo $form->field($this->comment, 'author')->hiddenInput()->label(false);
+            echo $form->field($this->comment, 'email')->hiddenInput()->label(false);
+        }
 
         echo $form->field($this->comment, 'comment')->textarea([
             'rows' => 6,
@@ -147,7 +153,12 @@ class CommentForm extends Widget
             $this->comment->entity_id = $this->model->id;
             /** @var \modules\users\models\User $user */
             if ($user = Yii::$app->user->identity) {
-                $this->comment->author = $user->username;
+                $author = $user->username;
+                if (isset($user->profile)) {
+                    $profile = $user->profile;
+                    $author = $profile->first_name ?: $author;
+                }
+                $this->comment->author = $author;
                 $this->comment->email = $user->email;
             }
         }

@@ -1,35 +1,34 @@
 <?php
 
-/**
- * @var $this yii\web\View
- * @var $form yii\bootstrap\ActiveForm
- * @var $model \modules\users\models\SignupForm
- */
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use modules\users\models\User;
 use modules\users\widgets\passfield\Passfield;
-use modules\users\Module;
+use modules\comment\models\SetPasswordForm;
+use modules\comment\Module;
 
-$this->title = Module::t('module', 'Sign Up');
+/**
+ * @var $this yii\web\View
+ * @var $form yii\widgets\ActiveForm
+ * @var $model SetPasswordForm
+ */
+
+$this->title = Module::t('module', 'Set Login and Password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="users-frontend-default-signup">
+<div class="comment-frontend-default-set-password">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p><?= Module::t('module', 'Please fill in the following fields to sign up') ?>:</p>
 
     <div class="row">
         <div class="col-md-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+            <?php $form = ActiveForm::begin([
+                'id' => 'form-set-password'
+            ]); ?>
 
             <?= $form->field($model, 'username')->textInput([
-                'placeholder' => true,
-            ]) ?>
-
-            <?= $form->field($model, 'email')->textInput([
                 'placeholder' => true,
             ]) ?>
 
@@ -60,7 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'name' => 'signup-button'
                 ]) ?>
             </div>
-
             <?php ActiveForm::end(); ?>
         </div>
     </div>

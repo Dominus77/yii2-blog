@@ -19,6 +19,7 @@ class SenderParams
     public $params = [];
 
     /**
+     * Params to Create comment
      * @param array $params
      */
     public function setSenderCreate($params = [])
@@ -34,6 +35,7 @@ class SenderParams
     }
 
     /**
+     * Params to Approve comment
      * @param array $params
      */
     public function setSenderApprove($params = [])
@@ -50,6 +52,23 @@ class SenderParams
     }
 
     /**
+     * Confirm email
+     * @param array $params
+     */
+    public function setSenderConfirmEmail($params = [])
+    {
+        $model = $params['model'];
+        $this->templates = [
+            'html' => 'confirmEmail-html',
+            'text' => 'confirmEmail-text',
+        ];
+        $this->from = [Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']];
+        $this->to = [$model->email];
+        $this->subject = Module::t('module', 'Confirm Email') . ' ' . Yii::$app->name;
+        $this->params = $params;
+    }
+
+    /**
      * @param Comment $model
      * @return array
      */
@@ -60,9 +79,11 @@ class SenderParams
         $backendLink = Yii::$app->urlManager->hostInfo . Yii::$app->urlManagerBackend->baseUrl;
         $frontendLinkEntityComment = Yii::$app->urlManager->hostInfo . $this->normalizeUrl($query->getUrl('frontend')) . '#comment-' . $model->id;
         $backendLinkEntityComment = $backendLink . $this->normalizeUrl($query->getUrl('index')) . '#item-' . $model->id;
+        $confirmLink = Yii::$app->urlManager->hostInfo . trim('/comment/confirm-email?token=' . $model->confirm);
         return [
             'model' => $model, // Модель Comment
             'request' => Yii::$app->request->referrer,
+            'confirmLink' => $confirmLink, // Ссылка подтверждение адреса електронной почты
             'backendLink' => $backendLink, // Ссылка на админку
             'backendLinkEntityComment' => $backendLinkEntityComment, // Ссылка на комментарий в сущности админки
             'frontendLinkEntityComment' => $frontendLinkEntityComment, // Ссылка на комментарий сущности на фронте
