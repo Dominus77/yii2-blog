@@ -9,6 +9,9 @@ use api\modules\v1\models\User;
 use api\modules\v1\Module as V1Module;
 use modules\users\Bootstrap as UserBootstrap;
 
+use api\modules\blog\v1\Module as BlogModule;
+use modules\blog\Bootstrap as BlogBootstrap;
+
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -23,11 +26,15 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => [
         'log',
-        UserBootstrap::class
+        UserBootstrap::class,
+        BlogBootstrap::class
     ],
     'modules' => [
         'v1' => [
             'class' => V1Module::class   // here is our v1 modules
+        ],
+        'blog' => [
+            'class' => BlogModule::class
         ]
     ],
     'components' => [
@@ -71,7 +78,14 @@ return [
                         'v1/message'
                     ],
                     'pluralize' => false
-                ]
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'blog/v1/post' =>'blog/post'
+                    ],
+                    'pluralize' => false
+                ],
             ]
         ],
         'cache' => [
