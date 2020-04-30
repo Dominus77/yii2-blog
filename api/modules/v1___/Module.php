@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\blog\v1;
+namespace api\modules\v1___;
 
 use Yii;
 use yii\filters\RateLimiter;
@@ -8,14 +8,14 @@ use api\components\IpLimiter;
 
 /**
  * Class Module
- * @package api\modules\blog\v1
+ * @package api\modules\v1
  */
 class Module extends \yii\base\Module
 {
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'api\modules\blog\v1\controllers';
+    public $controllerNamespace = 'api\modules\v1\controllers';
 
     /**
      * @inheritdoc

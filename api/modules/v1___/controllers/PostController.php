@@ -1,8 +1,8 @@
 <?php
 
-namespace api\modules\blog\v1\controllers;
+namespace api\modules\v1___\controllers;
 
-use api\modules\v1\models\Message;
+use api\modules\v1___\models\Message;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\rest\Controller;

@@ -6,10 +6,10 @@ use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\helpers\ArrayHelper;
 use api\modules\v1\models\User;
-use api\modules\v1\Module as V1Module;
+//use api\modules\v1___\Module as V1Module;
 use modules\users\Bootstrap as UserBootstrap;
 
-use api\modules\blog\v1\Module as BlogModule;
+use api\modules\v1\Module;
 use modules\blog\Bootstrap as BlogBootstrap;
 
 $params = ArrayHelper::merge(
@@ -30,11 +30,11 @@ return [
         BlogBootstrap::class
     ],
     'modules' => [
-        'v1' => [
+        /*'v1' => [
             'class' => V1Module::class   // here is our v1 modules
-        ],
-        'blog' => [
-            'class' => BlogModule::class
+        ],*/
+        'v1' => [
+            'class' => Module::class
         ]
     ],
     'components' => [
@@ -75,14 +75,7 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/message'
-                    ],
-                    'pluralize' => false
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
-                        'blog/v1/post' =>'blog/post'
+                        'v1/post'
                     ],
                     'pluralize' => false
                 ],

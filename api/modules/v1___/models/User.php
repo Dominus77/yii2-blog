@@ -1,15 +1,15 @@
 <?php
 
-namespace api\modules\blog\v1\models;
+namespace api\modules\v1___\models;
 
 use yii\helpers\ArrayHelper;
-use modules\blog\models\Post as BasePost;
+use modules\users\models\User as BaseUser;
 
 /**
- * Class Post
- * @package api\modules\blog\v1\models
+ * Class User
+ * @package api\modules\v1\models
  */
-class Post extends BasePost
+class User extends BaseUser
 {
     /**
      * @inheritdoc
@@ -28,20 +28,20 @@ class Post extends BasePost
     }
 
     /**
-     * /api/blog/v1/post
+     * /api/v1/user
      * @return array
      */
     public function fields()
     {
-        return ['title', 'content'];
+        return ['id', 'email', 'username'];
     }
 
     /**
-     * /api/blog/v1/posts?expand=status
+     * /api/v1/users?expand=status
      * @return array
      */
     public function extraFields()
     {
-        return ['status', 'created_at', 'updated_at'];
+        return ['status', 'created_at', 'updated_at', 'last_visit'];
     }
 }

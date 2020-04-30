@@ -1,10 +1,10 @@
 <?php
 
-namespace api\modules\v1\controllers;
+namespace api\modules\v1___\controllers;
 
 use yii\filters\Cors;
 use yii\rest\Controller;
-use api\modules\v1\models\Message;
+use api\modules\v1___\models\Message;
 
 /**
  * Class MessageController

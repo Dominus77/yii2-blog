@@ -1,13 +1,13 @@
 <?php
 
-namespace api\modules\v1\models;
+namespace api\modules\v1___\models;
 
 use yii\helpers\ArrayHelper;
 use modules\blog\models\Post as BasePost;
 
 /**
  * Class Post
- * @package api\modules\v1\models
+ * @package api\modules\blog\v1\models
  */
 class Post extends BasePost
 {
@@ -33,7 +33,7 @@ class Post extends BasePost
      */
     public function fields()
     {
-        return ['title', 'content'];
+        return ['id', 'title', 'content'];
     }
 
     /**
