@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v1___\controllers;
+namespace api\modules\v1\controllers;
 
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -8,7 +8,7 @@ use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
-use api\modules\v1___\models\User;
+use api\modules\v1\models\User;
 
 /**
  * Class UserController

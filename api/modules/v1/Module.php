@@ -28,7 +28,7 @@ class Module extends \yii\base\Module
                 'user' => new IpLimiter(),
                 'enableRateLimitHeaders' => true,
                 'errorMessage' => Yii::t('app', 'Exceeded the limit of applications!')
-            ]
+            ],
         ];
     }
 }

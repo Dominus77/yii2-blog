@@ -2,14 +2,16 @@
 
 namespace api\modules\v1\models;
 
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\web\Linkable;
 use modules\blog\models\Post as BasePost;
 
 /**
  * Class Post
  * @package api\modules\v1\models
  */
-class Post extends BasePost
+class Post extends BasePost implements Linkable
 {
     /**
      * @inheritdoc
@@ -33,7 +35,7 @@ class Post extends BasePost
      */
     public function fields()
     {
-        return ['title', 'content'];
+        return ['id', 'title', 'content'];
     }
 
     /**
@@ -42,6 +44,18 @@ class Post extends BasePost
      */
     public function extraFields()
     {
-        return ['status', 'created_at', 'updated_at'];
+        return [
+            'comments' => 'comments'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getLinks()
+    {
+        return [
+            'self' => Url::to(['post/view', 'id' => $this->id], true),
+        ];
     }
 }

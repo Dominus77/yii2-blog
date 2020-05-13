@@ -6,9 +6,7 @@ use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\helpers\ArrayHelper;
 use api\modules\v1\models\User;
-//use api\modules\v1___\Module as V1Module;
 use modules\users\Bootstrap as UserBootstrap;
-
 use api\modules\v1\Module;
 use modules\blog\Bootstrap as BlogBootstrap;
 
@@ -30,9 +28,6 @@ return [
         BlogBootstrap::class
     ],
     'modules' => [
-        /*'v1' => [
-            'class' => V1Module::class   // here is our v1 modules
-        ],*/
         'v1' => [
             'class' => Module::class
         ]
@@ -67,18 +62,13 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user'
+                        'v1/user',
+                        'v1/post'
                     ],
                     'except' => ['delete'],
                     'pluralize' => true
                 ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
-                        'v1/post'
-                    ],
-                    'pluralize' => false
-                ],
+
             ]
         ],
         'cache' => [
