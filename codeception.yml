@@ -5,6 +5,7 @@ include:
     - backend
     - api
     - modules/rbac
+    - modules/config
 paths:
     log: console/runtime/logs
 settings:

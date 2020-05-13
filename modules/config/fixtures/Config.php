@@ -1,13 +1,13 @@
 <?php
 
-namespace modules\config\tests\fixtures;
+namespace modules\config\fixtures;
 
 use yii\test\ActiveFixture;
 use modules\config\models\Config as BaseConfig;
 
 /**
  * Class Config
- * @package modules\config\tests\fixtures
+ * @package modules\config\fixtures
  */
 class Config extends ActiveFixture
 {

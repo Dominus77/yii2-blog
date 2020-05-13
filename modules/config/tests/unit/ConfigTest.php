@@ -7,22 +7,37 @@ use yii\base\InvalidConfigException;
 use modules\config\params\Params;
 use modules\config\models\Config;
 use modules\config\params\ConfigParams;
+use Codeception\Test\Unit;
+use modules\config\fixtures\Config as ConfigFixture;
 
 /**
  * Class ConfigTest
  * @package modules\config\tests\unit
  */
-class ConfigTest extends \Codeception\Test\Unit
+class ConfigTest extends Unit
 {
     /**
      * @var \modules\config\tests\UnitTester
      */
     protected $tester;
 
+    /**
+     * @inheritDoc
+     */
+    public function _before()
+    {
+        $this->tester->haveFixtures([
+            'params' => [
+                'class' => ConfigFixture::class,
+                'dataFile' => codecept_data_dir() . 'params.php'
+            ]
+        ]);
+    }
+
     public function testConfigParams()
     {
-        $this->assertTrue(is_array(ConfigParams::findParams()));
-        $this->assertTrue(is_array(ConfigParams::getReplace()));
+        $this->assertIsArray(ConfigParams::findParams());
+        $this->assertIsArray(ConfigParams::getReplace());
     }
 
     /**
@@ -74,7 +89,7 @@ class ConfigTest extends \Codeception\Test\Unit
         $app = Yii::$app;
         $config = $app->config;
         $name = $config->get('TEST_NAME');
-        $this->assertEquals($name, 'Ym Tester');
+        $this->assertEquals('Ym Tester', $name);
     }
 
     /**
@@ -82,7 +97,7 @@ class ConfigTest extends \Codeception\Test\Unit
      */
     public function testGetValueNotParam()
     {
-        $this->tester->expectException(new InvalidConfigException('Undefined parameter NONE_PARAM'), function () {
+        $this->tester->expectThrowable(new InvalidConfigException('Undefined parameter NONE_PARAM'), function () {
             $this->getNotParam();
         });
     }
@@ -123,10 +138,10 @@ class ConfigTest extends \Codeception\Test\Unit
         $app = Yii::$app;
         $config = $app->config;
         $name = $config->get('TEST_NAME');
-        $this->assertEquals($name, 'Tester');
+        $this->assertEquals('Tester', $name);
 
         $config->set('TEST_NAME', 'Ym Tester');
         $name = $config->get('TEST_NAME');
-        $this->assertEquals($name, 'Ym Tester');
+        $this->assertEquals('Ym Tester', $name);
     }
 }

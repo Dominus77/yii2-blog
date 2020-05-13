@@ -2,9 +2,9 @@
 
 namespace modules\config\models;
 
-use modules\config\components\behaviors\CachedBehavior;
 use modules\config\Module;
 use yii\db\ActiveRecord;
+use modules\config\components\behaviors\CachedBehavior;
 
 /**
  * This is the model class for table "{{%config}}".
