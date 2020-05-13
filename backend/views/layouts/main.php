@@ -22,6 +22,7 @@ use modules\users\Module as UserModule;
 use modules\rbac\Module as RbacModule;
 use modules\blog\Module as BlogModule;
 use modules\comment\Module as CommentModule;
+use modules\config\Module as ConfigModule;
 
 /* @var $this View */
 /* @var $content string */
@@ -218,6 +219,11 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     'label' => '<i class="fa fa-wrench"></i> <span>' . Yii::t('app', 'Mode site') . '</span>',
                     'url' => ['/maintenance/index'],
                     'visible' => $user->can(Permission::PERMISSION_MANAGER_MAINTENANCE)
+                ],
+                [
+                    'label' => '<i class="fa fa-cogs"></i> <span>' . ConfigModule::t('module', 'Settings') . '</span>',
+                    'url' => ['/config/default/update'],
+                    'visible' => $user->can(Permission::PERMISSION_ACCESS_APP_SETTINGS)
                 ]
             ];
             echo Menu::widget([

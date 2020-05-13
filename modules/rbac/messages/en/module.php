@@ -104,4 +104,5 @@ return [
 
     'Access to Maintenance management' => 'Access to Maintenance management',
     'View a site in maintenance mode' => 'View a site in maintenance mode',
+    'Access to app settings' => 'Access to app settings'
 ];

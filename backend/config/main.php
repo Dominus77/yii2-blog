@@ -18,6 +18,10 @@ use modules\rbac\Bootstrap as RbacBootstrap;
 use modules\rbac\Module;
 use modules\blog\Bootstrap as BlogBootstrap;
 use modules\comment\Bootstrap as CommentBootstrap;
+use modules\config\Bootstrap as ConfigBootstrap;
+use modules\config\Module as ConfigModule;
+use modules\config\components\behaviors\ConfigBehavior;
+use backend\config\Params;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -35,6 +39,7 @@ return [
     'defaultRoute' => 'main/default/index',
     'bootstrap' => [
         'log',
+        ConfigBootstrap::class,
         MainBootstrap::class,
         UserBootstrap::class,
         RbacBootstrap::class,
@@ -43,6 +48,13 @@ return [
         CommentBootstrap::class
     ],
     'modules' => [
+        'config' => [
+            'class' => ConfigModule::class,
+            'params' => [
+                'accessRoles' => [Permission::PERMISSION_ACCESS_APP_SETTINGS],
+                'paramsClass' => Params::class
+            ],
+        ],
         'main' => [
             'isBackend' => true
         ],
@@ -145,6 +157,10 @@ return [
     'as AccessBehavior' => [
         'class' => AccessBehavior::class,
         'permission' => Permission::PERMISSION_VIEW_ADMIN_PAGE, // Разрешение доступа к админке
+    ],
+    // Подключаем поведение для замены параметров конфигурации нашими параметрами
+    'as beforeConfig' => [
+        'class' => ConfigBehavior::class,
     ],
     'params' => $params
 ];

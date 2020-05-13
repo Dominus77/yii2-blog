@@ -1,5 +1,6 @@
 <?php
 
+use modules\config\components\DConfig;
 use yii\db\Connection;
 use yii\rbac\DbManager;
 use yii\caching\FileCache;
@@ -25,7 +26,6 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset'
     ],
-    'bootstrap' => [],
     'container' => [
         'singletons' => [
             StateInterface::class => [
@@ -50,9 +50,13 @@ return [
         ],
         'comment' => [
             'class' => CommentModule::class
-        ],
+        ]
     ],
     'components' => [
+        'config' => [
+            'class' => DConfig::class,
+            'duration' => 3600,
+        ],
         'db' => [
             'class' => Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_start',

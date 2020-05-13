@@ -104,4 +104,5 @@ return [
 
     'Access to Maintenance management' => 'Доступ к управлению режимом обслуживания',
     'View a site in maintenance mode' => 'Просмотр сайта в режиме обслуживания',
+    'Access to app settings' => 'Доступ к настройкам приложения'
 ];

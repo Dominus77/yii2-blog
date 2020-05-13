@@ -19,6 +19,7 @@ use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\controllers\frontend\MaintenanceController;
 use modules\rbac\models\Permission;
 use modules\blog\url\BlogUrlManager;
+use modules\config\components\behaviors\ConfigBehavior;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -160,6 +161,9 @@ return [
     ],
     'as afterAction' => [
         'class' => LastVisitBehavior::class
+    ],
+    'as beforeConfig' => [
+        'class' => ConfigBehavior::class,
     ],
     'params' => $params
 ];

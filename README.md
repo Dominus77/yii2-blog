@@ -52,6 +52,7 @@ Apply migration:
 php yii migrate
 php yii migrate -p=@modules/blog/migrations
 php yii migrate -p=@modules/comment/migrations
+php yii migrate -p=@modules/config/migrations
 ```
 
 See all available commands:
