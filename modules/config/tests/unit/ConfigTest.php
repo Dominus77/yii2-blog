@@ -8,7 +8,7 @@ use modules\config\params\Params;
 use modules\config\models\Config;
 use modules\config\params\ConfigParams;
 use Codeception\Test\Unit;
-use modules\config\fixtures\Config as ConfigFixture;
+use modules\config\tests\fixtures\Config as ConfigFixture;
 
 /**
  * Class ConfigTest
