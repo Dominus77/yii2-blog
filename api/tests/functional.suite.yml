@@ -1,8 +1,0 @@
-class_name: FunctionalTester
-modules:
-    enabled:
-        - Asserts
-        - Yii2
-        - REST:
-            url: api/
-            depends: Yii2

@@ -3,7 +3,6 @@ include:
     - common
     - frontend
     - backend
-    - api
     - modules/rbac
     - modules/config
 paths:

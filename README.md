@@ -174,6 +174,7 @@ Apply migration:
 php yii_test migrate
 php yii_test migrate -p=@modules/blog/migrations
 php yii_test migrate -p=@modules/comment/migrations
+php yii_test migrate -p=@modules/config/migrations
 ```
 
 #### Run in console
@@ -186,4 +187,14 @@ Other:
 ```
 vendor/bin/codecept build
 vendor/bin/codecept run
+```
+
+#### Testing api
+Run php server
+```
+php -S 127.0.0.1:8080 -t api/web
+```
+Run tests
+```
+vendor/bin/codecept run -- -c api
 ```
