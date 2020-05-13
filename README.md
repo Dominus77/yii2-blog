@@ -1,15 +1,12 @@
 # Yii2 Blog
 
+Example yii2-blog
+
 > The project is under construction.
 
 ## INSTALLATION
 
-Create a project:
-```
-composer create-project --prefer-dist --stability=dev dominus77/yii2-blog public_html
-```
-
-or clone the repository for `pull` command availability:
+clone the repository:
 
 ```
 git clone https://github.com/Dominus77/yii2-blog.git public_html
@@ -55,6 +52,7 @@ Apply migration:
 php yii migrate
 php yii migrate -p=@modules/blog/migrations
 php yii migrate -p=@modules/comment/migrations
+php yii migrate -p=@modules/config/migrations
 ```
 
 See all available commands:

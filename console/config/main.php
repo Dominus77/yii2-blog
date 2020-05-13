@@ -13,6 +13,8 @@ use dominus77\maintenance\states\FileState;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\BackendMaintenance;
 use dominus77\maintenance\commands\MaintenanceController;
+use modules\config\Bootstrap as ConfigBootstrap;
+use modules\config\Module as ConfigModule;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -27,6 +29,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => [
         'log',
+        ConfigBootstrap::class,
         MainBootstrap::class,
         UserBootstrap::class,
         RbacBootstrap::class,
@@ -55,6 +58,9 @@ return [
         ],
     ],
     'modules' => [
+        'config' => [
+            'class' => ConfigModule::class,
+        ],
         'rbac' => [
             'class' => RbacModule::class,
             'params' => [

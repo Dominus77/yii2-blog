@@ -16,6 +16,9 @@ class Permission extends Model
     use ModuleTrait;
 
     // разрешения
+    const PERMISSION_ACCESS_APP_SETTINGS = 'accessAppSettings';
+    const PERMISSION_ACCESS_APP_SETTINGS_DESCRIPTION = 'Access to app settings';
+
     const PERMISSION_MANAGER_MAINTENANCE = 'managerMaintenance';
     const PERMISSION_MANAGER_MAINTENANCE_DESCRIPTION = 'Access to Maintenance management';
 
@@ -63,6 +66,7 @@ class Permission extends Model
     public function getPermissionsArray()
     {
         return [
+            self::PERMISSION_ACCESS_APP_SETTINGS => self::PERMISSION_ACCESS_APP_SETTINGS_DESCRIPTION,
             self::PERMISSION_MANAGER_MAINTENANCE => self::PERMISSION_MANAGER_MAINTENANCE_DESCRIPTION,
             self::PERMISSION_MAINTENANCE => self::PERMISSION_MAINTENANCE_DESCRIPTION,
             self::PERMISSION_VIEW_ADMIN_PAGE => self::PERMISSION_VIEW_ADMIN_PAGE_DESCRIPTION,
@@ -96,6 +100,7 @@ class Permission extends Model
     public static function groupSuperAdmin()
     {
         return [
+            self::PERMISSION_ACCESS_APP_SETTINGS,
             self::PERMISSION_MANAGER_MAINTENANCE,
             self::PERMISSION_MAINTENANCE,
             self::PERMISSION_VIEW_ADMIN_PAGE,
@@ -114,6 +119,7 @@ class Permission extends Model
     public static function groupAdmin()
     {
         return [
+            self::PERMISSION_ACCESS_APP_SETTINGS,
             self::PERMISSION_MANAGER_MAINTENANCE,
             self::PERMISSION_MAINTENANCE,
             self::PERMISSION_VIEW_ADMIN_PAGE,
