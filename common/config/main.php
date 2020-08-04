@@ -12,6 +12,7 @@ use modules\blog\Module as BlogModule;
 use modules\comment\Module as CommentModule;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\states\FileState;
+use yii\elasticsearch\Connection as ElasticsearchConnection;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/params.php',
@@ -65,6 +66,15 @@ return [
             'charset' => 'utf8',
             'tablePrefix' => 'tbl_',
             'enableSchemaCache' => true
+        ],
+        'elasticsearch' => [
+            'class' => ElasticsearchConnection::class,
+            'autodetectCluster' => false,
+            'nodes' => [
+                ['http_address' => '127.0.0.1:9200'],
+                //настройте несколько хостов, если у вас есть кластер
+            ],
+            //'dslVersion' => 7
         ],
         'authManager' => [
             'class' => DbManager::class
