@@ -11,6 +11,7 @@ use modules\comment\widgets\other\LastComment;
 use modules\blog\assets\BlogAsset;
 use modules\comment\widgets\form\CommentForm;
 use modules\blog\Module;
+use modules\blog\widgets\search\SearchSidebar;
 
 /** @var $this View */
 /** @var $model Post */
@@ -27,6 +28,7 @@ $this->params['breadcrumbs'][] = $model->title;
 <div class="blog-frontend-default-post">
     <div class="row">
         <div class="col-md-3">
+            <?= SearchSidebar::widget(['status' => true]) ?>
             <?= CategoryMenu::widget() ?>
             <noindex>
                 <?= LastPost::widget(['status' => true, 'limit' => 5]) ?>

@@ -10,6 +10,7 @@ use modules\blog\widgets\other\LastPost;
 use modules\comment\widgets\other\LastComment;
 use modules\blog\Module;
 use modules\blog\assets\BlogAsset;
+use modules\blog\widgets\search\SearchSidebar;
 
 /** @var $this View */
 /** @var $model Category|CategoryTreeBehavior */
@@ -25,6 +26,7 @@ $this->params['breadcrumbs'] = $model->getBreadcrumbs($this->params['breadcrumbs
 <div class="blog-frontend-default-category">
     <div class="row">
         <div class="col-md-3">
+            <?= SearchSidebar::widget(['status' => true]) ?>
             <?= CategoryMenu::widget(['status' => true]) ?>
             <noindex>
                 <?= LastPost::widget(['status' => true, 'limit' => 5]) ?>
