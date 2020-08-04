@@ -9,16 +9,16 @@ use modules\comment\models\Comment;
 ?>
 
 <li class="item">
-    <h5 class="item-title"><?= Html::encode($title) ?></h5>
+    <h5 class="item-title"><?= Html::a(Html::encode($title), $comment->url) ?></h5>
     <div class="info">
         <div class="item-data">
             <?= Yii::$app->formatter->asRelativeTime($comment->created_at) ?>
         </div>
         <div class="item-author">
-            <?= Html::a($comment->author, $comment->url) ?>
+            <?= $comment->author ?>
         </div>
         <div class="item-content">
-            <?= Html::a($comment->getComment(), $comment->url) ?>
+            <?= $comment->getComment() ?>
         </div>
     </div>
 </li>

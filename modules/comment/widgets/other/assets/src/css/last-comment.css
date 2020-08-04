@@ -18,13 +18,18 @@
     border-bottom: none;
 }
 
+.last-comments .item div {
+    margin-bottom: 5px;
+}
+
 .last-comments .item-title {
     margin: 0;
-    padding: 0;
+    padding: 0 0 5px 0;
 }
 
 .last-comments .item-data {
     font-size: 1rem;
+    float: right;
 }
 
 .last-comments .item-author {

@@ -16,13 +16,18 @@
     border-bottom: none;
 }
 
+.last-post .item div {
+    margin-bottom: 5px;
+}
+
 .last-post .item-title {
     margin: 0;
-    padding: 0;
+    padding: 0 0 5px 0;
 }
 
 .last-post .item-data {
     font-size: 1rem;
+    float: right;
 }
 
 .last-post .item-author {

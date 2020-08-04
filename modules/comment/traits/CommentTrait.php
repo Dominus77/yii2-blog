@@ -97,6 +97,10 @@ trait CommentTrait
         }, self::CACHE_DURATION, $dependency);
     }
 
+    /**
+     * @param string[] $options
+     * @return string
+     */
     public function getCommentsLabelBlockedCount($options = ['class' => 'pull-right label label-danger'])
     {
         $count = $this->getCommentsBlockedCount();
