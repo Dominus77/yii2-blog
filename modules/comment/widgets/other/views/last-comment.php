@@ -9,7 +9,7 @@ use modules\comment\models\Comment;
 ?>
 
 <li class="item">
-    <h5 class="item-title"><?= Html::a(Html::encode($title), $comment->url) ?></h5>
+    <h5 class="item-title"><?= Html::encode($title) ?></h5>
     <div class="info">
         <div class="item-data">
             <?= Yii::$app->formatter->asRelativeTime($comment->created_at) ?>
@@ -18,7 +18,7 @@ use modules\comment\models\Comment;
             <?= $comment->author ?>
         </div>
         <div class="item-content">
-            <?= $comment->getComment() ?>
+            <?= Html::a($comment->getComment(), $comment->url) ?>
         </div>
     </div>
 </li>
