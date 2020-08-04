@@ -4,6 +4,7 @@ namespace modules\comment\services;
 
 use Yii;
 use modules\comment\models\Comment;
+use modules\blog\models\Post;
 use modules\comment\Module;
 
 /**
@@ -74,7 +75,7 @@ class SenderParams
      */
     public function getParams(Comment $model)
     {
-        /** @var $query \modules\blog\models\Post */
+        /** @var $query Post */
         $query = $model->entityQuery;
         $backendLink = Yii::$app->urlManager->hostInfo . Yii::$app->urlManagerBackend->baseUrl;
         $frontendLinkEntityComment = Yii::$app->urlManager->hostInfo . $this->normalizeUrl($query->getUrl('frontend')) . '#comment-' . $model->id;
