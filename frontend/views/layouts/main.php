@@ -6,7 +6,7 @@ use yii\bootstrap\NavBar;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
+use dominus77\noty\NotyWidget;
 use modules\main\Module as MainModule;
 use modules\users\Module as UserModule;
 use modules\blog\Module as BlogModule;
@@ -15,6 +15,23 @@ use modules\blog\Module as BlogModule;
 /* @var $content string */
 
 AppAsset::register($this);
+
+NotyWidget::widget([
+    'typeOptions' => [
+        NotyWidget::TYPE_SUCCESS => ['timeout' => 3000],
+        NotyWidget::TYPE_INFO => ['timeout' => 3000],
+        NotyWidget::TYPE_ALERT => ['timeout' => 3000],
+        NotyWidget::TYPE_ERROR => ['timeout' => 5000],
+        NotyWidget::TYPE_WARNING => ['timeout' => 3000]
+    ],
+    'options' => [
+        'progressBar' => true,
+        'timeout' => false,
+        'layout' => NotyWidget::LAYOUT_TOP_CENTER,
+        'dismissQueue' => true,
+        'theme' => NotyWidget::THEME_SUNSET
+    ],
+]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -74,7 +91,6 @@ AppAsset::register($this);
             'encodeLabels' => false,
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : []
         ]) ?>
-        <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 </div>

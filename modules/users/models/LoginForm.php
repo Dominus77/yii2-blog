@@ -4,6 +4,8 @@ namespace modules\users\models;
 
 use Yii;
 use yii\base\Model;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 use modules\users\Module;
 
 /**
@@ -12,6 +14,7 @@ use modules\users\Module;
  *
  * @property string $email Email
  * @property string $password Password
+ * @property-read IdentityInterface|ActiveRecord|null|array|User $user
  * @property bool $rememberMe Remember Me
  */
 class LoginForm extends Model
@@ -20,6 +23,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = false;
 
+    /** @var User */
     private $_user;
 
     /**
@@ -63,7 +67,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
+            if ($user === null || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, Module::t('module', 'Invalid email or password.'));
             }
         }
@@ -77,7 +81,12 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $getUser = $this->getUser();
+            if ($getUser instanceof IdentityInterface) {
+                /** @var yii\web\User $user */
+                $user = Yii::$app->user;
+                return $user->login($getUser, $this->rememberMe ? 3600 * 24 * 30 : 0);
+            }
         }
         return false;
     }
@@ -88,13 +97,15 @@ class LoginForm extends Model
      */
     public function logout()
     {
-        return Yii::$app->user->logout();
+        /** @var yii\web\User $user */
+        $user = Yii::$app->user;
+        return $user->logout();
     }
 
     /**
      * Finds user by [[username]]
      *
-     * @return array|null|User
+     * @return array|User|IdentityInterface|ActiveRecord|null
      */
     protected function getUser()
     {

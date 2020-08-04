@@ -6,7 +6,6 @@ use Yii;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\captcha\CaptchaAction;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use modules\main\models\frontend\ContactForm;
 use modules\users\models\User;
@@ -98,29 +97,5 @@ class DefaultController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
-    }
-
-    /**
-     * Read file storage folder
-     * <img src="<?= Url::to(['/main/default/file', 'filename' => '1.png'])?>">
-     * @throws NotFoundHttpException
-     */
-    public function actionFile()
-    {
-        $path = '@common/uploads';
-        if ($file = Yii::$app->request->get('filename')) {
-            $storagePath = Yii::getAlias($path);
-            $response = Yii::$app->getResponse();
-            $response->headers->set('Content-Type', 'image/jpg');
-            $response->format = Response::FORMAT_RAW;
-            $response->stream = fopen("$storagePath/$file", 'rb');
-            return $response->send();
-        }
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionEmailTemplate()
-    {
-        return $this->render('@modules/comment/mail/newComment-html.php');
     }
 }

@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 use modules\users\models\User;
+use modules\users\models\UploadForm;
 
 /**
  * Class AvatarWidget
@@ -13,6 +14,9 @@ use modules\users\models\User;
  *
  * @property array $imageOptions
  * @property string $email
+ * @property int|string $user_id
+ * @property-read string|int $userId
+ * @property-read string $gravatarEmail
  * @property string|int $size
  */
 class AvatarWidget extends Widget
@@ -21,7 +25,8 @@ class AvatarWidget extends Widget
         'class' => 'img-circle',
     ];
     public $email = '';
-    public $size = '80';
+    public $user_id;
+    public $size = '150';
 
     /**
      * @inheritdoc
@@ -30,6 +35,7 @@ class AvatarWidget extends Widget
     {
         parent::init();
         $this->email = !empty($this->email) ? $this->email : $this->getGravatarEmail();
+        $this->user_id = !empty($this->user_id) ? $this->user_id : $this->getUserId();
     }
 
     /**
@@ -37,7 +43,14 @@ class AvatarWidget extends Widget
      */
     public function run()
     {
-        echo $this->getGravatar($this->email, $this->size, 'mm', 'g', true, $this->imageOptions);
+        $model = new UploadForm();
+        $fileName = $model->getFileName();
+        $avatar = $model->getPath($this->user_id) . DIRECTORY_SEPARATOR . $fileName;
+        if (file_exists($avatar)) {
+            echo Html::img(['/users/profile/avatar', 'filename' => 'avatar.jpg', 'id' => $this->user_id], $this->imageOptions);
+        } else {
+            echo $this->getGravatar($this->email, $this->size, 'mm', 'g', true, $this->imageOptions);
+        }
     }
 
     /**
@@ -88,5 +101,15 @@ class AvatarWidget extends Widget
         /** @var User $user */
         $user = Yii::$app->user->identity;
         return (!Yii::$app->user->isGuest) ? $user->profile->email_gravatar : $this->email;
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getUserId()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity;
+        return (!Yii::$app->user->isGuest) ? $user->id : $this->user_id;
     }
 }

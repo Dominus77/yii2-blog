@@ -81,6 +81,5 @@ class ContactCest
             'ContactForm[verifyCode]' => 'testme'
         ]);
         $I->seeEmailIsSent();
-        $I->see('Thank you for contacting us. We will respond to you as soon as possible.');
     }
 }

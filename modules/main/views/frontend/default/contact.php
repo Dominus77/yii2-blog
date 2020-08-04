@@ -41,7 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <?php if ($model->scenario === $model::SCENARIO_GUEST) : ?>
                 <div class="form-group">
-                    <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
+                    <?php try {
+                        echo $form->field($model, 'verifyCode')->widget(Captcha::class, [
                             'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
                             'captchaAction' => Url::to('/main/default/captcha'),
                             'imageOptions' => [
@@ -50,7 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'title' => Module::t('module', 'Click on the picture to change the code.')
                             ],
                             'class' => 'form-control'
-                        ]) ?>
+                        ]);
+                    } catch (Exception $e) {
+                        // Save log
+                    } ?>
                 </div>
             <?php endif; ?>
             <div class="form-group">

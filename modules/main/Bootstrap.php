@@ -32,7 +32,7 @@ class Bootstrap
             [
                 // Declaration of rules here
                 '' => 'main/default/index',
-                '<_a:(about|contact|captcha|file|email-template)>' => 'main/default/<_a>'
+                '<_a:(about|contact|captcha)>' => 'main/default/<_a>'
             ]
         );
     }

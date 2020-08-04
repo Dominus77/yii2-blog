@@ -310,7 +310,12 @@
                 if (inputStyle) {
                     _dom.clearInput.style.cssText = inputStyle;
                 }
-                utils.each(["maxLength", "size", "placeholder"]);
+                utils.each(["maxLength", "size", "placeholder"], function(attr) {
+                    var value = _dom.mainInput.getAttribute(attr);
+                    if (value) {
+                        _dom.clearInput.setAttribute(attr, value);
+                    }
+                });
                 insertAfter(_dom.mainInput, _dom.clearInput);
             }
             addClass(_dom.mainInput, "txt-pass");
@@ -440,7 +445,12 @@
                         top: "-10000px", left: "-10000px", display: "block", color: "transparent", border: "none" });
                 insertBefore(_dom.mainInput, _dom.passLengthChecker);
                 setTimeout(function() {
-                    utils.each(["marginLeft", "fontFamily", "fontSize", "fontWeight", "fontStyle", "fontVariant"]);
+                    utils.each(["marginLeft", "fontFamily", "fontSize", "fontWeight", "fontStyle", "fontVariant"], function(attr) {
+                        var value = css(_dom.mainInput, attr);
+                        if (value) {
+                            _dom.passLengthChecker.style[attr] = value;
+                        }
+                    });
                 }, 50);
             }
         }
@@ -585,7 +595,16 @@
          * Binds handler events to DOM nodes
          */
         function bindEvents() {
-            utils.each(_dom.clearInput ? [_dom.mainInput, _dom.clearInput] : [_dom.mainInput]);
+            utils.each(_dom.clearInput ? [_dom.mainInput, _dom.clearInput] : [_dom.mainInput], function (el) {
+                utils.attachEvent(el, "onkeyup", handleInputKeyup);
+                utils.attachEvent(el, "onfocus", handleInputFocus);
+                utils.attachEvent(el, "onblur", handleInputBlur);
+                utils.attachEvent(el, "onmouseover", handleMouseEvent);
+                utils.attachEvent(el, "onmouseout", handleMouseEvent);
+                if (_dom.placeholder) {
+                    utils.attachEvent(el, "onkeydown", handleInputKeydown);
+                }
+            });
 
             utils.attachEvent(window, "onresize", resizeControls);
 
@@ -787,7 +806,12 @@
                 var nextInput = isMasked ? _dom.mainInput : _dom.clearInput;
                 if (_isMasked !== isMasked) {
                     // LastPass could insert style attributes here: we'll copy them to clear input (if any)
-                    utils.each(["paddingRight", "width", "backgroundImage", "backgroundPosition", "backgroundRepeat", "backgroundAttachment", "border"]);
+                    utils.each(["paddingRight", "width", "backgroundImage", "backgroundPosition", "backgroundRepeat", "backgroundAttachment", "border"], function (prop) {
+                        var cur = currentInput.style[prop];
+                        if (cur) {
+                            nextInput.style[prop] = cur;
+                        }
+                    });
                 }
                 var selection = getSelection(currentInput);
                 nextInput.style.display = currentDisplayMode;
@@ -910,7 +934,13 @@
 
                 // check: blacklist
                 var isInBlackList = false;
-                utils.each(_opts.blackList);
+                utils.each(_opts.blackList, function(el) {
+                    if (el === pass) {
+                        isInBlackList = true;
+                        return false;
+                    }
+                    return true;
+                });
                 if (isInBlackList) {
                     checkResult = { strength: 0, messages: [_locale.msg.inBlackList] };
                 }
@@ -976,7 +1006,21 @@
 
             var charTypesPatternCount = 0;
 
-            utils.each(charTypesPattern);
+            utils.each(charTypesPattern, function(charType) {
+                charTypesPatternCount++;
+                if (!charTypesPass[charType]) {
+                    var msg = _locale.msg[charType];
+                    if (charType === PassField.CharTypes.SYMBOL) {
+                        // we should give example of symbols; for other types this is not required
+                        var symbolsCount = 4;
+                        var charsExample = _opts.chars[charType];
+                        if (charsExample.length > symbolsCount)
+                            charsExample = charsExample.substring(0, symbolsCount);
+                        msg = msg + " (" + charsExample + ")";
+                    }
+                    messages.push(msg);
+                }
+            });
             var strength = 1 - messages.length / charTypesPatternCount;
             if (messages.length) {
                 messages = [joinMessagesForCharTypes(messages)];
@@ -984,7 +1028,12 @@
 
             if (_opts.checkMode === PassField.CheckModes.MODERATE) {
                 var extraCharTypesCount = 0;
-                utils.each(charTypesPass);
+                utils.each(charTypesPass, function(charType) {
+                    if (!charTypesPattern[charType]) {
+                        // cool: the user entered char of type which was not in pattern; +strength!
+                        extraCharTypesCount++;
+                    }
+                });
                 strength += extraCharTypesCount / charTypesPatternCount;
             }
 
@@ -1166,9 +1215,22 @@
             // We're creating an array of charTypes and shuffling it.
             // In such way, generated password will contain exactly the same number of character types as was defined in pattern
             var charTypesSeq = [];
-            utils.each(charTypes);
+            utils.each(charTypes, function(charType, chars) {
+                for (var j = 0; j < chars.length; j++) {
+                    charTypesSeq.push(charType);
+                }
+            });
             charTypesSeq.sort(function() { return 0.7 - Math.random(); });
-            utils.each(charTypesSeq);
+            utils.each(charTypesSeq, function(charType) {
+                var sequence = _conf.generationChars[charType];
+                if (sequence) {
+                    if (_opts.chars[charType] && _opts.chars[charType].indexOf(sequence) < 0)
+                        sequence = _opts.chars[charType]; // overriden without default letters - ok, generate from given chars
+                } else {
+                    sequence = _opts.chars[charType];
+                }
+                result += utils.selectRandom(sequence);
+            });
             return result;
         }
 
@@ -1183,7 +1245,13 @@
             for (var i = 0; i < str.length; i++) {
                 var ch = str.charAt(i);
                 var type = defaultCharType;
-                utils.each(_opts.chars);
+                utils.each(_opts.chars, function(charType, seq) {
+                    if (seq.indexOf(ch) >= 0) {
+                        type = charType;
+                        return false;
+                    }
+                    return true;
+                });
                 result[type] = (result[type] || "") + ch;
             }
             return result;
@@ -1515,7 +1583,19 @@
     utils.extend = function() {
         var arg = arguments;
         for (var i = 1; i < arg.length; i++) {
-            utils.each(arg[i]);
+            utils.each(arg[i], function (key, value) {
+                if (utils.isArray(arg[0][key]) || utils.isArray(value)) {
+                    arg[0][key] = arg[0][key] ? arg[0][key].concat(value || []) : value;
+                } else if (utils.isElement(value)) {
+                    arg[0][key] = value;
+                } else if (typeof arg[0][key] === "object" && typeof value === "object" && value !== null) {
+                    arg[0][key] = utils.extend({}, arg[0][key], value);
+                } else if (typeof value === "object" && value !== null) {
+                    arg[0][key] = utils.extend({}, value);
+                } else {
+                    arg[0][key] = value;
+                }
+            });
         }
         return arg[0];
     };
@@ -1530,10 +1610,16 @@
     utils.newEl = function(tagName, attr, css) {
         var el = document.createElement(tagName);
         if (attr) {
-            utils.each(attr);
+            utils.each(attr, function(key, value) {
+                if (value)
+                    el[key] = value;
+            });
         }
         if (css) {
-            utils.each(css);
+            utils.each(css, function(key, value) {
+                if (value)
+                    el.style[key] = value;
+            });
          }
         return el;
     };
@@ -1559,8 +1645,9 @@
     /**
      * Iterates the collection or object attrs
      * @param  {object|object[]|string[]} obj - object or collection to iterate
+     * @param  {function} fn - function to invoke on each element
      */
-    utils.each = function (obj) {
+    utils.each = function(obj, fn) {
         if (utils.isArray(obj)) {
             for (var i = 0; i < obj.length; i++) {
                 if (fn(obj[i]) === false)
@@ -1621,7 +1708,13 @@
         if (!arr)
             return false;
         var result = false;
-        utils.each(arr);
+        utils.each(arr, function (el) {
+            if (el === item) {
+                result = true;
+                return false;
+            }
+            return true;
+        });
         return result;
     };
 
@@ -1634,7 +1727,7 @@
          * @return {object} - jQuery object.
          */
         $.fn.passField = function(opts) {
-            return this.each(function () {
+            return this.each(function() {
                 new PassField.Field(this, opts);
             });
         };
@@ -1645,7 +1738,7 @@
          * @return {object} - jQuery object.
          */
         $.fn.togglePassMasking = function(isMasked) {
-            return this.each(function () {
+            return this.each(function() {
                 var pf = $(this).data(PassField.Config.dataAttr);
                 if (pf) {
                     pf.toggleMasking(isMasked);
@@ -1659,7 +1752,7 @@
          * @return {object} - jQuery object.
          */
         $.fn.setPass = function(val) {
-            return this.each(function () {
+            return this.each(function() {
                 var pf = $(this).data(PassField.Config.dataAttr);
                 if (pf) {
                     pf.setPass(val);
@@ -1673,7 +1766,7 @@
          */
         $.fn.validatePass = function() {
             var isValid = true;
-            this.each(function () {
+            this.each(function() {
                 var pf = $(this).data(PassField.Config.dataAttr);
                 if (pf && !pf.validatePass()) {
                     isValid = false;

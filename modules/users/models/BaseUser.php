@@ -1,27 +1,27 @@
 <?php
 
-
 namespace modules\users\models;
 
-use modules\users\Module;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\IdentityInterface;
+use modules\users\Module;
 
 /**
  * Class BaseUser
  * @package modules\users\models
  *
- * @property int $id ID
+ * @property int|string $id ID
  * @property string $auth_key Authorization Key
  * @property string $email_confirm_token Email Confirm Token
- * @property int $status
+ * @property int|string $status
  * @property string $statusLabelName
  * @property string $statusName
  * @property array $statusesArray
+ * @property-read string $authKey
  * @property array $labelsArray
  */
 class BaseUser extends ActiveRecord implements IdentityInterface
@@ -31,6 +31,9 @@ class BaseUser extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 1;
     const STATUS_WAIT = 2;
     const STATUS_DELETED = 3;
+
+    private static $identity;
+    private static $identityByAccessToken;
 
     /**
      * {@inheritdoc}
@@ -42,26 +45,31 @@ class BaseUser extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string|int $id
-     * @return yii\db\ActiveRecord
+     * @param int|string $id
+     * @return $this|null
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        if (self::$identity === null) {
+            self::$identity = static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        }
+        return self::$identity;
     }
 
     /**
      * @param mixed $token
      * @param mixed $type
-     * @return yii\db\ActiveRecord
+     * @return $this|null
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['auth_key' => $token, 'status' => self::STATUS_ACTIVE]);
+        if (self::$identityByAccessToken === null) {
+            self::$identityByAccessToken = static::findOne(['auth_key' => $token, 'status' => self::STATUS_ACTIVE]);
+        }
+        return self::$identityByAccessToken;
     }
 
     /**
-     * {@inheritdoc}
      * @return int|string
      */
     public function getId()
@@ -70,7 +78,6 @@ class BaseUser extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
      * @return string
      */
     public function getAuthKey()
@@ -79,7 +86,6 @@ class BaseUser extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
      * @param string $authKey
      * @return bool
      */
@@ -94,9 +100,7 @@ class BaseUser extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        /** @var yii\base\Security $security */
-        $security = Yii::$app->security;
-        $this->auth_key = $security->generateRandomString();
+        $this->auth_key = $this->generateUniqueRandomString('auth_key');
     }
 
     /**
@@ -105,9 +109,31 @@ class BaseUser extends ActiveRecord implements IdentityInterface
      */
     public function generateEmailConfirmToken()
     {
-        /** @var yii\base\Security $security */
+        $this->email_confirm_token = $this->generateUniqueRandomString('email_confirm_token');
+    }
+
+    /**
+     * Generate Unique Random String
+     * @param string $attribute
+     * @param int $maxIteration
+     * @return string
+     * @throws Exception
+     */
+    public function generateUniqueRandomString($attribute, $maxIteration = 10)
+    {
         $security = Yii::$app->security;
-        $this->email_confirm_token = $security->generateRandomString();
+        if ($attribute && $maxIteration > 0) {
+            $i = 0;
+            while ($i <= $maxIteration) {
+                $string = $security->generateRandomString();
+                if ((static::findOne([$attribute => $string])) === null) {
+                    return $string;
+                }
+                $i++;
+            }
+            throw new Exception('Failed to generate unique value, try increasing the number of iterations.');
+        }
+        return $security->generateRandomString();
     }
 
     /**
@@ -171,7 +197,8 @@ class BaseUser extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return mixed
+     * @return mixed|null
+     * @throws \Exception
      */
     public function getStatusName()
     {
@@ -180,7 +207,9 @@ class BaseUser extends ActiveRecord implements IdentityInterface
 
     /**
      * Return <span class="label label-success">Active</span>
+     *
      * @return string
+     * @throws \Exception
      */
     public function getStatusLabelName()
     {

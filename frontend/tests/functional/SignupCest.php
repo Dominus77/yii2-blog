@@ -65,8 +65,6 @@ class SignupCest
             'SignupForm[email]' => 'testers@example.com',
             'SignupForm[password]' => '123456'
         ]);
-
-        $I->see('A letter with a link to activate, we sent you an indication of the registration e-mail address.
-Please check your mail.');
+        $I->seeEmailIsSent();
     }
 }

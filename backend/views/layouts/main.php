@@ -1,12 +1,11 @@
 <?php
 
-use modules\comment\models\Comment;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
+use dominus77\noty\NotyWidget;
 use backend\assets\AppAsset;
 use backend\assets\plugins\iCheckAsset;
 use backend\widgets\control\ControlSidebar;
@@ -23,12 +22,30 @@ use modules\rbac\Module as RbacModule;
 use modules\blog\Module as BlogModule;
 use modules\comment\Module as CommentModule;
 use modules\config\Module as ConfigModule;
+use modules\comment\models\Comment;
 
 /* @var $this View */
 /* @var $content string */
 
 iCheckAsset::register($this);
 AppAsset::register($this);
+
+NotyWidget::widget([
+    'typeOptions' => [
+        NotyWidget::TYPE_SUCCESS => ['timeout' => 3000],
+        NotyWidget::TYPE_INFO => ['timeout' => 3000],
+        NotyWidget::TYPE_ALERT => ['timeout' => 3000],
+        NotyWidget::TYPE_ERROR => ['timeout' => 5000],
+        NotyWidget::TYPE_WARNING => ['timeout' => 3000]
+    ],
+    'options' => [
+        'progressBar' => true,
+        'timeout' => false,
+        'layout' => NotyWidget::LAYOUT_TOP_CENTER,
+        'dismissQueue' => true,
+        'theme' => NotyWidget::THEME_SUNSET
+    ],
+]);
 
 /** @var yii\web\User $user */
 $user = Yii::$app->user;
@@ -88,6 +105,7 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <?= AvatarWidget::widget([
+                                'user_id' => $user->id,
                                 'imageOptions' => [
                                     'class' => 'user-image'
                                 ]
@@ -96,7 +114,9 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                         </a>
                         <ul class="dropdown-menu">
                             <li class="user-header">
-                                <?= AvatarWidget::widget() ?>
+                                <?= AvatarWidget::widget([
+                                    'user_id' => $user->id
+                                ]) ?>
                                 <p>
                                     <?= $fullUserName ?>
                                     <small>
@@ -145,7 +165,9 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
 
             <div class="user-panel">
                 <div class="pull-left image">
-                    <?= AvatarWidget::widget() ?>
+                    <?= AvatarWidget::widget([
+                        'user_id' => $user->id
+                    ]) ?>
                 </div>
                 <div class="pull-left info">
                     <p><?= $fullUserName ?></p>
@@ -249,7 +271,6 @@ $homeUrl = is_string(Yii::$app->homeUrl) ? Yii::$app->homeUrl : '/';
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 'encodeLabels' => false
             ]) ?>
-            <?= Alert::widget() ?>
         </section>
         <section class="content">
             <?= $content ?>

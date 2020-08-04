@@ -1,16 +1,17 @@
 <?php
 
-/**
- * @var $this yii\web\View
- * @var $form yii\bootstrap\ActiveForm
- * @var $model \modules\users\models\SignupForm
- */
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use modules\users\models\User;
 use modules\users\widgets\passfield\Passfield;
+use modules\users\models\SignupForm;
 use modules\users\Module;
+
+/**
+ * @var $this yii\web\View
+ * @var $form yii\bootstrap\ActiveForm
+ * @var $model SignupForm
+ */
 
 $this->title = Module::t('module', 'Sign Up');
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="users-frontend-default-signup">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= Module::t('module', 'Please fill in the following fields to sign up') ?>:</p>
+    <p><?= Module::t('module', 'Please fill in the following fields to sign up'); ?>:</p>
 
     <div class="row">
         <div class="col-md-5">
@@ -52,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'max' => User::LENGTH_STRING_PASSWORD_MAX,
                     ]
                 ],
-            ]) ?>
+            ]); ?>
 
             <div class="form-group">
                 <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Module::t('module', 'Send'), [

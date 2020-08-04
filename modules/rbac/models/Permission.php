@@ -10,6 +10,10 @@ use modules\rbac\Module;
 /**
  * Class Permission
  * @package modules\rbac\models
+ *
+ * @property-read array $itemsPermissions
+ * @property-read array $permissionChildren
+ * @property-read array|string[] $permissionsArray
  */
 class Permission extends Model
 {
@@ -166,7 +170,7 @@ class Permission extends Model
             ['name', 'validateUniqueName', 'skipOnEmpty' => false, 'skipOnError' => false, 'on' => [self::SCENARIO_CREATE]],
 
             [['description'], 'string'],
-            [['permissionItems', 'permissions'], 'required', 'message' => Module::t('module', 'You must select in the field «{attribute}».'), 'on' => self::SCENARIO_UPDATE]
+            [['permissionItems', 'permissions'], 'required', 'on' => self::SCENARIO_UPDATE]
         ];
     }
 
@@ -218,7 +222,7 @@ class Permission extends Model
         return [
             'name' => Module::t('module', 'Name'),
             'description' => Module::t('module', 'Description'),
-            'rolesByPermission' => Module::t('module', 'Roles by permission'),
+            'rolesByPermission' => Module::t('module', 'Roles with permissions'),
             'itemsRoles' => Module::t('module', 'Items roles'),
             'permissions' => Module::t('module', 'Permissions by role'),
             'permissionItems' => Module::t('module', 'Items permissions')

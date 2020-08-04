@@ -4,6 +4,9 @@ namespace modules\users\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
+use yii\db\QueryInterface;
+use modules\users\models\query\UserQuery;
 use modules\users\models\User;
 
 /**
@@ -13,6 +16,7 @@ use modules\users\models\User;
  * @property string $userRoleName User Role Name
  * @property string $date_from Date From
  * @property string $date_to Date To
+ * @property-read UserQuery $query
  * @property integer $pageSize Page Size
  */
 class UserSearch extends User
@@ -44,18 +48,18 @@ class UserSearch extends User
     }
 
     /**
-     * @return \modules\users\models\query\UserQuery
+     * @return UserQuery
      */
     protected function getQuery()
     {
         $query = User::find();
-        $query->innerJoinWith('profile', 'profile.user_id = id');
+        $query->innerJoinWith('profile', ['profile.user_id' => 'id']);
         $query->leftJoin('{{%auth_assignment}}', '{{%auth_assignment}}.user_id = {{%user}}.id');
         return $query;
     }
 
     /**
-     * @param \yii\db\ActiveQuery $query
+     * @param ActiveQuery $query
      * @return ActiveDataProvider
      */
     protected function getDataProvider($query)
@@ -92,7 +96,6 @@ class UserSearch extends User
     /**
      * @param array $params
      * @return mixed|ActiveDataProvider
-     * @throws \yii\base\InvalidConfigException
      */
     public function search($params)
     {
@@ -113,7 +116,7 @@ class UserSearch extends User
     }
 
     /**
-     * @param $query \yii\db\QueryInterface
+     * @param $query QueryInterface
      */
     protected function processFilter($query)
     {
@@ -131,7 +134,7 @@ class UserSearch extends User
     }
 
     /**
-     * @param \yii\db\ActiveQuery $query
+     * @param ActiveQuery $query
      * @param ActiveDataProvider $dataProvider
      * @return mixed
      */
