@@ -68,4 +68,6 @@ return [
     'Menu' => 'Menu',
     // Last Posts
     'Last Posts' => 'Last Posts',
+    // Search
+    'Search' => 'Search',
 ];
