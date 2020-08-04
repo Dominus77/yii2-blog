@@ -10,6 +10,8 @@ use yii\web\JqueryAsset;
 /**
  * Class CommentAsset
  * @package modules\comment\assets
+ *
+ * @property-read string $jsParams
  */
 class CommentAsset extends AssetBundle
 {
