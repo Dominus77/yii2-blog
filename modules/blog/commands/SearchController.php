@@ -2,9 +2,8 @@
 
 namespace modules\blog\commands;
 
-use Yii;
 use yii\console\Controller;
-use himiklab\yii2\search\Search;
+use modules\search\traits\SearchTrait;
 
 /**
  * Class SearchController
@@ -12,6 +11,8 @@ use himiklab\yii2\search\Search;
  */
 class SearchController extends Controller
 {
+    use SearchTrait;
+
     /**
      * Color
      * @var bool
@@ -28,8 +29,6 @@ class SearchController extends Controller
 
     public function actionIndexing()
     {
-        /** @var Search $search */
-        $search = Yii::$app->search;
-        $search->index();
+        $this->searchIndexing();
     }
 }

@@ -24,6 +24,7 @@ use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
 use modules\comment\traits\CommentTrait;
 use modules\search\behaviors\SearchBehavior;
+use modules\search\traits\SearchTrait;
 
 /**
  * Class Post
@@ -58,7 +59,7 @@ use modules\search\behaviors\SearchBehavior;
  */
 class Post extends BaseModel
 {
-    use CommentTrait;
+    use CommentTrait, SearchTrait;
 
     const POSITION_DEFAULT = 0;
 
