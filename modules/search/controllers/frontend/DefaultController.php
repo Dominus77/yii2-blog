@@ -3,9 +3,9 @@
 namespace modules\search\controllers\frontend;
 
 use Yii;
-use yii\data\ArrayDataProvider;
 use yii\web\Controller;
-use modules\search\components\Search;
+use modules\search\models\SearchForm;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class DefaultController
@@ -16,28 +16,26 @@ class DefaultController extends Controller
     const PAGE_SIZE = 10;
 
     /**
-     * @param string $q
      * @return string
+     * @throws NotFoundHttpException
      */
-    public function actionIndex($q = '')
+    public function actionIndex()
     {
-        /** @var Search $search */
-        $search = Yii::$app->search;
-        $searchData = $search->find($q); // Search by full index.
-        //$searchData = $search->find($q, ['model' => 'page']); // Search by index provided only by model `page`.
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $searchData['results'],
-            'pagination' => [
-                'pageSize' => self::PAGE_SIZE
-            ],
-        ]);
-
-        return $this->render('index', [
-                'hits' => $dataProvider->getModels(),
-                'pagination' => $dataProvider->getPagination(),
-                'query' => $searchData['query']
-            ]
-        );
+        $model = new SearchForm();
+        if ($model->load(Yii::$app->request->get()) && $model->validate()) {
+            $search = $model->search();
+            $dataProvider = $search['dataProvider'];
+            $searchData = $search['searchData'];
+            $hits = $dataProvider->getModels();
+            return $this->render('index', [
+                    'hits' => $hits,
+                    'pagination' => $dataProvider->getPagination(),
+                    'query' => $searchData['query'],
+                    'score' => Yii::$app->formatter->asDecimal($hits[0]->score, 2),
+                    'model' => $model
+                ]
+            );
+        }
+        throw new NotFoundHttpException('404');
     }
 }

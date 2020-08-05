@@ -1,28 +1,35 @@
 <?php
 
 use yii\web\View;
-use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
+use modules\search\models\SearchForm;
 use modules\search\Module;
 
 /** @var $this View */
+/** @var $model SearchForm */
+/** @var $form ActiveForm */
 ?>
 <div class="search-sidebar panel panel-default">
     <div class="panel-heading">
         <span class="glyphicon glyphicon-search"></span> <?= Module::t('module', 'Search') ?>
     </div>
     <div class="panel-body">
-        <form action="<?= Url::to(['/search/default/index']) ?>" method="get" class="sidebar-form">
-            <div class="input-group">
-                <label for="q-input"></label>
-                <input id="q-input" type="text" name="q" class="form-control"
-                       placeholder="<?= Module::t('module', 'Search') . '...' ?>">
+        <?php $form = ActiveForm::begin([
+            'method' => 'get',
+            'action' => ['/search/default/index'],
+            'options' => [
+                'class' => 'sidebar-form',
+            ]
+        ]); ?>
 
-                <span class="input-group-btn">
-            <button type="submit" id="search-btn" class="btn btn-flat">
-                <i class="fa fa-search"></i>
-            </button>
-        </span>
-            </div>
-        </form>
+        <?= $form->field($model, 'q', [
+            'template' => "{label}\n<div class=\"input-group\">{input}\n<span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"submit\" id=\"search-btn\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span></button></span></div>\n{hint}"
+        ])->textInput([
+            'maxlength' => true,
+            'placeholder' => Module::t('module', 'Search') . '...',
+        ])->hint(Module::t('module', 'Enter your request'))
+            ->label(false) ?>
+
+        <?php ActiveForm::end(); ?>
     </div>
 </div>

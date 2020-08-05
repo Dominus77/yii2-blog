@@ -2,6 +2,7 @@
 
 namespace modules\search\widgets;
 
+use modules\search\models\SearchForm;
 use yii\base\Widget;
 
 /**
@@ -19,7 +20,10 @@ class SearchSidebar extends Widget
     public function run()
     {
         if ($this->status === true) {
-            return $this->render('searchSidebar');
+            $model = new SearchForm();
+            return $this->render('searchSidebar', [
+                'model' => $model
+            ]);
         }
         return '';
     }
