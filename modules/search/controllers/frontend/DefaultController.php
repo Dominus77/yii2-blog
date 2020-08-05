@@ -31,11 +31,11 @@ class DefaultController extends Controller
                     'hits' => $hits,
                     'pagination' => $dataProvider->getPagination(),
                     'query' => $searchData['query'],
-                    'score' => Yii::$app->formatter->asDecimal($hits[0]->score, 2),
+                    'score' => isset($hits[0]->score) ? Yii::$app->formatter->asDecimal($hits[0]->score, 2) : 0,
                     'model' => $model
                 ]
             );
         }
-        throw new NotFoundHttpException('404');
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
