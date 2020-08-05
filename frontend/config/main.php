@@ -1,6 +1,5 @@
 <?php
 
-use yii\web\UrlManager;
 use yii\log\FileTarget;
 use yii\bootstrap\BootstrapAsset;
 use yii\helpers\ArrayHelper;
@@ -17,8 +16,8 @@ use dominus77\maintenance\filters\RoleFilter;
 use dominus77\maintenance\states\FileState;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\controllers\frontend\MaintenanceController;
+use common\url\AppUrlManager;
 use modules\rbac\models\Permission;
-use modules\blog\url\BlogUrlManager;
 use modules\config\components\behaviors\ConfigBehavior;
 
 $params = ArrayHelper::merge(
@@ -144,14 +143,14 @@ return [
             'errorAction' => 'frontend/error'
         ],
         'urlManager' => [
-            'class' => BlogUrlManager::class,
+            'class' => AppUrlManager::class,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => []
         ],
         'urlManagerBackend' => [
-            'class' => UrlManager::class,
+            'class' => AppUrlManager::class,
             'baseUrl' => '/admin',
             'enablePrettyUrl' => true,
             'showScriptName' => false,

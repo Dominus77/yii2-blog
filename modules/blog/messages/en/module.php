@@ -54,6 +54,12 @@ return [
     'Off' => 'Off',
     'Click to disable commenting' => 'Click to disable commenting',
     'Click to enable commenting' => 'Click to enable commenting',
+    'Post successfully created.' => 'Post successfully created.',
+    'Post successfully updated.' => 'Post successfully updated.',
+    'Post successfully saved.' => 'Post successfully saved.',
+    'Post indexed successfully.' => 'Post indexed successfully.',
+    'Post is not indexed!' => 'Post is not indexed!',
+    'Post successfully delete.' => 'Post successfully delete.',
     // Tag
     'Tags' => 'Tags',
     'Tag' => 'Tag',

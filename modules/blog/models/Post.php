@@ -134,6 +134,7 @@ class Post extends BaseModel
                 'searchFields' => function ($model) {
                     /** @var self $model */
                     $url = Url::to(['/blog/default/post', 'category' => $model->category->path, 'post' => $model->slug, 'prefix' => '.html']);
+                    $url = str_replace('/admin/', '/', $url);
                     return [
                         ['name' => 'title', 'value' => $model->title],
                         ['name' => 'anons', 'value' => strip_tags($model->anons)],

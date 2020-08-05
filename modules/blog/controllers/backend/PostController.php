@@ -2,7 +2,6 @@
 
 namespace modules\blog\controllers\backend;
 
-
 use Yii;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -15,6 +14,7 @@ use modules\blog\models\Post;
 use modules\blog\models\search\PostSearch;
 use modules\comment\models\Comment;
 use modules\users\models\User;
+use modules\blog\Module;
 use Throwable;
 
 /**
@@ -24,7 +24,7 @@ use Throwable;
 class PostController extends Controller
 {
     /**
-     * {@inheritdoc}
+     * @return array|array[]
      */
     public function behaviors()
     {
@@ -49,6 +49,7 @@ class PostController extends Controller
 
     /**
      * Lists all Post models.
+     *
      * @return mixed
      */
     public function actionIndex()
@@ -74,7 +75,8 @@ class PostController extends Controller
 
     /**
      * Displays a single Post model.
-     * @param integer $id
+     *
+     * @param int|string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -88,13 +90,16 @@ class PostController extends Controller
     /**
      * Creates a new Post model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     *
+     * @return string|Response
      */
     public function actionCreate()
     {
         $model = new Post();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $session = Yii::$app->session;
+            $session->setFlash('create', ['success', Module::t('module', 'Post successfully created.'), ['timeout' => 3000]]);
+            $model->indexing();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -106,15 +111,19 @@ class PostController extends Controller
     /**
      * Updates an existing Post model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     *
+     * @param int|string $id
+     * @return string|Response
+     * @throws NotFoundHttpException
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $session = Yii::$app->session;
+            $session->setFlash('update', ['success', Module::t('module', 'Post successfully updated.'), ['timeout' => 3000]]);
+            $model->indexing();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -125,7 +134,8 @@ class PostController extends Controller
 
     /**
      * Change status
-     * @param int $id
+     *
+     * @param int|string $id
      * @return Response
      * @throws NotFoundHttpException
      */
@@ -135,12 +145,14 @@ class PostController extends Controller
         $model->scenario = Post::SCENARIO_SET_STATUS;
         $model->setStatus();
         $model->save(false);
+        $model->indexing();
         return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**
      * On/Off Commenting
-     * @param int $id
+     *
+     * @param int|string $id
      * @return Response
      * @throws NotFoundHttpException
      */
@@ -156,7 +168,8 @@ class PostController extends Controller
     /**
      * Deletes an existing Post model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     *
+     * @param int|string $id
      * @return Response
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -165,14 +178,18 @@ class PostController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        $session = Yii::$app->session;
+        $session->setFlash('delete', ['success', Module::t('module', 'Post successfully delete.'), ['timeout' => 3000]]);
+        $model = new Post();
+        $model->indexing();
         return $this->redirect(['index']);
     }
 
     /**
      * Finds the Post model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     *
+     * @param int|string $id
      * @return Post the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -181,7 +198,6 @@ class PostController extends Controller
         if (($model = Post::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

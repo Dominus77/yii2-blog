@@ -1,14 +1,14 @@
 <?php
 
-namespace modules\blog\url;
+namespace common\url;
 
 use yii\web\UrlManager;
 
 /**
- * Class BlogUrlManager
- * @package modules\blog\url
+ * Class AppUrlManager
+ * @package common\url
  */
-class BlogUrlManager extends UrlManager
+class AppUrlManager extends UrlManager
 {
     /**
      * @param array|string $params

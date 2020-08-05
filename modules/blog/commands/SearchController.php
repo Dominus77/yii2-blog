@@ -29,6 +29,6 @@ class SearchController extends Controller
 
     public function actionIndexing()
     {
-        $this->searchIndexing();
+        $this->indexing();
     }
 }

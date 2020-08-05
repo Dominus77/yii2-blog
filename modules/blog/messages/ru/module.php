@@ -54,6 +54,12 @@ return [
     'Off' => 'Отключено',
     'Click to disable commenting' => 'Клик что бы отключить комментирование',
     'Click to enable commenting' => 'Клик что бы включить комментирование',
+    'Post successfully created.' => 'Пост успешно создан.',
+    'Post successfully updated.' => 'Пост успешно обновлен.',
+    'Post successfully saved.' => 'Пост успешно сохранен.',
+    'Post indexed successfully.' => 'Пост успешно проиндексирован.',
+    'Post is not indexed!' => 'Пост не проиндексирован!',
+    'Post successfully delete.' => 'Пост успешно удален.',
     // Tag
     'Tags' => 'Метки',
     'Tag' => 'Метка',

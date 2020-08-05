@@ -3,8 +3,8 @@
 namespace modules\search\traits;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use modules\search\components\Search;
+use Exception;
 
 /**
  * Trait SearchTrait
@@ -14,12 +14,17 @@ use modules\search\components\Search;
 trait SearchTrait
 {
     /**
-     * @throws InvalidConfigException
+     * @return bool
      */
-    public function searchIndexing()
+    public function indexing()
     {
         /** @var Search $search */
         $search = Yii::$app->search;
-        $search->index();
+        try {
+            $search->index();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }
