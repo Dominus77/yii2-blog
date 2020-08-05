@@ -15,6 +15,7 @@ use dominus77\maintenance\BackendMaintenance;
 use dominus77\maintenance\commands\MaintenanceController;
 use modules\config\Bootstrap as ConfigBootstrap;
 use modules\config\Module as ConfigModule;
+use modules\blog\url\BlogUrlManager;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -78,6 +79,7 @@ return [
             ]
         ],
         'urlManager' => [
+            'class' => BlogUrlManager::class,
             'baseUrl' => '/',
             'hostInfo' => $params['frontendUrl'], // set in common/config/params.php
             'enablePrettyUrl' => true,

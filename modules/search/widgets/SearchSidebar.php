@@ -1,12 +1,12 @@
 <?php
 
-namespace modules\blog\widgets\search;
+namespace modules\search\widgets;
 
 use yii\base\Widget;
 
 /**
  * Class SearchSidebar
- * @package modules\blog\widgets\search
+ * @package modules\search\widgets
  */
 class SearchSidebar extends Widget
 {

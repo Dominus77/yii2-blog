@@ -9,7 +9,7 @@ use modules\comment\widgets\other\LastComment;
 use modules\blog\widgets\other\LastPost;
 use modules\blog\Module;
 use modules\blog\assets\BlogAsset;
-use modules\blog\widgets\search\SearchSidebar;
+use modules\search\widgets\SearchSidebar;
 
 /** @var $this View */
 /** @var $dataProvider Post */

@@ -157,7 +157,7 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => []
-        ]
+        ],
     ],
     'as afterAction' => [
         'class' => LastVisitBehavior::class

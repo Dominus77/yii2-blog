@@ -2,6 +2,7 @@
 
 namespace modules\blog\models;
 
+use Exception;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -22,6 +23,7 @@ use modules\blog\models\query\PostQuery;
 use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
 use modules\comment\traits\CommentTrait;
+use himiklab\yii2\search\behaviors\SearchBehavior;
 
 /**
  * Class Post
@@ -47,6 +49,11 @@ use modules\comment\traits\CommentTrait;
  * @property Category $postCategory
  * @property TagPost[] $tagPost
  * @property Tag[] $tags
+ * @property-read mixed $tagsPublished
+ * @property-read string $commentLabelName
+ * @property-read mixed $authorProfile
+ * @property-read null|mixed $commentName
+ * @property-read mixed $commentsData
  * @property ActiveDataProvider $posts
  */
 class Post extends BaseModel
@@ -115,6 +122,25 @@ class Post extends BaseModel
                     Category::CACHE_TAG_CATEGORY,
                     self::CACHE_TAG_POST,
                 ]
+            ],
+            'search' => [
+                'class' => SearchBehavior::class,
+                'searchScope' => function ($model) {
+                    /** @var ActiveQuery $model */
+                    $model->select(['title', 'anons', 'content', 'slug', 'category_id']);
+                    $model->andWhere(['status' => self::STATUS_PUBLISH]);
+                },
+                'searchFields' => function ($model) {
+                    /** @var self $model */
+                    $url = Url::to(['/blog/default/post', 'category' => $model->category->path, 'post' => $model->slug, 'prefix' => '.html']);
+                    return [
+                        ['name' => 'title', 'value' => $model->title],
+                        ['name' => 'anons', 'value' => strip_tags($model->anons)],
+                        ['name' => 'content', 'value' => strip_tags($model->content)],
+                        ['name' => 'url', 'value' => $url, 'type' => SearchBehavior::FIELD_KEYWORD],
+                        ['name' => 'model', 'value' => 'page', 'type' => SearchBehavior::FIELD_UNSTORED],
+                    ];
+                }
             ]
         ];
     }
@@ -186,7 +212,8 @@ class Post extends BaseModel
     }
 
     /**
-     * @return mixed
+     * @return mixed|null
+     * @throws Exception
      */
     public function getCommentName()
     {
@@ -195,7 +222,9 @@ class Post extends BaseModel
 
     /**
      * Return <span class="label label-success">Active</span>
+     *
      * @return string
+     * @throws Exception
      */
     public function getCommentLabelName()
     {

@@ -12,7 +12,10 @@ use modules\blog\Module as BlogModule;
 use modules\comment\Module as CommentModule;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\states\FileState;
-use yii\elasticsearch\Connection as ElasticsearchConnection;
+use himiklab\yii2\search\Search;
+use modules\blog\models\Post;
+use modules\search\Bootstrap as SearchBootstrap;
+use modules\search\Module as SearchModule;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/params.php',
@@ -26,6 +29,9 @@ return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset'
+    ],
+    'bootstrap' => [
+        SearchBootstrap::class
     ],
     'container' => [
         'singletons' => [
@@ -51,6 +57,9 @@ return [
         ],
         'comment' => [
             'class' => CommentModule::class
+        ],
+        'search' => [
+            'class' => SearchModule::class
         ]
     ],
     'components' => [
@@ -67,15 +76,6 @@ return [
             'tablePrefix' => 'tbl_',
             'enableSchemaCache' => true
         ],
-        'elasticsearch' => [
-            'class' => ElasticsearchConnection::class,
-            'autodetectCluster' => false,
-            'nodes' => [
-                ['http_address' => '127.0.0.1:9200'],
-                //настройте несколько хостов, если у вас есть кластер
-            ],
-            //'dslVersion' => 7
-        ],
         'authManager' => [
             'class' => DbManager::class
         ],
@@ -89,6 +89,13 @@ return [
         'assetManager' => [
             'appendTimestamp' => true,
             'basePath' => '@app/web/assets'
-        ]
+        ],
+        'search' => [
+            'class' => Search::class,
+            'indexDirectory' => '@frontend/runtime/search',
+            'models' => [
+                Post::class,
+            ],
+        ],
     ]
 ];
