@@ -23,7 +23,7 @@ use modules\blog\models\query\PostQuery;
 use common\components\behaviors\DelCacheModelBehavior;
 use modules\blog\Module;
 use modules\comment\traits\CommentTrait;
-use himiklab\yii2\search\behaviors\SearchBehavior;
+use modules\search\behaviors\SearchBehavior;
 
 /**
  * Class Post

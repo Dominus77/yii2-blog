@@ -5,7 +5,7 @@ namespace modules\search\controllers\frontend;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
-use himiklab\yii2\search\Search;
+use modules\search\components\Search;
 
 /**
  * Class DefaultController

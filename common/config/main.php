@@ -12,10 +12,10 @@ use modules\blog\Module as BlogModule;
 use modules\comment\Module as CommentModule;
 use dominus77\maintenance\interfaces\StateInterface;
 use dominus77\maintenance\states\FileState;
-use himiklab\yii2\search\Search;
-use modules\blog\models\Post;
+use modules\search\components\Search;
 use modules\search\Bootstrap as SearchBootstrap;
 use modules\search\Module as SearchModule;
+use modules\blog\models\Post;
 
 $params = ArrayHelper::merge(
     require __DIR__ . '/params.php',
