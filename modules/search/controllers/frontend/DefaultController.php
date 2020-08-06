@@ -4,8 +4,8 @@ namespace modules\search\controllers\frontend;
 
 use Yii;
 use yii\web\Controller;
-use modules\search\models\SearchForm;
 use yii\web\NotFoundHttpException;
+use modules\search\models\SearchForm;
 
 /**
  * Class DefaultController
@@ -23,14 +23,11 @@ class DefaultController extends Controller
     {
         $model = new SearchForm();
         if ($model->load(Yii::$app->request->get()) && $model->validate()) {
-            $search = $model->search();
-            $dataProvider = $search['dataProvider'];
-            $searchData = $search['searchData'];
+            $dataProvider = $model->search();
             $hits = $dataProvider->getModels();
             return $this->render('index', [
                     'hits' => $hits,
                     'pagination' => $dataProvider->getPagination(),
-                    'query' => $searchData['query'],
                     'score' => isset($hits[0]->score) ? Yii::$app->formatter->asDecimal($hits[0]->score, 2) : 0,
                     'model' => $model
                 ]

@@ -22,13 +22,12 @@ use modules\search\Module;
             ]
         ]); ?>
 
-        <?= $form->field($model, 'q', [
-            'template' => "{label}\n<div class=\"input-group\">{input}\n<span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"submit\" id=\"search-btn\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span></button></span></div>\n{hint}"
+        <?= $form->field($model, 'query', [
+            'template' => "{label}\n<div class=\"input-group\">{input}\n<span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"submit\" id=\"search-btn\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span></button></span></div>\n{hint}\n{error}"
         ])->textInput([
             'maxlength' => true,
             'placeholder' => Module::t('module', 'Search') . '...',
-        ])->hint(Module::t('module', 'Enter your request'))
-            ->label(false) ?>
+        ])->label(false) ?>
 
         <?php ActiveForm::end(); ?>
     </div>

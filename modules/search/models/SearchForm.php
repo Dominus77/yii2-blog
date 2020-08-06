@@ -5,6 +5,7 @@ namespace modules\search\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
+use yii\helpers\Html;
 use modules\search\components\Search;
 use modules\search\Module;
 
@@ -17,16 +18,21 @@ class SearchForm extends Model
     const PAGE_SIZE = 10;
 
     /** @var string */
-    public $q;
+    public $query;
 
     /**
      * @return array|array[]
      */
     public function rules()
     {
+        $min = 3;
+        $max = 255;
+        $tooShort = Module::t('module', 'Request must contain at least {:num} characters', [':num' => $min]);
+        $tooLong = Module::t('module', 'The request must contain a maximum of {:num} characters', [':num' => $max]);
         return [
-            [['q'], 'required'],
-            [['q'], 'string', 'max' => 255],
+            ['query', 'required', 'message' => Module::t('module', 'Enter your request')],
+            ['query', 'filter', 'filter' => 'trim'],
+            ['query', 'string', 'length' => [$min, $max], 'tooShort' => $tooShort, 'tooLong' => $tooLong,]
         ];
     }
 
@@ -36,29 +42,24 @@ class SearchForm extends Model
     public function attributeLabels()
     {
         return [
-            'q' => Module::t('module', 'Search')
+            'query' => Module::t('module', 'Search')
         ];
     }
 
     /**
-     * @return array
+     * @return ArrayDataProvider
      */
     public function search()
     {
         /** @var Search $search */
         $search = Yii::$app->search;
-        $searchData = $search->find($this->q);
+        $searchData = $search->find(Html::encode($this->query));
 
-        $dataProvider = new ArrayDataProvider([
+        return new ArrayDataProvider([
             'allModels' => $searchData['results'],
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE
             ],
         ]);
-
-        return [
-            'dataProvider' => $dataProvider,
-            'searchData' => $searchData
-        ];
     }
 }

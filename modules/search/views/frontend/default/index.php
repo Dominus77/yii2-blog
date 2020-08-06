@@ -18,7 +18,7 @@ use modules\search\Module;
 /** @var SearchForm $model */
 /** @var string $score Search score */
 
-$query = Html::encode($model->q);
+$query = Html::encode($model->query);
 
 $this->title = Module::t('module', 'Results for "{:query}"', [':query' => $query]);
 $this->params['breadcrumbs'] = [Module::t('module', 'Search'), $this->title];
