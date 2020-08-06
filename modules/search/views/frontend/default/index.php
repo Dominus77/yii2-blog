@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use yii\data\Pagination;
 use ZendSearch\Lucene\Search\QueryHit;
+use modules\search\widgets\SearchSidebar;
 use modules\search\models\SearchForm;
 use modules\search\assets\SearchAssets;
 use modules\search\Module;
@@ -26,6 +27,7 @@ SearchAssets::register($this);
 $this->registerJs("jQuery('.search').highlight('{$query}');");
 ?>
 <div class="search-frontend-default-index">
+    <?= SearchSidebar::widget(['status' => true]) ?>
     <?php
     if (!empty($hits)):
         echo Module::t('module', 'The search took about {:score} seconds.', [':score' => $score]);
