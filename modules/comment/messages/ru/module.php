@@ -75,7 +75,7 @@ return [
     'Please fill in the following fields to sign up' => 'Пожалуйста, заполните следующие поля, чтобы зарегистрироваться',
     'Send' => 'Отправить',
     'A letter was sent to you to verify your mail address. Please check your inbox.' =>
-        'Вам было отправленно письмо для подтверждения указанного email адреса адреса. Пожалуйста, проверьте ваш почтовый ящик.',
+        'Вам было отправленно письмо для подтверждения указанного email адреса. Пожалуйста, проверьте ваш почтовый ящик.',
     'Thank! Your comment has been posted successfully.' => 'Спасибо! Ваш комментарий успешно опубликован.',
     'Your comment will be published after successful moderation.' => 'Ваш комментарий будет опубликован после успешной модерации.',
     'An error has occurred! Failed to add comment.' => 'Произошла ошибка! Не удалось добавить комментарий.',

@@ -131,6 +131,14 @@ return [
             'enableStrictParsing' => true,
             'rules' => []
         ],
+        'urlManagerBackend' => [
+            'class' => AppUrlManager::class,
+            'baseUrl' => '/admin',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => true,
+            'rules' => []
+        ],
         'urlManagerFrontend' => [
             'class' => AppUrlManager::class,
             'baseUrl' => '',
