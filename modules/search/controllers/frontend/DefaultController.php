@@ -13,8 +13,6 @@ use modules\search\models\SearchForm;
  */
 class DefaultController extends Controller
 {
-    const PAGE_SIZE = 10;
-
     /**
      * @return string
      * @throws NotFoundHttpException
