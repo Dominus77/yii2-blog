@@ -34,13 +34,15 @@ YiiAsset::register($this);
                     ],
                     'title',
                     'slug',
+                    'content',
+                    'description',
+                    'keywords',
                     [
                         'attribute' => 'position',
                         'value' => static function (Category $model) {
                             return $model->isRoot() ? $model->position : '-';
                         }
                     ],
-                    'description:ntext',
                     [
                         'attribute' => 'status',
                         'format' => 'raw',

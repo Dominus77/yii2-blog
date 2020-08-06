@@ -55,6 +55,11 @@ php yii migrate -p=@modules/comment/migrations
 php yii migrate -p=@modules/config/migrations
 ```
 
+Initialization config module:
+```
+php yii config/init/update
+```
+
 See all available commands:
 
 ```
@@ -86,7 +91,6 @@ php yii rbac/roles/assign
 
 - Username: set username (admin);
 - Role: set role (admin, editor, manager, super_admin, user, ? - Help); (This set configure rbac module models Role.php, Permission.php and in folder components to RbacInit.php)
-
 
 If you are installing the server into the public_html folder on the server with Apache, you must configure redirection.
 At the root folder, create a public_html .hitaccess with the following content:

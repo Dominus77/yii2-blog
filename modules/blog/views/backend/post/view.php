@@ -43,6 +43,8 @@ BlogAsset::register($this);
                             return $model->getStringTagsToPost(true, false, '-');
                         }
                     ],
+                    'description',
+                    'keywords',
                     [
                         'attribute' => 'category_id',
                         'format' => 'raw',

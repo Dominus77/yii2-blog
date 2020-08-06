@@ -32,6 +32,8 @@ return [
     'Updated' => 'Updated',
     'Status' => 'Status',
     'Parent' => 'Parent',
+    'Meta-tag description' => 'Meta-tag description',
+    'Meta-tag keywords' => 'Meta-tag keywords',
     'No Parent (saved as root)' => 'No Parent (saved as root)',
     'Children List' => 'Children List',
     'Insert Type' => 'Insert Type',

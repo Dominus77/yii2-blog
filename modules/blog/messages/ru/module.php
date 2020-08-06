@@ -32,6 +32,8 @@ return [
     'Updated' => 'Обновлено',
     'Status' => 'Статус',
     'Parent' => 'Родитель',
+    'Meta-tag description' => 'Мета-тег description',
+    'Meta-tag keywords' => 'Мета-тег keywords',
     'No Parent (saved as root)' => 'Нет родителя (будет сохранен как корень)',
     'Children List' => 'Лист категорий',
     'Insert Type' => 'Тип вставки',

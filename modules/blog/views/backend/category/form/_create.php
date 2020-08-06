@@ -54,8 +54,18 @@ $categoryAsset::register($this);
         'placeholder' => true
     ])->hint(Module::t('module', 'If left blank, filled automatically based on the title')) ?>
 
-    <?= $form->field($model, 'description')->textarea([
+    <?= $form->field($model, 'content')->textarea([
         'rows' => 6,
+        'placeholder' => true
+    ]) ?>
+
+    <?= $form->field($model, 'description')->textInput([
+        'maxlength' => true,
+        'placeholder' => true
+    ]) ?>
+
+    <?= $form->field($model, 'keywords')->textInput([
+        'maxlength' => true,
         'placeholder' => true
     ]) ?>
 

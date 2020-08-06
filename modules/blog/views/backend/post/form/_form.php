@@ -63,6 +63,16 @@ $tinyMceFileManager = require dirname(dirname(dirname(dirname(__DIR__)))) . '/co
         ],
     ])->hint(Module::t('module', 'Use commas to separate tags')) ?>
 
+    <?= $form->field($model, 'description')->textInput([
+        'maxlength' => true,
+        'placeholder' => true
+    ]) ?>
+
+    <?= $form->field($model, 'keywords')->textInput([
+        'maxlength' => true,
+        'placeholder' => true
+    ]) ?>
+
     <?= $form->field($model, 'category_id')->dropDownList(Post::getCategoriesTree(), [
         'id' => 'input-category-id',
         'prompt' => Module::t('module', '- No Category -'),

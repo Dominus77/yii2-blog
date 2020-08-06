@@ -94,9 +94,9 @@ class InitController extends Controller
     private function log($success = false)
     {
         if ($success === true || $success !== 0) {
-            $this->stdout(Console::convertEncoding(Module::t('module', 'Success!')), Console::FG_GREEN, Console::BOLD);
+            $this->stdout(Module::t('module', 'Success!'), Console::FG_GREEN, Console::BOLD);
         } else {
-            $this->stderr(Console::convertEncoding(Module::t('module', 'Error!')), Console::FG_RED, Console::BOLD);
+            $this->stderr(Module::t('module', 'Error!'), Console::FG_RED, Console::BOLD);
         }
         echo PHP_EOL;
     }

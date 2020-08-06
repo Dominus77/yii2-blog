@@ -128,7 +128,7 @@ class Post extends BaseModel
                 'class' => SearchBehavior::class,
                 'searchScope' => function ($model) {
                     /** @var ActiveQuery $model */
-                    $model->select(['title', 'anons', 'content', 'slug', 'category_id']);
+                    $model->select(['title', 'anons', 'content', 'keywords', 'slug', 'category_id']);
                     $model->andWhere(['status' => self::STATUS_PUBLISH]);
                 },
                 'searchFields' => function ($model) {
@@ -154,7 +154,7 @@ class Post extends BaseModel
     {
         return [
             [['title'], 'required'],
-            [['anons', 'content'], 'string'],
+            [['anons', 'content', 'description', 'keywords'], 'string'],
             [['category_id', 'author_id'], 'integer'],
             [['title', 'slug'], 'string', 'max' => 255],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
@@ -179,6 +179,8 @@ class Post extends BaseModel
             'slug' => Module::t('module', 'Alias'),
             'anons' => Module::t('module', 'Anons'),
             'content' => Module::t('module', 'Content'),
+            'description' => Module::t('module', 'Meta-tag description'),
+            'keywords' => Module::t('module', 'Meta-tag keywords'),
             'category_id' => Module::t('module', 'Category'),
             'author_id' => Module::t('module', 'Author'),
             'authorName' => Module::t('module', 'Author'),

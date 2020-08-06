@@ -34,6 +34,16 @@ use modules\blog\models\Category;
         'placeholder' => true
     ]) ?>
 
+    <?= $form->field($model, 'description')->textInput([
+        'maxlength' => true,
+        'placeholder' => true
+    ]) ?>
+
+    <?= $form->field($model, 'keywords')->textInput([
+        'maxlength' => true,
+        'placeholder' => true
+    ]) ?>
+
     <?= $form->field($model, 'status')->dropDownList(Category::getStatusesArray()) ?>
 
     <?php ActiveForm::end(); ?>

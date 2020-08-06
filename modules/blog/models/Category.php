@@ -144,7 +144,7 @@ class Category extends BaseModel
             ['position', 'integer'],
             ['position', 'default', 'value' => self::POSITION_DEFAULT],
 
-            [['description'], 'string'],
+            [['description', 'content', 'keywords'], 'string'],
             [['title', 'slug'], 'string', 'max' => 255],
 
             [['parentId', 'childrenList', 'typeMove'], 'safe']
@@ -165,7 +165,9 @@ class Category extends BaseModel
             'position' => Module::t('module', 'Position'),
             'title' => Module::t('module', 'Title'),
             'slug' => Module::t('module', 'Alias'),
-            'description' => Module::t('module', 'Description'),
+            'content' => Module::t('module', 'Content'),
+            'description' => Module::t('module', 'Meta-tag description'),
+            'keywords' => Module::t('module', 'Meta-tag keywords'),
             'created_at' => Module::t('module', 'Created'),
             'updated_at' => Module::t('module', 'Updated'),
             'status' => Module::t('module', 'Status'),
