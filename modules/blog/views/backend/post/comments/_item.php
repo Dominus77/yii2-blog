@@ -5,6 +5,7 @@ use yii\web\View;
 use modules\blog\models\Post;
 use modules\comment\models\Comment;
 use modules\comment\Module;
+use modules\users\widgets\AvatarWidget;
 
 /** @var $this View */
 /** @var $model Comment */
@@ -24,7 +25,12 @@ if ($model->isBlocked) {
         <?= $model->statusLabelName ?>
     </div>
     <div class="item-avatar pull-left">
-        <img class="img-rounded" src="<?= $model->getAvatar() ?>" alt="<?= $model->getAvatar() ?>">
+        <?= AvatarWidget::widget([
+            'user_id' => $model->getAuthorId(),
+            'imageOptions' => [
+                'class' => 'img-rounded'
+            ],
+        ]) ?>
     </div>
     <div class="item-author">
         <?= $model->author ?>

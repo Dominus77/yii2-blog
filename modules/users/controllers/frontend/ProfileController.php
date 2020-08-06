@@ -21,6 +21,11 @@ class ProfileController extends \modules\users\controllers\common\ProfileControl
                 'class' => AccessControl::class,
                 'rules' => [
                     [
+                        'actions' => ['avatar'],
+                        'allow' => true,
+                        'roles' => ['?']
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['@']
                     ],

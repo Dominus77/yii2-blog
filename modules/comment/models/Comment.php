@@ -20,6 +20,7 @@ use modules\comment\services\Sender;
 use modules\comment\traits\ModuleTrait;
 use modules\comment\models\query\CommentQuery;
 use modules\comment\Module;
+use modules\users\models\User;
 
 /**
  * This is the model class for table "{{%comment}}".
@@ -594,6 +595,17 @@ class Comment extends ActiveRecord
             $senderParams->subject,
             $senderParams->params
         );
+    }
+
+    /**
+     * @return int|string|null
+     */
+    public function getAuthorId()
+    {
+        if (($model = User::findOne(['email' => $this->email])) && $model !== null) {
+            return $model->id;
+        }
+        return null;
     }
 
     /**
