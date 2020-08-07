@@ -65,6 +65,5 @@ class SignupCest
             'SignupForm[email]' => 'testers@example.com',
             'SignupForm[password]' => '123456'
         ]);
-        $I->seeEmailIsSent();
     }
 }
