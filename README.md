@@ -181,6 +181,11 @@ php yii_test migrate -p=@modules/comment/migrations
 php yii_test migrate -p=@modules/config/migrations
 ```
 
+Initialization config module:
+```
+php yii_test config/init/update
+```
+
 #### Run in console
 Windows:
 ```
