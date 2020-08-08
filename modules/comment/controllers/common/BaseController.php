@@ -68,7 +68,9 @@ class BaseController extends Controller
         $result = false;
         if (($post = Yii::$app->request->post()) && $model->load($post) && $model->validate()) {
             if (empty($model->rootId)) {
-                $result = $this->processFirst($model, $post);
+                $arr = $this->processFirst($model, $post);
+                $result = $arr['result'];
+                $model = $arr['model'];
             } else if (empty($model->parentId)) {
                 $result = $this->processComment($model);
             } else {
@@ -133,7 +135,7 @@ class BaseController extends Controller
      * Comment to post is root
      * @param Comment $model
      * @param array $post
-     * @return bool
+     * @return array|false
      */
     protected function processFirst(Comment $model, array $post)
     {
@@ -143,7 +145,11 @@ class BaseController extends Controller
             $node = $model;
             $model = new Comment();
             if ($model->load($post) && $model->validate()) {
-                return $model->appendTo($node)->save();
+                $result = $model->appendTo($node)->save();
+                return [
+                    'model' => $model,
+                    'result' => $result
+                ];
             }
         }
         return false;
