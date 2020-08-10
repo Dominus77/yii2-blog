@@ -7,12 +7,12 @@ Example yii2-blog
 ## MODULES
 
 - [config](/modules/config) - Application settings in the database
-- main - Base application module
-- users - Users module
-- rbac - RBAC module
-- blog - Module Blog
-- comment - Module Comment
-- search - Site search module
+- [main](/modules/main) - Base application module
+- [users](/modules/users) - Users module
+- [rbac](/modules/rbac) - RBAC module
+- [blog](/modules/blog) - Module Blog
+- [comment](/modules/comment) - Module Comment
+- [search](/modules/search) - Site search module
 
 ## INSTALLATION
 
