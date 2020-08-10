@@ -1,6 +1,6 @@
-# Yii2 Blog
+# Yii2 Blog Application
 
-Example yii2-blog
+Example yii2 blog application
 
 > The project is under construction.
 
