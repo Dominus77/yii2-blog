@@ -20,6 +20,12 @@ class InitController extends Controller
 {
     use ModuleTrait;
 
+    /**
+     * Color
+     * @var bool
+     */
+    public $color = true;
+
     /** @var ConfigParams $params */
     protected $params;
 

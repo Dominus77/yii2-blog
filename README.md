@@ -4,6 +4,16 @@ Example yii2-blog
 
 > The project is under construction.
 
+## MODULES
+
+- config - Application settings in the database
+- main - Base application module
+- users - Users module
+- rbac - RBAC module
+- blog - Module Blog
+- comment - Module Comment
+- search - Site search module
+
 ## INSTALLATION
 
 clone the repository:
@@ -51,9 +61,6 @@ Apply migration:
 
 ```
 php yii migrate
-php yii migrate -p=@modules/blog/migrations
-php yii migrate -p=@modules/comment/migrations
-php yii migrate -p=@modules/config/migrations
 ```
 
 Initialization config module:
@@ -177,9 +184,6 @@ Apply migration:
 
 ```
 php yii_test migrate
-php yii_test migrate -p=@modules/blog/migrations
-php yii_test migrate -p=@modules/comment/migrations
-php yii_test migrate -p=@modules/config/migrations
 ```
 
 Initialization config module:

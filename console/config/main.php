@@ -50,8 +50,11 @@ return [
         'migrate' => [
             'class' => MigrateController::class,
             'migrationNamespaces' => [
+                'modules\users\migrations',
                 'modules\rbac\migrations',
-                'modules\users\migrations'
+                'modules\config\migrations',
+                'modules\blog\migrations',
+                'modules\comment\migrations',
             ]
         ],
         'maintenance' => [
