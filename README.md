@@ -6,7 +6,7 @@ Example yii2-blog
 
 ## MODULES
 
-- [config](https://github.com/Dominus77/yii2-blog/tree/master/modules/config) - Application settings in the database
+- [config](/modules/config) - Application settings in the database
 - main - Base application module
 - users - Users module
 - rbac - RBAC module
