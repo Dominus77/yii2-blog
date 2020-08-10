@@ -1,3 +1,3 @@
-Yii2-blog
-==========
-Blog for Yii2
+# Yii2-blog
+
+Blog module for Yii2

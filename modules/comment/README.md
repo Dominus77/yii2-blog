@@ -1,3 +1,3 @@
-Yii2-comment
-==========
-Comment for Yii2
+# Yii2-comment
+
+Comment module for Yii2
