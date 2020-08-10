@@ -12,7 +12,6 @@ class DefaultController extends Controller
 {
     /**
      * Console default actions
-     * @inheritdoc
      */
     public function actionIndex()
     {
