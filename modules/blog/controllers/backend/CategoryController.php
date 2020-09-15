@@ -2,7 +2,6 @@
 
 namespace modules\blog\controllers\backend;
 
-
 use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
@@ -160,12 +159,11 @@ class CategoryController extends Controller
     {
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post)) {
-
             if (empty($model->parentId)) { // Перемещаем как корень
                 if (!$model->isRoot()) {
                     $model->makeRoot()->save(false);
                 }
-            } else if ($model->id !== $model->parentId) { // Перемещаем в указанный узел
+            } elseif ($model->id !== $model->parentId) { // Перемещаем в указанный узел
                 $node = $this->findModel($model->parentId);
                 $model->appendTo($node)->save(false);
             }
@@ -177,7 +175,7 @@ class CategoryController extends Controller
         $model->parentId = $model->getParentId();
         if ($select = $model->getPrevNodeId()) {
             $typeMove = Category::TYPE_AFTER;
-        } else if ($select = $model->getNextNodeId()) {
+        } elseif ($select = $model->getNextNodeId()) {
             $typeMove = Category::TYPE_BEFORE;
         } else {
             $typeMove = null;

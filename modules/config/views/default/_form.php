@@ -15,18 +15,18 @@ use modules\config\Module;
         'id' => 'form-config'
     ]); ?>
 
-    <?php foreach ($model as $index => $value): ?>
+    <?php foreach ($model as $index => $value) : ?>
         <?php if ($value->type === ConfigParams::FIELD_TYPE_CHECKBOX) {
             echo $form->field($value, "[$index]value")
                 ->checkbox()
                 ->label(Module::t('module', $value->label));
-        } else if ($value->type === ConfigParams::FIELD_TYPE_TEXT) {
+        } elseif ($value->type === ConfigParams::FIELD_TYPE_TEXT) {
             echo $form->field($value, "[$index]value")->textarea([
                 'rows' => 6,
                 'placeholder' => Module::t('module', $value->default),
 
             ])->label(Module::t('module', $value->label));
-        } else if ($value->param === 'SITE_LANGUAGE') {
+        } elseif ($value->param === 'SITE_LANGUAGE') {
             echo $form->field($value, "[$index]value")->dropDownList([
                 'ru' => 'Русский',
                 'en' => 'English',

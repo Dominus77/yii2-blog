@@ -62,10 +62,11 @@ class RolesController extends Controller
         $username = $this->prompt(Module::t('module', 'Username:'), ['required' => true]);
         $user = $this->findModel($username);
         $roleName = $this->select(
-            Module::t('module', 'Role:'), ArrayHelper::merge(
-            ['all' => Module::t('module', 'All Roles')],
-            ArrayHelper::map($authManager->getRolesByUser($user->id), 'name', 'description')
-        )
+            Module::t('module', 'Role:'),
+            ArrayHelper::merge(
+                ['all' => Module::t('module', 'All Roles')],
+                ArrayHelper::map($authManager->getRolesByUser($user->id), 'name', 'description')
+            )
         );
         if ($roleName === 'all') {
             $authManager->revokeAll($user->id);

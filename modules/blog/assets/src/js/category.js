@@ -1,4 +1,5 @@
-function categoryInit(param) {
+function categoryInit(param)
+{
     $('#input-parent-id').on('change', function () {
         let parentId = $(this).val(),
             url = param.url,

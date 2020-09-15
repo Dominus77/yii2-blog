@@ -217,7 +217,7 @@ class UploadForm extends Model
                     FileHelper::unlink($item);
                 }
             }
-        } else if (file_exists($path)) {
+        } elseif (file_exists($path)) {
             FileHelper::unlink($path);
         }
         return true;

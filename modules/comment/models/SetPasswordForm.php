@@ -62,7 +62,6 @@ class SetPasswordForm extends Model
             $user->generateAuthKey();
             $user->generateEmailConfirmToken();
             if ($user->save()) {
-
                 if (($profile = UserProfile::findOne(['user_id' => $user->id])) && $profile !== null) {
                     $profile->first_name = $comment->author;
                     $profile->save();

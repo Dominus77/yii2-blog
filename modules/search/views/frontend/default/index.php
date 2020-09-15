@@ -29,9 +29,9 @@ $this->registerJs("jQuery('.search').highlight('{$query}');");
 <div class="search-frontend-default-index">
     <?= SearchSidebar::widget(['status' => true]) ?>
     <?php
-    if (!empty($hits)):
+    if (!empty($hits)) :
         echo Module::t('module', 'The search took about {:score} seconds.', [':score' => $score]);
-        foreach ($hits as $hit):
+        foreach ($hits as $hit) :
             ?>
             <h3><a href="<?= Url::to($hit->url, true) ?>"><?= $hit->title ?></a></h3>
             <p class="search">
@@ -41,12 +41,12 @@ $this->registerJs("jQuery('.search').highlight('{$query}');");
                 <?= $hit->content ?>
             </p>
             <hr/>
-        <?php
+            <?php
         endforeach;
-    else:
+    else :
         ?>
         <h3><?= Module::t('module', 'The "{:query}" isn\'t found!', [':query' => $query]) ?></h3>
-    <?php
+        <?php
     endif;
 
     echo LinkPager::widget([

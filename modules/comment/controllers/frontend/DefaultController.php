@@ -97,7 +97,6 @@ class DefaultController extends BaseController
             $model->redirect = null;
             $model->status = Comment::STATUS_APPROVED;
             if ($model->save()) {
-
                 $senderParams = new SenderParams();
                 $params = $senderParams->getParams($model);
                 $senderParams->setSenderCreate($params);
@@ -129,7 +128,6 @@ class DefaultController extends BaseController
                     $comment->confirm = null;
                     $comment->redirect = null;
                     if ($comment->save()) {
-
                         $senderParams = new SenderParams();
                         $params = $senderParams->getParams($comment);
                         $senderParams->setSenderCreate($params);

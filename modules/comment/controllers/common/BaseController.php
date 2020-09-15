@@ -71,7 +71,7 @@ class BaseController extends Controller
                 $arr = $this->processFirst($model, $post);
                 $result = $arr['result'];
                 $model = $arr['model'];
-            } else if (empty($model->parentId)) {
+            } elseif (empty($model->parentId)) {
                 $result = $this->processComment($model);
             } else {
                 $result = $this->processAnswer($model);

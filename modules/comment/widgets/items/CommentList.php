@@ -86,13 +86,12 @@ class CommentList extends Widget
     {
         $array = [];
         if ($query = $this->prepareModel()) {
-
             $depth = $this->depthStart;
             $i = 0;
             foreach ($query as $n => $items) {
                 if ($items->depth === $depth) {
                     $array[] = $i ? Html::endTag('li') . PHP_EOL : '';
-                } else if ($items->depth > $depth) {
+                } elseif ($items->depth > $depth) {
                     $options = $n === 0 ? ['class' => 'comment-list'] : [];
                     $array[] = Html::beginTag('ul', $options) . PHP_EOL;
                 } else {

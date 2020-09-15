@@ -106,8 +106,10 @@ class InitController extends Controller
     {
         foreach (Permission::getGroups() as $role => $group) {
             foreach ($group as $permission) {
-                $auth->addChild(ArrayHelper::getValue($roles, $role),
-                    ArrayHelper::getValue($permissions, $permission));
+                $auth->addChild(
+                    ArrayHelper::getValue($roles, $role),
+                    ArrayHelper::getValue($permissions, $permission)
+                );
             }
         }
     }
@@ -121,8 +123,10 @@ class InitController extends Controller
     protected function processAddChildRoles($auth, $roles = [])
     {
         foreach (Role::tree() as $role => $child) {
-            $auth->addChild(ArrayHelper::getValue($roles, $role),
-                ArrayHelper::getValue($roles, $child));
+            $auth->addChild(
+                ArrayHelper::getValue($roles, $role),
+                ArrayHelper::getValue($roles, $child)
+            );
         }
     }
 

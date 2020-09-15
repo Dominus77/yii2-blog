@@ -146,7 +146,6 @@ class DConfig extends Component
         } elseif ($key) {
             $this->removeParameter($key);
         }
-
     }
 
     /**

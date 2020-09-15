@@ -75,8 +75,9 @@ class UserDeleteForm extends Model
     protected function processValidatePassword($attribute)
     {
         if ($attribute) {
-            if (!$this->_user->validatePassword($this->$attribute))
+            if (!$this->_user->validatePassword($this->$attribute)) {
                 $this->addError($attribute, Module::t('module', 'Incorrect current password.'));
+            }
         } else {
             $this->addError($attribute, Module::t('module', 'Enter your current password.'));
         }

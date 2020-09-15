@@ -30,7 +30,8 @@ $(document).ready(function () {
         setExpand();
     });
 
-    function setLocation() {
+    function setLocation()
+    {
         let loc = window.location.hash.replace('#', ''),
             trRoot,
             tr;
@@ -43,7 +44,8 @@ $(document).ready(function () {
         }
     }
 
-    function setExpand() {
+    function setExpand()
+    {
         let dataDetail;
         rowDetail.each(function () {
             dataDetail = $(this).data('detail');

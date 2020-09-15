@@ -266,9 +266,9 @@ class Post extends BaseModel
         if ($this->_url === null || !empty($type)) {
             if (empty($type) && Yii::$app->id === 'app-backend') {
                 $this->_url = Url::to(['/blog/post/view', 'id' => $this->id]);
-            } else if ($type === 'index') {
+            } elseif ($type === 'index') {
                 $this->_url = Url::to(['/blog/post/index']);
-            } else if (($category = $this->postCategory) && $category !== null) {
+            } elseif (($category = $this->postCategory) && $category !== null) {
                 $this->_url = Url::to(['/blog/default/post', 'category' => $category->path, 'post' => $this->slug, 'prefix' => '.html']);
             } else {
                 $this->_url = Url::to(['/blog/default/post', 'post' => $this->slug, 'prefix' => '.html']);

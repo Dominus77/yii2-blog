@@ -16,6 +16,5 @@ class ExampleCest
      */
     public function checkTest(FunctionalTester $I)
     {
-
     }
 }

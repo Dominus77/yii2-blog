@@ -28,8 +28,7 @@ class DefaultController extends Controller
                     'pagination' => $dataProvider->getPagination(),
                     'score' => isset($hits[0]->score) ? Yii::$app->formatter->asDecimal($hits[0]->score, 2) : 0,
                     'model' => $model
-                ]
-            );
+                ]);
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }

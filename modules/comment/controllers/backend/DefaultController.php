@@ -147,12 +147,11 @@ class DefaultController extends BaseController
     {
         $model = $this->findModel($id);
         if (($post = Yii::$app->request->post()) && $model->load($post)) {
-
             if (empty($model->parentId)) { // Перемещаем как корень
                 if (!$model->isRoot()) {
                     $model->makeRoot()->save(false);
                 }
-            } else if ($model->id !== $model->parentId) { // Перемещаем в указанный узел
+            } elseif ($model->id !== $model->parentId) { // Перемещаем в указанный узел
                 $node = $this->findModel($model->parentId);
                 $model->appendTo($node)->save(false);
             }
@@ -164,7 +163,7 @@ class DefaultController extends BaseController
         $model->parentId = $model->getParentId();
         if ($select = $model->getPrevNodeId()) {
             $typeMove = Comment::TYPE_AFTER;
-        } else if ($select = $model->getNextNodeId()) {
+        } elseif ($select = $model->getNextNodeId()) {
             $typeMove = Comment::TYPE_BEFORE;
         } else {
             $typeMove = null;
@@ -205,7 +204,7 @@ class DefaultController extends BaseController
     {
         $model = $this->findModel($id);
         $post = Yii::$app->request->post();
-        if(isset($post['scenario']) && !empty($post['scenario'])) {
+        if (isset($post['scenario']) && !empty($post['scenario'])) {
             $model->scenario = $post['scenario'];
         }
         $model->isRoot() ? $model->deleteWithChildren() : $model->delete();
