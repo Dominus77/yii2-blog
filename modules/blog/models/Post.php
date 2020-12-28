@@ -2,8 +2,6 @@
 
 namespace modules\blog\models;
 
-use Exception;
-use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\TagDependency;
@@ -25,6 +23,8 @@ use modules\blog\Module;
 use modules\comment\traits\CommentTrait;
 use modules\search\behaviors\SearchBehavior;
 use modules\search\traits\SearchTrait;
+use Exception;
+use Throwable;
 
 /**
  * Class Post
@@ -460,7 +460,7 @@ class Post extends BaseModel
                 $firstName = $profile->first_name ?: '';
                 $lastName = $profile->last_name ?: '';
                 $name = trim($firstName) . ' ' . trim($lastName);
-                $authorName = !empty($name) ? $name : $authorName;
+                $authorName = !empty(trim($name)) ? $name : $authorName;
             }
         }
         return $authorName ?: $this->author_id;
