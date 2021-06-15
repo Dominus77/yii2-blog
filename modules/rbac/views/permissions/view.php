@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use modules\rbac\Module;
+use common\helpers\CustomFunctions;
 
 /* @var $this yii\web\View */
 /* @var $model modules\rbac\models\Permission */
@@ -38,7 +39,11 @@ $this->params['breadcrumbs'][] = $model->name;
                                 [
                                     'attribute' => 'description',
                                     'label' => Module::t('module', 'Description'),
-                                    'format' => 'raw'
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        $descriptionContent = CustomFunctions::getConstantDescription('modules\rbac\models\Permission', $model->name);
+                                        return $descriptionContent !== null ? Module::t('module', $descriptionContent, '', Yii::$app->config->get('SITE_LANGUAGE')) : '';
+                                    }
                                 ],
                                 [
                                     'attribute' => 'ruleName',
